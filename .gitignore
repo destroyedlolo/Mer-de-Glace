@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+# vi
+*.sw*
+
 # Compiled Object files
 *.slo
 *.lo
@@ -27,6 +30,4 @@
 *.lib
 
 # Executables
-*.exe
-*.out
-*.app
+MdG
