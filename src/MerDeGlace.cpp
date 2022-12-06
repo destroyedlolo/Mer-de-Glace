@@ -42,18 +42,6 @@ int main(int ac, char **av){
 
 	while((c = getopt(ac, av, "hvf:")) != EOF) switch(c){
 	case 'h':
-/*
-		fprintf(stderr, "%s (%.04f)\n"
-			"Integrity archiving solution"
-			"%s\n"
-			"Known options are :\n"
-			"\t-h : this online help\n"
-			"\t-v : enable verbose messages (overwrite -q)\n",
-			"\t-f<file> : read <file> for configuration\n"
-			"\t\t(default is '%s')\n",
-			basename(av[0]), VERSION, COPYRIGHT, DEFAULT_CONFIGURATION_FILE
-		);
-*/
 		fprintf(stderr, "%s (%.04f)\n"
 			"Integrity archiving solution\n"
 			"%s\n"
