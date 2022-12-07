@@ -16,24 +16,33 @@
  *
  */
 
+#include <iostream>
+#include <fstream>
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cassert>
 
 #include <unistd.h> 	// getopt()
 #include <libgen.h>		// basename()
 
 #include "Version.h"
+#include "MayBeEmptyString.h"
+#include "Helpers.h"
 
 #define DEFAULT_CONFIGURATION_FILE "/usr/local/etc/MerDeGlace.conf"
 
-using namespace std;
+// using namespace std;
 
 	/*****
 	 * global configuration
 	 *****/
 
 bool verbose = false;
+const char *root = NULL;
+const char *dbfile = NULL;
+const char *report = NULL;
 
 
 int main(int ac, char **av){
@@ -55,13 +64,55 @@ int main(int ac, char **av){
 		exit(EXIT_FAILURE);
 		break;
 	case 'v':
-		printf("%s v%.04f\n", basename(av[0]), VERSION);
+		printf("Mer de Glace (%s) v%.04f\n", basename(av[0]), VERSION);
 		verbose = true;
+		break;
+	case 'f':
+		conf_file = optarg;
 		break;
 	default:
 		fprintf(stderr, "Unknown option '%c'\n%s -h\n\tfor some help\n", c, av[0]);
 		exit(EXIT_FAILURE);
 	}
+
+
+		/***
+		 * Read configuration 
+		 ***/
+	std::ifstream file;
+	file.exceptions ( std::ios::eofbit | std::ios::failbit ); // No need to check failbit
+
+	try {
+		std::string l;
+
+		file.open(conf_file);
+		while( std::getline( file, l) ){
+			MayBeEmptyString arg;
+
+			if( l[0]=='#' )
+				continue;
+			else if( !!(arg = striKWcmp( l, "rootDirectory=" ))){
+				assert(( root = strdup( arg.c_str() ) ));
+				if(verbose)
+					printf("\troot directory to scan : '%s'\n", root);
+			} else if( !!(arg = striKWcmp( l, "DBFile=" ))){
+				assert(( dbfile = strdup( arg.c_str() ) ));
+				if(verbose)
+					printf("\tDatabase : '%s'\n", dbfile);
+			} else if( !!(arg = striKWcmp( l, "Report=" ))){
+				assert(( report = strdup( arg.c_str() ) ));
+				if(verbose)
+					printf("\tResolting report : '%s'\n", report);
+			} 
+		}
+	} catch(const std::ifstream::failure &e){
+		if(!file.eof()){
+			fprintf(stderr, "*F* %s : %s\n", conf_file, strerror(errno) );
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	file.close();
 
 	exit(EXIT_SUCCESS);
 }

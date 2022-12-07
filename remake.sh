@@ -8,4 +8,4 @@ echo "--------------------"
 echo
 
 cd src
-LFMakeMaker -v +f=Makefile -cc="g++ -Wall -O2 -DDEBUG" *.cpp -t=../MdG > Makefile
+LFMakeMaker -v +f=Makefile -cc="c++ -Wall -O2 -DDEBUG" *.cpp -t=../MdG > Makefile

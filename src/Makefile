@@ -5,13 +5,17 @@ gotoall: all
 
 
 #The compiler (may be customized for compiler's options).
-cc=g++ -Wall -O2 -DDEBUG
+cc=c++ -Wall -O2 -DDEBUG
 opts=
 
-MerDeGlace.o : MerDeGlace.cpp Version.h Makefile 
+Helpers.o : Helpers.cpp Helpers.h MayBeEmptyString.h Makefile 
+	$(cc) -c -o Helpers.o Helpers.cpp $(opts) 
+
+MerDeGlace.o : MerDeGlace.cpp Version.h MayBeEmptyString.h Helpers.h \
+  Makefile 
 	$(cc) -c -o MerDeGlace.o MerDeGlace.cpp $(opts) 
 
-../MdG : MerDeGlace.o Makefile 
-	 $(cc) -o ../MdG MerDeGlace.o $(opts) 
+../MdG : MerDeGlace.o Helpers.o Makefile 
+	 $(cc) -o ../MdG MerDeGlace.o Helpers.o $(opts) 
 
 all: ../MdG 
