@@ -12,7 +12,7 @@ Helpers.o : Helpers.cpp Helpers.h MayBeEmptyString.h Makefile
 	$(cc) -c -o Helpers.o Helpers.cpp $(opts) 
 
 MerDeGlace.o : MerDeGlace.cpp Version.h MayBeEmptyString.h Helpers.h \
-  Makefile 
+  Config.h Makefile 
 	$(cc) -c -o MerDeGlace.o MerDeGlace.cpp $(opts) 
 
 ../MdG : MerDeGlace.o Helpers.o Makefile 

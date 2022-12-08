@@ -30,6 +30,7 @@
 #include "Version.h"
 #include "MayBeEmptyString.h"
 #include "Helpers.h"
+#include "Config.h"
 
 #define DEFAULT_CONFIGURATION_FILE "/usr/local/etc/MerDeGlace.conf"
 
@@ -43,22 +44,25 @@ bool verbose = false;
 const char *root = NULL;
 const char *dbfile = NULL;
 const char *report = NULL;
-
+enum _Mode mode = _Mode::VERIFY;
 
 int main(int ac, char **av){
 	const char *conf_file = DEFAULT_CONFIGURATION_FILE;
 	int c;
 
-	while((c = getopt(ac, av, "hvf:")) != EOF) switch(c){
+	while((c = getopt(ac, av, "hvf:m:")) != EOF) switch(c){
 	case 'h':
 		fprintf(stderr, "%s (%.04f)\n"
 			"Integrity archiving solution\n"
 			"%s\n"
 			"Known options are :\n"
 			"\t-h : this online help\n"
-			"\t-v : enable verbose messages\n"
 			"\t-f<file> : read <file> for configuration\n"
-			"\t\t(default is '%s')\n",
+			"\t\t(default is '%s')\n"
+			"\t-m<MODE> : set mode among\n"
+			"\t\tVERIFY : check for files changes\n"
+			"\t\tREBUILD : rebuild the database (set with fresh values)\n"
+			"\t-v : enable verbose messages\n",
 			basename(av[0]), VERSION, COPYRIGHT, DEFAULT_CONFIGURATION_FILE
 		);
 		exit(EXIT_FAILURE);
@@ -69,6 +73,16 @@ int main(int ac, char **av){
 		break;
 	case 'f':
 		conf_file = optarg;
+		break;
+	case 'm':
+		if(!strcasecmp(optarg, "VERIFY"))
+			mode = _Mode::VERIFY;
+		else if(!strcasecmp(optarg, "REBUILD"))
+			mode = _Mode::REBUILD;
+		else {
+			fprintf(stderr, "*F* Unknown mode : '%s'\n", optarg);
+			exit(EXIT_FAILURE);
+		}
 		break;
 	default:
 		fprintf(stderr, "Unknown option '%c'\n%s -h\n\tfor some help\n", c, av[0]);
@@ -129,6 +143,14 @@ int main(int ac, char **av){
 		printf("\troot directory to scan : '%s'\n", root);
 		printf("\tDatabase : '%s'\n", dbfile);
 		printf("\tResulting report : '%s'\n", report);
+		switch(mode){
+		case _Mode::VERIFY :
+			puts("\tVERIFY mode : checking for files differences");
+			break;
+		case _Mode::REBUILD :
+			puts("\tREBUILD mode : Rebuild the database with the actual status");
+			break;
+		}
 	}
 
 	exit(EXIT_SUCCESS);
