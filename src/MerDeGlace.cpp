@@ -91,19 +91,12 @@ int main(int ac, char **av){
 
 			if( l[0]=='#' )
 				continue;
-			else if( !!(arg = striKWcmp( l, "rootDirectory=" ))){
+			else if( !!(arg = striKWcmp( l, "rootDirectory=" )))
 				assert(( root = strdup( arg.c_str() ) ));
-				if(verbose)
-					printf("\troot directory to scan : '%s'\n", root);
-			} else if( !!(arg = striKWcmp( l, "DBFile=" ))){
+			else if( !!(arg = striKWcmp( l, "DBFile=" )))
 				assert(( dbfile = strdup( arg.c_str() ) ));
-				if(verbose)
-					printf("\tDatabase : '%s'\n", dbfile);
-			} else if( !!(arg = striKWcmp( l, "Report=" ))){
+			else if( !!(arg = striKWcmp( l, "Report=" )))
 				assert(( report = strdup( arg.c_str() ) ));
-				if(verbose)
-					printf("\tResolting report : '%s'\n", report);
-			} 
 		}
 	} catch(const std::ifstream::failure &e){
 		if(!file.eof()){
@@ -113,6 +106,30 @@ int main(int ac, char **av){
 	}
 
 	file.close();
+
+		/***
+		 * Sanity checks
+		 ***/
+	if(!root){
+		fprintf(stderr, "*F* Root directory not defined\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if(!dbfile){
+		fprintf(stderr, "*F* Database file not defined\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if(!report){
+		fprintf(stderr, "*F* No report file defined\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if(verbose){
+		printf("\troot directory to scan : '%s'\n", root);
+		printf("\tDatabase : '%s'\n", dbfile);
+		printf("\tResulting report : '%s'\n", report);
+	}
 
 	exit(EXIT_SUCCESS);
 }
