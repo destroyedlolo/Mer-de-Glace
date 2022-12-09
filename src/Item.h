@@ -23,6 +23,9 @@ private :
 	enum _kind kind;	// kind ot this item
 
 public :
+	Item(const std::filesystem::path &p, _kind akind) : path(p), kind(akind) {
+		this->name = this->filename();
+	}
 
 	Item(const char *aname, _kind akind) : path(aname), kind(akind) {
 		this->name = this->filename();
