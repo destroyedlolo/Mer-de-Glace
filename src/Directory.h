@@ -17,8 +17,7 @@ class Directory : public Item {
 
 public :
 		// directory constructor
-	Directory(const std::filesystem::path &p) : Item(p, Item::_kind::IF_DIRECTORY){}
-
+	Directory(const std::filesystem::directory_entry &p) : Item(p, Item::_kind::IF_DIRECTORY){}
 	Directory(const char *aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
 
 		// rescan the directory

@@ -18,7 +18,7 @@ void Directory::rescan(void){
 		if(entry.is_regular_file())
 			putchar('F');
 		else if(entry.is_directory()){
-			Directory *n = new Directory(entry.path());
+			Directory *n = new Directory(entry);
 			putchar('D');
 		}
 		else	// Ignoring all "special" files

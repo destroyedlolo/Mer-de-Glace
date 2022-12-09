@@ -23,7 +23,7 @@ private :
 	enum _kind kind;	// kind ot this item
 
 public :
-	Item(const std::filesystem::path &p, _kind akind) : path(p), kind(akind) {
+	Item(const std::filesystem::directory_entry &p, _kind akind) : path(p), kind(akind) {
 		this->name = this->filename();
 	}
 
