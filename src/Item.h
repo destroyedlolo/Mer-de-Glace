@@ -11,9 +11,7 @@
 #include <string>
 #include <filesystem>
 
-using namespace std;
-
-class Item {
+class Item : public std::filesystem::path {
 public :
 	enum _kind {
 		IT_FILE = 0,
@@ -21,16 +19,16 @@ public :
 	};
 
 private :
-	string name;		// Name of the directory
+	std::string name;		// Name of the directory
 	enum _kind kind;	// kind ot this item
 
 public :
 
-	Item(const char *aname, _kind akind) : kind(akind) {
-		this->name = std::filesystem::canonical(aname);
+	Item(const char *aname, _kind akind) : path(aname), kind(akind) {
+		this->name = this->filename();
 	}
 
-	string &getName(void){
+	std::string &getName(void){
 		return this->name;
 	}
 

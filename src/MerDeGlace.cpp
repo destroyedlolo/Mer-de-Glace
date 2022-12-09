@@ -106,9 +106,11 @@ int main(int ac, char **av){
 
 			if( l[0]=='#' )
 				continue;
-			else if( !!(arg = striKWcmp( l, "rootDirectory=" )))
+			else if( !!(arg = striKWcmp( l, "rootDirectory=" ))){
+				if(arg.back() == '/')	// remove trailing '/'
+					arg = arg.substr(0, arg.size()-1);
 				assert(( root = strdup( arg.c_str() ) ));
-			else if( !!(arg = striKWcmp( l, "DBFile=" )))
+			} else if( !!(arg = striKWcmp( l, "DBFile=" )))
 				assert(( dbfile = strdup( arg.c_str() ) ));
 			else if( !!(arg = striKWcmp( l, "Report=" )))
 				assert(( report = strdup( arg.c_str() ) ));

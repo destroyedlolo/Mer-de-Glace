@@ -8,7 +8,7 @@ gotoall: all
 cc=c++ -Wall -O2 -DDEBUG
 opts=
 
-Directory.o : Directory.cpp Directory.h Item.h Makefile 
+Directory.o : Directory.cpp Directory.h Item.h Config.h Makefile 
 	$(cc) -c -o Directory.o Directory.cpp $(opts) 
 
 Helpers.o : Helpers.cpp Helpers.h MayBeEmptyString.h Makefile 

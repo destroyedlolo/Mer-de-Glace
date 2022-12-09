@@ -13,7 +13,7 @@
 class Directory : public Item {
 
 public :
-		// Empty directory
+		// directory constructor
 	Directory(const char *aname) : Item(aname, Item::_kind::IF_DIRECTORY){
 	}
 

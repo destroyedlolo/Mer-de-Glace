@@ -3,13 +3,17 @@
  */
 
 #include "Directory.h"
+#include "Config.h"
 
 #include <string>
 #include <iostream>
 #include <filesystem>
 
 void Directory::rescan(void){
-	for(const auto & entry : std::filesystem::directory_iterator(this->getName())){
+	if(verbose)
+		printf("*I* scanning '%s' directory\n", this->getName().c_str());
+
+	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		if(entry.is_regular_file())
 			putchar('F');
 		else if(entry.is_directory())
