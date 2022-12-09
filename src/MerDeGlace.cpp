@@ -31,6 +31,7 @@
 #include "MayBeEmptyString.h"
 #include "Helpers.h"
 #include "Config.h"
+#include "Directory.h"
 
 #define DEFAULT_CONFIGURATION_FILE "/usr/local/etc/MerDeGlace.conf"
 
@@ -153,6 +154,32 @@ int main(int ac, char **av){
 		}
 	}
 
+		/***
+		 * Feed in memory data
+		 ***/
+	Directory *rootDir = NULL;
+
+	if(mode != _Mode::REBUILD){
+/*
+ * check if the database can be loaded
+ * 	no :
+ * 		- continue w/o processing
+ * 	yes : 
+ * 		- check if the root directory matches -> if not, crash
+ * 		- create rootDir
+ * 		- load all data from the database
+ */
+	}
+
+	if(!rootDir){	// The database need to be rebuilt
+		mode = _Mode::REBUILD;
+
+		rootDir = new Directory(root);
+		assert(rootDir);
+
+		rootDir->rescan();
+
+	}
 	exit(EXIT_SUCCESS);
 }
 
