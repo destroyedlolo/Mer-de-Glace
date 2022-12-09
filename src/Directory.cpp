@@ -11,18 +11,25 @@
 #include <list>
 
 void Directory::rescan(void){
-	if(verbose)
-		printf("*I* scanning '%s' directory\n", this->getName().c_str());
-
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
-		if(entry.is_regular_file())
+		if(entry.is_regular_file()){
 			putchar('F');
-		else if(entry.is_directory()){
+			printf("-> %s\n", entry.path().c_str());
+		} else if(entry.is_directory()){
 			Directory *n = new Directory(entry);
-			putchar('D');
+			this->subs.push_back(n);
 		}
 		else	// Ignoring all "special" files
 			continue;
-		printf("-> %s\n", entry.path().c_str());
 	}
+}
+
+void Directory::dump( int ident ){
+	for(int i=0; i<ident; i++)
+		putchar('\t');
+
+	printf("Directory '%s' (%s)\n", this->getName().c_str(), this->c_str());
+
+	for(auto sub : this->subs)
+		sub->dump(ident + 1);
 }

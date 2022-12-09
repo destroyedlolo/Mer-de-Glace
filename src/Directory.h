@@ -22,6 +22,9 @@ public :
 
 		// rescan the directory
 	void rescan(void);
+
+		// Display content
+	virtual void dump( int ident=0 );
 };
 
 #endif

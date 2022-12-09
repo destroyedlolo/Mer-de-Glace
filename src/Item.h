@@ -38,6 +38,8 @@ public :
 	_kind getKind(void){
 		return this->kind;
 	}
+
+	virtual void dump( int ident = 0 ) = 0;
 };
 
 #endif

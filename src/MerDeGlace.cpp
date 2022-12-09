@@ -182,6 +182,12 @@ int main(int ac, char **av){
 		rootDir->rescan();
 
 	}
+
+	if(verbose){
+		puts("\n*I* Current in memory database");
+		rootDir->dump();
+	}
+
 	exit(EXIT_SUCCESS);
 }
 
