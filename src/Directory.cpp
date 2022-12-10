@@ -14,14 +14,14 @@
 #include <filesystem>
 #include <list>
 
-void Directory::rescan(void){
+void Directory::scan(void){
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		if(entry.is_regular_file()){
 			File *n = new File(entry);
 			this->subs.push_back(n);
 		} else if(entry.is_directory()){
 			Directory *n = new Directory(entry);
-			n->rescan();
+			n->scan();
 			this->subs.push_back(n);
 		}
 		else	// Ignoring all "special" files

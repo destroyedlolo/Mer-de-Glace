@@ -20,8 +20,9 @@ public :
 	Directory(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IF_DIRECTORY){}
 	Directory(const char *aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
 
-		// rescan the directory
-	void rescan(void);
+		// Rebuild directory's own information
+		// Typical use : inital scan of ta directory
+	void scan(void);
 
 		// Display content
 	virtual void dump( int ident=0 );

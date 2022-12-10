@@ -180,7 +180,7 @@ int main(int ac, char **av){
 		rootDir = new Directory(root);
 		assert(rootDir);
 
-		rootDir->rescan();
+		rootDir->scan();
 
 	}
 
