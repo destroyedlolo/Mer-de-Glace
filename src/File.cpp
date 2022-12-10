@@ -43,5 +43,9 @@ void File::dump( int ident ){
 	for(int i=0; i<ident; i++)
 		putchar('\t');
 
-	printf("File '%s' : hist:%s act:%s\n", this->getName().c_str(), this->getHistorical().c_str(), this->getActual().c_str() );
+	printf("File '%s' : hist:%s act:%s\n", this->getName().c_str(), this->getHistorical().c_str(), this->getActual().c_str());
+}
+
+void File::save2DB(FILE *f){
+	fprintf(f, "\t%s\t%s\n", this->getName().c_str(),this->getHistorical().c_str());
 }

@@ -48,6 +48,20 @@ const char *dbfile = NULL;
 const char *report = NULL;
 enum _Mode mode = _Mode::VERIFY;
 
+Directory *rootDir = NULL;
+
+static void SaveDB(void){
+	FILE *f = fopen(dbfile, "wb");
+	if(!f){
+		perror(dbfile);
+		exit(EXIT_FAILURE);
+	}
+
+	rootDir->save2DB(f);
+
+	fclose(f);
+}
+
 int main(int ac, char **av){
 	const char *conf_file = DEFAULT_CONFIGURATION_FILE;
 	int c;
@@ -160,7 +174,6 @@ int main(int ac, char **av){
 		/***
 		 * Feed in memory data
 		 ***/
-	Directory *rootDir = NULL;
 
 	if(mode != _Mode::REBUILD){
 /*
@@ -181,7 +194,7 @@ int main(int ac, char **av){
 		assert(rootDir);
 
 		rootDir->scan();
-
+		SaveDB();			// New content need to be saved
 	}
 
 	if(verbose){

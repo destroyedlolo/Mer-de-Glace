@@ -8,6 +8,8 @@
 #ifndef ITEM_H
 #define ITEM_H
 
+#include <cstdio>
+
 #include <string>
 #include <filesystem>
 
@@ -40,6 +42,7 @@ public :
 	}
 
 	virtual void dump( int ident = 0 ) = 0;
+	virtual void save2DB(FILE *) = 0;
 };
 
 #endif

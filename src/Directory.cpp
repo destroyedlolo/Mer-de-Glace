@@ -38,3 +38,10 @@ void Directory::dump( int ident ){
 	for(auto sub : this->subs)
 		sub->dump(ident + 1);
 }
+
+void Directory::save2DB(FILE *f){
+	fprintf(f, "%s\n", this->c_str());
+
+	for(auto sub : this->subs)
+		sub->save2DB(f);
+}

@@ -26,6 +26,7 @@ public :
 
 		// Display content
 	virtual void dump( int ident=0 );
+	virtual void save2DB(FILE *);
 };
 
 #endif
