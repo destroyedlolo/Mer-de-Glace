@@ -1,8 +1,12 @@
-/* Directory.cpp
- * 	Helper functions
+/* Directory.h
+ *
+ * Instantiate a directory
+ *
+ * Copyright 2022 Laurent Faillie
  */
 
 #include "Directory.h"
+#include "File.h"
 #include "Config.h"
 
 #include <string>
@@ -13,10 +17,11 @@
 void Directory::rescan(void){
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		if(entry.is_regular_file()){
-			putchar('F');
-			printf("-> %s\n", entry.path().c_str());
+			File *n = new File(entry);
+			this->subs.push_back(n);
 		} else if(entry.is_directory()){
 			Directory *n = new Directory(entry);
+			n->rescan();
 			this->subs.push_back(n);
 		}
 		else	// Ignoring all "special" files

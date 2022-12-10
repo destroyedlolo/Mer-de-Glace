@@ -32,6 +32,7 @@
 #include "Helpers.h"
 #include "Config.h"
 #include "Directory.h"
+#include "File.h"
 
 #define DEFAULT_CONFIGURATION_FILE "/usr/local/etc/MerDeGlace.conf"
 
