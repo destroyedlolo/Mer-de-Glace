@@ -6,7 +6,7 @@ gotoall: all
 
 #The compiler (may be customized for compiler's options).
 cc=c++ -Wall -O2 -DDEBUG
-opts=
+opts=$(shell pkg-config --libs openssl)
 
 Directory.o : Directory.cpp Directory.h Item.h File.h Config.h \
   Makefile 

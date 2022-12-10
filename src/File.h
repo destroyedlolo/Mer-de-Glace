@@ -18,7 +18,11 @@ class File : public Item {
 	std::string actual_md5;		// md5 calculated NOW
 
 public :
-	File(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IT_FILE){}
+		// Create a new file and initialise md5
+	File(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IT_FILE){
+		this->md5(this->historical_md5);
+	}
+
 #if 0
 		// initialisation from existing data
 	File( const char *aname, const char *amd5 ):name(aname), historical_md5(amd5){
@@ -30,6 +34,11 @@ public :
 		// accept any modification
 	accept( void );
 #endif
+
+		// Compute it's md5
+	std::string md5( std::string & );
+	std::string getHistorical( void ){ return this->historical_md5; }
+	std::string getActual( void ){ return this->actual_md5; }
 
 		// Display content
 	virtual void dump( int ident=0 );

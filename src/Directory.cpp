@@ -14,7 +14,7 @@
 #include <filesystem>
 #include <list>
 
-void Directory::scan(void){
+void Directory::scan( void ){
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		if(entry.is_regular_file()){
 			File *n = new File(entry);
