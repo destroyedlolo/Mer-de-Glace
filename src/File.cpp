@@ -8,35 +8,41 @@
 #include "File.h"
 #include "Config.h"
 
-#include <openssl/md5.h>
+#include <openssl/evp.h>
 #include <fstream>
 
 #include <cstring>
 
-/*AF* Add try/catch */
+/* Calculate md5
+ * based on https://blog.magnatox.com/posts/c_hashing_files_with_openssl/
+ */
 std::string File::md5( std::string &res ){
 	if(verbose){
 		printf("*I* md5(%s)\n", this->c_str());
 		fflush(stdout);
 	}
 
-	std::ifstream file(this->c_str(), std::ifstream::binary);
-
-	if(!file){
+	FILE *fp = fopen(this->c_str(), "rb");
+	if(!fp){
 		fprintf(stderr, "*F* '%s' : %s \n", this->c_str(), strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
-	MD5_CTX md5Context;
-	MD5_Init(&md5Context);
-	char buf[1024 * 16];
-	while (file.good()) {
-    	file.read(buf, sizeof(buf));
-	    MD5_Update(&md5Context, buf, file.gcount());
-	}
-	unsigned char result[MD5_DIGEST_LENGTH];
-	MD5_Final(result, &md5Context);
+	EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
+	const EVP_MD *EVP_md5();
+	EVP_DigestInit_ex(mdctx, EVP_md5(), NULL);
 
+	size_t n;
+	char buff[1024 * 16];
+	while((n = fread(buff, 1, sizeof(buff), fp)))
+		EVP_DigestUpdate(mdctx, buff, n);
+
+	unsigned char result[EVP_MAX_MD_SIZE];
+	unsigned int md_len;
+
+	EVP_DigestFinal_ex(mdctx, result, &md_len);
+	EVP_MD_CTX_free(mdctx);
+	
 	std::stringstream md5string;
 	md5string << std::hex << std::uppercase << std::setfill('0');
 	for (const auto &byte: result)
