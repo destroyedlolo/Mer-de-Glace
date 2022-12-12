@@ -11,6 +11,8 @@
 #include <openssl/md5.h>
 #include <fstream>
 
+#include <cstring>
+
 /*AF* Add try/catch */
 std::string File::md5( std::string &res ){
 	if(verbose){
@@ -19,6 +21,11 @@ std::string File::md5( std::string &res ){
 	}
 
 	std::ifstream file(this->c_str(), std::ifstream::binary);
+
+	if(!file){
+		fprintf(stderr, "*F* '%s' : %s \n", this->c_str(), strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 
 	MD5_CTX md5Context;
 	MD5_Init(&md5Context);
