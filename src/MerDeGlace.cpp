@@ -62,6 +62,51 @@ static void SaveDB(void){
 	fclose(f);
 }
 
+static bool LoadDB(void){
+/*
+ * check if the database can be loaded
+ * 	no :
+ * 		- continue w/o processing
+ * 	yes : 
+ * 		- check if the root directory matches -> if not, crash
+ * 		- create rootDir
+ * 		- load all data from the database
+ */
+	std::ifstream file(dbfile, std::ios::binary);
+
+	if(!file){
+		if(verbose)
+			puts("*E* Can't open the database, creating a new one");
+		return false;
+	}
+
+	file.exceptions (std::ios::eofbit | std::ios::failbit);
+	try {
+		std::string l;
+
+			// Get the root directory
+		std::getline( file, l);
+		if( l != root ){
+			fprintf(stderr, "*F* DB's root directory doesn't match : does the configuration changed\n");
+			exit(EXIT_FAILURE);
+		}
+
+		rootDir = new Directory(root);	// Create in memory database
+		assert(rootDir);
+
+
+printf("--> root : %s\n", l.c_str());
+	} catch(const std::ifstream::failure &e){
+		if(!file.eof()){
+			fprintf(stderr, "*F* %s : %s", dbfile, strerror(errno) );
+			exit(EXIT_FAILURE);
+		}
+	}
+
+puts("DB ok");
+	return true;
+}
+
 int main(int ac, char **av){
 	const char *conf_file = DEFAULT_CONFIGURATION_FILE;
 	int c;
@@ -176,15 +221,7 @@ int main(int ac, char **av){
 		 ***/
 
 	if(mode != _Mode::REBUILD){
-/*
- * check if the database can be loaded
- * 	no :
- * 		- continue w/o processing
- * 	yes : 
- * 		- check if the root directory matches -> if not, crash
- * 		- create rootDir
- * 		- load all data from the database
- */
+		LoadDB();
 	}
 
 	if(!rootDir){	// The database need to be rebuilt
