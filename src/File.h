@@ -23,11 +23,11 @@ public :
 		this->md5(this->historical_md5);
 	}
 
-#if 0
 		// initialisation from existing data
-	File( const char *aname, const char *amd5 ):name(aname), historical_md5(amd5){
+	File( std::string &aname, std::string &amd5 ) : Item(aname, Item::_kind::IT_FILE), historical_md5(amd5){
 	}
 
+#if 0
 		// update actual md5 from an opened file
 	File( FILE *, const char *aname );
 

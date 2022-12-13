@@ -29,6 +29,10 @@ public :
 		this->name = this->filename();
 	}
 
+	Item(std::string &aname, _kind akind) : path(aname), kind(akind) {
+		this->name = this->filename();
+	}
+
 	Item(const char *aname, _kind akind) : path(aname), kind(akind) {
 		this->name = this->filename();
 	}

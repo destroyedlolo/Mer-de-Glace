@@ -110,6 +110,8 @@ static bool LoadDB(void){
 				std::string md5 = l.substr(sep+1);
 
 printf("file: %s, md5: %s\n", fname.c_str(), md5.c_str());
+				File *n = new File(fname, md5);
+				current->addFile(n);			
 			} else {	// a directory
 printf("directory : %s\n", l.c_str());
 			}

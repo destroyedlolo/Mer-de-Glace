@@ -9,6 +9,7 @@
 #define DIRECTORY_H
 
 #include "Item.h"
+#include "File.h"
 
 #include <list>
 
@@ -20,6 +21,14 @@ public :
 		// directory constructor
 	Directory(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IF_DIRECTORY){}
 	Directory(const char *aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
+
+		// add sub objects
+	void addDir( Directory *d ){
+		this->subdirs.push_back(d);
+	}
+	void addFile( File *f ){
+		this->subfiles.push_back(f);
+	}
 
 		// Rebuild directory's own information
 		// Typical use : inital scan of ta directory
