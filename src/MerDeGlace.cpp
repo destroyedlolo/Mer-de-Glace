@@ -95,8 +95,8 @@ static bool LoadDB(void){
 		rootDir = new Directory(root);	// Create in memory database
 		assert(rootDir);
 
-
-printf("--> root : %s\n", l.c_str());
+		if(debug)
+			printf("*D* --> root : %s\n", l.c_str());
 	} catch(const std::ifstream::failure &e){
 		if(!file.eof()){
 			fprintf(stderr, "*F* %s : %s", dbfile, strerror(errno) );

@@ -18,7 +18,7 @@
  */
 std::string File::md5( std::string &res ){
 	if(debug){
-		printf("*I* md5(%s)\n", this->c_str());
+		printf("*D* md5(%s)\n", this->c_str());
 		fflush(stdout);
 	}
 
