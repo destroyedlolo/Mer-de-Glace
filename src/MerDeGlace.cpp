@@ -43,6 +43,7 @@
 	 *****/
 
 bool verbose = false;
+bool debug = false;
 const char *root = NULL;
 const char *dbfile = NULL;
 const char *report = NULL;
@@ -111,7 +112,7 @@ int main(int ac, char **av){
 	const char *conf_file = DEFAULT_CONFIGURATION_FILE;
 	int c;
 
-	while((c = getopt(ac, av, "hvf:m:")) != EOF) switch(c){
+	while((c = getopt(ac, av, "hvdf:m:")) != EOF) switch(c){
 	case 'h':
 		fprintf(stderr, "%s (%.04f)\n"
 			"Integrity archiving solution\n"
@@ -123,11 +124,14 @@ int main(int ac, char **av){
 			"\t-m<MODE> : set mode among\n"
 			"\t\tVERIFY : check for files changes\n"
 			"\t\tREBUILD : rebuild the database (set with fresh values)\n"
-			"\t-v : enable verbose messages\n",
+			"\t-v : enable verbose messages\n"
+			"\t-d : enable debug messages\n",
 			basename(av[0]), VERSION, COPYRIGHT, DEFAULT_CONFIGURATION_FILE
 		);
 		exit(EXIT_FAILURE);
 		break;
+	case 'd':
+		debug = true;
 	case 'v':
 		printf("Mer de Glace (%s) v%.04f\n", basename(av[0]), VERSION);
 		verbose = true;

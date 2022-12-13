@@ -17,7 +17,7 @@
  * based on https://blog.magnatox.com/posts/c_hashing_files_with_openssl/
  */
 std::string File::md5( std::string &res ){
-	if(verbose){
+	if(debug){
 		printf("*I* md5(%s)\n", this->c_str());
 		fflush(stdout);
 	}
