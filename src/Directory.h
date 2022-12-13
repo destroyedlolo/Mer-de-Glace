@@ -13,7 +13,8 @@
 #include <list>
 
 class Directory : public Item {
-	std::list<Item *> subs;	// objects in this directory
+	std::list<Item *> subdirs;	// objects in this directory
+	std::list<Item *> subfiles;	// objects in this directory
 
 public :
 		// directory constructor
