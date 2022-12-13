@@ -97,6 +97,24 @@ static bool LoadDB(void){
 
 		if(debug)
 			printf("*D* --> root : %s\n", l.c_str());
+
+		Directory *current = rootDir;
+		while(std::getline( file, l)){	// Reading the database from disk
+			if(l[0] == '\t'){	// starting with a tab, it's a file
+				size_t sep = l.find('\t', 1);
+				if(sep == std::string::npos){
+					fputs("*F* Malformed database file (missing tab separator)\n", stderr);
+					exit(EXIT_FAILURE);
+				}
+				std::string fname = l.substr(1,sep-1);
+				std::string md5 = l.substr(sep+1);
+
+printf("file: %s, md5: %s\n", fname.c_str(), md5.c_str());
+			} else {	// a directory
+printf("directory : %s\n", l.c_str());
+			}
+		}
+
 	} catch(const std::ifstream::failure &e){
 		if(!file.eof()){
 			fprintf(stderr, "*F* %s : %s", dbfile, strerror(errno) );
