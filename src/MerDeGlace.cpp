@@ -109,9 +109,11 @@ static bool LoadDB(void){
 				std::string fname = l.substr(1,sep-1);
 				std::string md5 = l.substr(sep+1);
 
-printf("file: %s, md5: %s\n", fname.c_str(), md5.c_str());
 				File *n = new File(fname, md5);
-				current->addFile(n);			
+				if(!(current->addFile(n))){
+					fprintf(stderr,"*F* duplicate File entry '%s'\n", fname.c_str());
+					exit(EXIT_FAILURE);
+				}
 			} else {	// a directory
 printf("directory : %s\n", l.c_str());
 			}

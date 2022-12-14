@@ -14,7 +14,7 @@
 #include <filesystem>
 #include <list>
 
-void Directory::scan( void ){
+void Directory::scan(void){
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		if(entry.is_regular_file()){
 			File *n = new File(entry);
@@ -29,7 +29,39 @@ void Directory::scan( void ){
 	}
 }
 
-void Directory::dump( int ident ){
+Directory *Directory::findDir(std::string &name){
+	for(auto sub : this->subdirs)
+		if(sub->getName() == name)
+			return sub;
+	
+	return NULL;
+}
+
+File *Directory::findFile(std::string &name){
+	for(auto sub : this->subfiles)
+		if(sub->getName() == name)
+			return sub;
+	
+	return NULL;
+}
+
+bool Directory::addDir(Directory *d){
+	if(this->exist(d))
+		return(false);
+
+	this->subdirs.push_back(d);
+	return true;
+}
+
+bool Directory::addFile(File *f){
+	if(this->exist(f))
+		return(false);
+
+	this->subfiles.push_back(f);
+	return true;
+}
+
+void Directory::dump(int ident){
 	for(int i=0; i<ident; i++)
 		putchar('\t');
 
