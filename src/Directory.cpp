@@ -42,7 +42,7 @@ Directory *Directory::findDir(std::string &name, bool recursive, Directory **par
 		std::filesystem::path path(name);
 
 		if(debug)
-			printf("*d* moi: '%s', p: '%s'\n", this->c_str(), path.parent_path().c_str());
+			printf("*d* cur: '%s'\n      -> '%s'\n", this->c_str(), path.c_str());
 
 		if(name == *this){	// We found the target
 			if(debug)
@@ -52,7 +52,7 @@ Directory *Directory::findDir(std::string &name, bool recursive, Directory **par
 			return this;
 		} else if(path.parent_path() == *this){	// We found the parent directory but the target doesn't exist
 			if(debug)
-				puts("*d* parent of non existent found");
+				puts("*d* Create new directory");
 
 			*parent = this;
 			Directory *n = new Directory(name.c_str());
@@ -61,6 +61,19 @@ Directory *Directory::findDir(std::string &name, bool recursive, Directory **par
 
 			return n;
 		} else {	// recurse in subdir
+			if(this->string().compare(0, this->string().length(), name)){
+				if(debug)
+					puts("*d* going deeper");
+
+				for(auto sub : this->subdirs){
+					Directory *res = sub->findDir(name, true, parent, this);
+					if(res)
+						return res;
+				}
+			} else {
+				if(debug)
+					puts("*d* outside");
+			}
 		}
 	} else
 		for(auto sub : this->subdirs)

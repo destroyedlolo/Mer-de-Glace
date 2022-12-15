@@ -115,13 +115,11 @@ static bool LoadDB(void){
 					exit(EXIT_FAILURE);
 				}
 			} else {	// a directory
-printf("directory : %s\n", l.c_str());
 				Directory *parent, *res;
 
 				res = rootDir->findDir(l, true, &parent);
 
 				if(res){
-printf("res:'%s', parent:'%p'\n", res->c_str(), parent);
 					current = res;
 				} else {
 puts("not found");
@@ -136,7 +134,9 @@ puts("not found");
 		}
 	}
 
-puts("DB ok");
+	if(verbose)
+		puts("*I* Database reloaded");
+
 	return true;
 }
 
@@ -270,10 +270,12 @@ int main(int ac, char **av){
 		SaveDB();			// New content need to be saved
 	}
 
-	if(verbose){
+/*
+	if(debug){
 		puts("\n*I* Current in memory database");
 		rootDir->dump();
 	}
+*/
 
 	exit(EXIT_SUCCESS);
 }
