@@ -37,7 +37,7 @@ void Directory::scan(void){
  * <- parent stores parent directory
  * -> up : upper (parent) directory
  */
-Directory *Directory::findDir(std::string &name, bool recursive, Directory **parent, Directory *up){
+Directory *Directory::findDir(std::string &name, bool recursive){
 	if(recursive){
 		std::filesystem::path path(name);
 
@@ -48,13 +48,11 @@ Directory *Directory::findDir(std::string &name, bool recursive, Directory **par
 			if(debug)
 				puts("*d* found");
 
-			*parent = up;
 			return this;
 		} else if(path.parent_path() == *this){	// We found the parent directory but the target doesn't exist
 			if(debug)
 				puts("*d* Create new directory");
 
-			*parent = this;
 			Directory *n = new Directory(name.c_str());
 			assert(n);
 			this->addDir(n);
@@ -66,7 +64,7 @@ Directory *Directory::findDir(std::string &name, bool recursive, Directory **par
 					puts("*d* going deeper");
 
 				for(auto sub : this->subdirs){
-					Directory *res = sub->findDir(name, true, parent, this);
+					Directory *res = sub->findDir(name, true);
 					if(res)
 						return res;
 				}

@@ -115,9 +115,9 @@ static bool LoadDB(void){
 					exit(EXIT_FAILURE);
 				}
 			} else {	// a directory
-				Directory *parent, *res;
+				Directory *res;
 
-				res = rootDir->findDir(l, true, &parent);
+				res = rootDir->findDir(l, true);
 
 				if(res)
 					current = res;
@@ -260,8 +260,10 @@ int main(int ac, char **av){
 	if(mode != _Mode::REBUILD){
 		LoadDB();
 
+#if 0	/* debug only to check reloaded state */
 dbfile = "/tmp/reloaded.mdg";
 SaveDB();
+#endif
 	}
 
 	if(!rootDir){	// The database need to be rebuilt

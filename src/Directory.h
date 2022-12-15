@@ -23,7 +23,7 @@ public :
 	Directory(const char *aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
 
 		// Look for existing object
-	Directory *findDir(std::string &, bool recursive=false, Directory **parent=NULL, Directory *up=NULL );
+	Directory *findDir(std::string &, bool recursive=false);
 	File *findFile(std::string &);
 	bool exist(Item *sub){
 		return(this->findDir(sub->getName()) || this->findFile(sub->getName()));
