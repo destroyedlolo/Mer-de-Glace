@@ -1,4 +1,4 @@
-# Sea ice
+# Mer-de-Glace
 CLI oriented simple and lightweight archiving solution
 
 :warning: **Mer-de-Glace** is still in it's very early stage. Documentation will be improved when a stable version will be released
