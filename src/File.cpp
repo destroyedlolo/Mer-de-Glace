@@ -37,6 +37,8 @@ std::string File::md5( std::string &res ){
 	while((n = fread(buff, 1, sizeof(buff), fp)))
 		EVP_DigestUpdate(mdctx, buff, n);
 
+	fclose(fp);
+
 	unsigned char result[EVP_MAX_MD_SIZE];
 	unsigned int md_len;
 
