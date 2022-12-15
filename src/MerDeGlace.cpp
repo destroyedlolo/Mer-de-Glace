@@ -119,10 +119,11 @@ static bool LoadDB(void){
 
 				res = rootDir->findDir(l, true, &parent);
 
-				if(res){
+				if(res)
 					current = res;
-				} else {
-puts("not found");
+				else {
+					puts("*F* no directory found");
+					exit(EXIT_FAILURE);
 				}
 			}
 		}
@@ -258,6 +259,9 @@ int main(int ac, char **av){
 
 	if(mode != _Mode::REBUILD){
 		LoadDB();
+
+dbfile = "/tmp/reloaded.mdg";
+SaveDB();
 	}
 
 	if(!rootDir){	// The database need to be rebuilt

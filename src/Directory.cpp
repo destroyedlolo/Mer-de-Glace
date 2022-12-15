@@ -71,8 +71,8 @@ Directory *Directory::findDir(std::string &name, bool recursive, Directory **par
 						return res;
 				}
 			} else {
-				if(debug)
-					puts("*d* outside");
+				puts("*F* Data outside any directory");
+				exit(EXIT_FAILURE);
 			}
 		}
 	} else
