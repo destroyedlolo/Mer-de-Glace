@@ -13,14 +13,17 @@
 #include <iostream>
 #include <filesystem>
 #include <list>
+#include <cassert>
 
 void Directory::scan(void){
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		if(entry.is_regular_file()){
 			File *n = new File(entry);
+			assert(n);
 			this->subfiles.push_back(n);
 		} else if(entry.is_directory()){
 			Directory *n = new Directory(entry);
+			assert(n);
 			n->scan();
 			this->subdirs.push_back(n);
 		}
@@ -29,11 +32,41 @@ void Directory::scan(void){
 	}
 }
 
-Directory *Directory::findDir(std::string &name){
-	for(auto sub : this->subdirs)
-		if(sub->getName() == name)
-			return sub;
-	
+/* -> name, recursive : if recursive is set, name = full path
+ * otherwise, we are looking only on the Directory and name = filename / last dir
+ * <- parent stores parent directory
+ * -> up : upper (parent) directory
+ */
+Directory *Directory::findDir(std::string &name, bool recursive, Directory **parent, Directory *up){
+	if(recursive){
+		std::filesystem::path path(name);
+
+		if(debug)
+			printf("*d* moi: '%s', p: '%s'\n", this->c_str(), path.parent_path().c_str());
+
+		if(name == *this){	// We found the target
+			if(debug)
+				puts("*d* found");
+
+			*parent = up;
+			return this;
+		} else if(path.parent_path() == *this){	// We found the parent directory but the target doesn't exist
+			if(debug)
+				puts("*d* parent of non existent found");
+
+			*parent = this;
+			Directory *n = new Directory(name.c_str());
+			assert(n);
+			this->addDir(n);
+
+			return n;
+		} else {	// recurse in subdir
+		}
+	} else
+		for(auto sub : this->subdirs)
+			if(sub->getName() == name)
+				return sub;
+
 	return NULL;
 }
 

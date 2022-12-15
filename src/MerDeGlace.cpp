@@ -116,6 +116,16 @@ static bool LoadDB(void){
 				}
 			} else {	// a directory
 printf("directory : %s\n", l.c_str());
+				Directory *parent, *res;
+
+				res = rootDir->findDir(l, true, &parent);
+
+				if(res){
+printf("res:'%s', parent:'%p'\n", res->c_str(), parent);
+					current = res;
+				} else {
+puts("not found");
+				}
 			}
 		}
 
