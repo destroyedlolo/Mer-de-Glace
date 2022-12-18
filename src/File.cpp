@@ -20,7 +20,7 @@
  */
 std::string File::md5( std::string &res ){
 	if(debug)
-		std::cout << "*D* md5(" << *this << ")\n" << std::flush;
+		std::cout << "*D* md5(" << this->string() << ")\n" << std::flush;
 
 	FILE *fp = fopen(this->c_str(), "rb");
 	if(!fp){
@@ -54,7 +54,7 @@ std::string File::md5( std::string &res ){
 	return res;
 }
 
-void File::dump( int ident ){
+void File::dump(int ident){
 	for(int i=0; i<ident; i++)
 		putchar('\t');
 
@@ -63,6 +63,7 @@ void File::dump( int ident ){
 		<< " act:" << this->getActual() << std::endl;
 }
 
-void File::save2DB(FILE *f){
-	fprintf(f, "\t%s\t%s\n", this->getName().c_str(),this->getHistorical().c_str());
+void File::save2DB(std::ofstream &f){
+	f << '\t' << this->getName() << '\t' << this->getHistorical() << std::endl;
+//	fprintf(f, "\t%s\t%s\n", this->getName().c_str(),this->getHistorical().c_str());
 }

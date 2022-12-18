@@ -119,8 +119,8 @@ void Directory::dump(int ident){
 		sub->dump(ident + 1);
 }
 
-void Directory::save2DB(FILE *f){
-	fprintf(f, "%s\n", this->c_str());
+void Directory::save2DB(std::ofstream &f){
+	f << this->string() << std::endl;
 
 	for(auto sub : this->subfiles)
 		sub->save2DB(f);

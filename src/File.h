@@ -10,7 +10,7 @@
 
 #include "Item.h"
 
-#include <cstdio>
+// #include <cstdio>
 
 class File : public Item {
 	std::string name;			// Name of the file
@@ -41,8 +41,8 @@ public :
 	std::string getActual( void ){ return this->actual_md5; }
 
 		// Display content
-	virtual void dump( int ident=0 );
-	virtual void save2DB(FILE *);
+	virtual void dump(int ident=0);
+	virtual void save2DB(std::ofstream &);
 };
 
 #endif

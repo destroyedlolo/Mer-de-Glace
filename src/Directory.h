@@ -38,8 +38,8 @@ public :
 	void scan(void);
 
 		// Display content
-	virtual void dump( int ident=0 );
-	virtual void save2DB(FILE *);
+	virtual void dump(int ident=0);
+	virtual void save2DB(std::ofstream &);
 
 		// Check if a path belong to another
 	static bool partOf(const std::filesystem::path root, const std::filesystem::path sub);

@@ -53,15 +53,16 @@ enum _Mode mode = _Mode::VERIFY;
 Directory *rootDir = NULL;
 
 static void SaveDB(void){
-	FILE *f = fopen(dbfile, "wb");
-	if(!f){
+	std::ofstream f;
+	f.open(dbfile);
+	if(!f.is_open()){
 		perror(dbfile);
 		exit(EXIT_FAILURE);
 	}
 
 	rootDir->save2DB(f);
 
-	fclose(f);
+	f.close();
 }
 
 static bool LoadDB(void){
