@@ -89,7 +89,7 @@ static bool LoadDB(void){
 			// Get the root directory
 		std::getline( file, l);
 		if( l != root ){
-			fprintf(stderr, "*F* DB's root directory doesn't match : does the configuration changed\n");
+			std::cerr << "*F* DB's root directory doesn't match : does the configuration changed\n";
 			exit(EXIT_FAILURE);
 		}
 
@@ -148,27 +148,25 @@ int main(int ac, char **av){
 
 	while((c = getopt(ac, av, "hvdf:m:r:")) != EOF) switch(c){
 	case 'h':
-		fprintf(stderr, "%s (%.04f)\n"
-			"Integrity archiving solution\n"
-			"%s\n"
-			"Known options are :\n"
+		std::cerr << basename(av[0]) 
+			<< " (" << std::setprecision(5) << VERSION << ")\n"
+			<< "Integrity archiving solution\n" << COPYRIGHT << std::endl
+			<< "Known options are :\n"
 			"\t-h : this online help\n"
 			"\t-f<file> : read <file> for configuration\n"
-			"\t\t(default is '%s')\n"
+			"\t\t(default is '" << DEFAULT_CONFIGURATION_FILE << "')\n"
 			"\t-m<MODE> : set mode among\n"
 			"\t\tVERIFY : check for files changes\n"
 			"\t\tREBUILD : rebuild the database (set with fresh values)\n"
 			"\t-r<dir> : restrict action to <dir> directory (allow to process only a subset of a tree)\n"
 			"\t-v : enable verbose messages\n"
-			"\t-d : enable debug messages\n",
-			basename(av[0]), VERSION, COPYRIGHT, DEFAULT_CONFIGURATION_FILE
-		);
+			"\t-d : enable debug messages\n";
 		exit(EXIT_FAILURE);
 		break;
 	case 'd':
 		debug = true;
 	case 'v':
-		printf("Mer de Glace (%s) v%.04f\n", basename(av[0]), VERSION);
+		std::cout << "Mer de Glace (" << basename(av[0]) << ") v"<< std::setprecision(5) << VERSION << std::endl;
 		verbose = true;
 		break;
 	case 'f':
@@ -183,12 +181,12 @@ int main(int ac, char **av){
 		else if(!strcasecmp(optarg, "REBUILD"))
 			mode = _Mode::REBUILD;
 		else {
-			fprintf(stderr, "*F* Unknown mode : '%s'\n", optarg);
+			std::cerr << "*F* Unknown mode : '" << optarg << ")\n";
 			exit(EXIT_FAILURE);
 		}
 		break;
 	default:
-		fprintf(stderr, "Unknown option '%c'\n%s -h\n\tfor some help\n", c, av[0]);
+		std::cerr << "Unknown option\n" << av[0] << " -h\n\tfor some help\n";
 		exit(EXIT_FAILURE);
 	}
 
@@ -219,7 +217,7 @@ int main(int ac, char **av){
 		}
 	} catch(const std::ifstream::failure &e){
 		if(!file.eof()){
-			fprintf(stderr, "*F* %s : %s\n", conf_file, strerror(errno) );
+			std::cerr << "*F* "<< conf_file << " : " << strerror(errno) << std::endl;
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -230,44 +228,44 @@ int main(int ac, char **av){
 		 * Sanity checks
 		 ***/
 	if(!root){
-		fprintf(stderr, "*F* Root directory not defined\n");
+		std::cerr << "*F* Root directory not defined\n";
 		exit(EXIT_FAILURE);
 	}
 
 	if(!dbfile){
-		fprintf(stderr, "*F* Database file not defined\n");
+		std::cerr << "*F* Database file not defined\n";
 		exit(EXIT_FAILURE);
 	}
 
 	if(!report){
-		fprintf(stderr, "*F* No report file defined\n");
+		std::cerr << "*F* No report file defined\n";
 		exit(EXIT_FAILURE);
 	}
 
 	if(verbose){
-		printf("\troot directory to scan : '%s'\n", root);
-		printf("\tDatabase : '%s'\n", dbfile);
-		printf("\tResulting report : '%s'\n", report);
+		std::cout << "\troot directory to scan : '" << root << "'\n";
+		std::cout << "\tDatabase : '" << dbfile << "'\n";
+		std::cout << "\tResulting report : '" << report << "'\n";
 		switch(mode){
 		case _Mode::VERIFY :
-			puts("\tVERIFY mode : checking for files differences");
+			std::cout << "\tVERIFY mode : checking for files differences\n";
 			break;
 		case _Mode::REBUILD :
-			puts("\tREBUILD mode : Rebuild the database with the actual status");
+			std::cout << "\tREBUILD mode : Rebuild the database with the actual status\n";
 			break;
 		}
 	}
 	if(!std::filesystem::exists(root)){
-		fputs("*F* Root directory doesn't exists\n", stderr);
+		std::cerr << "*F* Root directory doesn't exists\n";
 		exit(EXIT_FAILURE);
 	}
 
 	if(restrict){
 		if(!Directory::partOf(root,restrict)){
-			fputs("*F* Restrict is not part of the root path\n", stderr);
+			std::cerr << "*F* Restrict is not part of the root path\n";
 			exit(EXIT_FAILURE);
 		} else if(!std::filesystem::exists(restrict)){
-			fputs("*F* Restrict doesn't exists\n", stderr);
+			std::cerr << "*F* Restrict doesn't exists\n";
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -295,12 +293,12 @@ SaveDB();
 		SaveDB();			// New content need to be saved
 	}
 
-/* avoid noise during development
+
 	if(debug){
-		puts("\n*I* Current in memory database");
+		std::cout << "\n*I* Current in memory database\n";
 		rootDir->dump();
 	}
-*/
+
 
 	exit(EXIT_SUCCESS);
 }

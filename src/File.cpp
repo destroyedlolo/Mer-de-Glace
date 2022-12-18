@@ -9,22 +9,22 @@
 #include "Config.h"
 
 #include <openssl/evp.h>
+
 #include <fstream>
+#include <iostream>
 
 #include <cstring>
 
 /* Calculate md5
- * based on https://blog.magnatox.com/posts/c_hashing_files_with_openssl/
+ * inspired by https://blog.magnatox.com/posts/c_hashing_files_with_openssl/
  */
 std::string File::md5( std::string &res ){
-	if(debug){
-		printf("*D* md5(%s)\n", this->c_str());
-		fflush(stdout);
-	}
+	if(debug)
+		std::cout << "*D* md5(" << *this << ")\n" << std::flush;
 
 	FILE *fp = fopen(this->c_str(), "rb");
 	if(!fp){
-		fprintf(stderr, "*F* '%s' : %s \n", this->c_str(), strerror(errno));
+		std::cerr << "*F* '"<< *this << "' : " << strerror(errno) << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -58,7 +58,9 @@ void File::dump( int ident ){
 	for(int i=0; i<ident; i++)
 		putchar('\t');
 
-	printf("File '%s' : hist:%s act:%s\n", this->getName().c_str(), this->getHistorical().c_str(), this->getActual().c_str());
+	std::cout << "File '" << this->getName()
+		<< "' : hist:" << this->getHistorical()
+		<< " act:" << this->getActual() << std::endl;
 }
 
 void File::save2DB(FILE *f){

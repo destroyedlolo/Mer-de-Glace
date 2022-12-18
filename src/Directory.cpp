@@ -42,16 +42,17 @@ Directory *Directory::findDir(std::string &name, bool recursive){
 		std::filesystem::path path(name);
 
 		if(debug)
-			printf("*d* cur: '%s'\n      -> '%s'\n", this->c_str(), path.c_str());
+			std::cout << "*d* cur: '" << *this << "'\n"
+				"      -> '" << path << "'\n";
 
 		if(name == *this){	// We found the target
 			if(debug)
-				puts("*d* found");
+				std::cout << "*d* found\n";
 
 			return this;
 		} else if(path.parent_path() == *this){	// We found the parent directory but the target doesn't exist
 			if(debug)
-				puts("*d* Create new directory");
+				std::cout << "*d* Create new directory\n";
 
 			Directory *n = new Directory(name.c_str());
 			assert(n);
@@ -61,7 +62,7 @@ Directory *Directory::findDir(std::string &name, bool recursive){
 		} else {	// recurse in subdir
 			if(this->partOf(*this, name)){
 				if(debug)
-					puts("*d* going deeper");
+					std::cout << "*d* going deeper\n";
 
 				for(auto sub : this->subdirs){
 					Directory *res = sub->findDir(name, true);
@@ -69,7 +70,7 @@ Directory *Directory::findDir(std::string &name, bool recursive){
 						return res;
 				}
 			} else {
-				puts("*F* Data outside any directory");
+				std::cerr << "*F* Data outside any directory\n";
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -107,9 +108,9 @@ bool Directory::addFile(File *f){
 
 void Directory::dump(int ident){
 	for(int i=0; i<ident; i++)
-		putchar('\t');
+		std::cout << '\t';
 
-	printf("Directory '%s' (%s)\n", this->getName().c_str(), this->c_str());
+	std::cout << "Directory '" << this->getName() << "' ("<< *this <<")\n";
 
 	for(auto sub : this->subfiles)
 		sub->dump(ident + 1);
