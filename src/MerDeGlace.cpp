@@ -257,11 +257,20 @@ int main(int ac, char **av){
 			break;
 		}
 	}
+	if(!std::filesystem::exists(root)){
+		fputs("*F* Root directory doesn't exists\n", stderr);
+		exit(EXIT_FAILURE);
+	}
 
-if(restrict){
-	printf("=> %d\n", Directory::partOf(root,restrict));
-	exit(EXIT_SUCCESS);
-}
+	if(restrict){
+		if(!Directory::partOf(root,restrict)){
+			fputs("*F* Restrict is not part of the root path\n", stderr);
+			exit(EXIT_FAILURE);
+		} else if(!std::filesystem::exists(restrict)){
+			fputs("*F* Restrict doesn't exists\n", stderr);
+			exit(EXIT_FAILURE);
+		}
+	}
 
 		/***
 		 * Feed in memory data
@@ -286,7 +295,7 @@ SaveDB();
 		SaveDB();			// New content need to be saved
 	}
 
-/*
+/* avoid noise during development
 	if(debug){
 		puts("\n*I* Current in memory database");
 		rootDir->dump();

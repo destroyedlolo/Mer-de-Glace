@@ -15,5 +15,5 @@
  *	04/12/2022 - LF - Start of development
  */
 
-#define VERSION 0.0200
+#define VERSION 0.0201
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022"
