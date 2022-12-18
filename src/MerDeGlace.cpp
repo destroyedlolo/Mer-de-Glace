@@ -295,11 +295,12 @@ SaveDB();
 	}
 
 
+#if 0	/* to reduce noise during development */
 	if(debug){
 		std::cout << "\n*I* Current in memory database\n";
 		rootDir->dump();
 	}
-
+#endif
 
 	exit(EXIT_SUCCESS);
 }

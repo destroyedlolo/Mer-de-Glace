@@ -69,10 +69,8 @@ Directory *Directory::findDir(std::string &name, bool recursive){
 					if(res)
 						return res;
 				}
-			} else {
-				std::cerr << "*F* Data outside any directory\n";
-				exit(EXIT_FAILURE);
-			}
+			} else
+				return NULL;
 		}
 	} else
 		for(auto sub : this->subdirs)
