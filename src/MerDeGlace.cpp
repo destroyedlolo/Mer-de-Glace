@@ -45,6 +45,7 @@
 bool verbose = false;
 bool debug = false;
 const char *root = NULL;
+const char *restrict = NULL;
 const char *dbfile = NULL;
 const char *report = NULL;
 enum _Mode mode = _Mode::VERIFY;
@@ -145,7 +146,7 @@ int main(int ac, char **av){
 	const char *conf_file = DEFAULT_CONFIGURATION_FILE;
 	int c;
 
-	while((c = getopt(ac, av, "hvdf:m:")) != EOF) switch(c){
+	while((c = getopt(ac, av, "hvdf:m:r:")) != EOF) switch(c){
 	case 'h':
 		fprintf(stderr, "%s (%.04f)\n"
 			"Integrity archiving solution\n"
@@ -157,6 +158,7 @@ int main(int ac, char **av){
 			"\t-m<MODE> : set mode among\n"
 			"\t\tVERIFY : check for files changes\n"
 			"\t\tREBUILD : rebuild the database (set with fresh values)\n"
+			"\t-r<dir> : restrict action to <dir> directory (allow to process only a subset of a tree)\n"
 			"\t-v : enable verbose messages\n"
 			"\t-d : enable debug messages\n",
 			basename(av[0]), VERSION, COPYRIGHT, DEFAULT_CONFIGURATION_FILE
@@ -171,6 +173,9 @@ int main(int ac, char **av){
 		break;
 	case 'f':
 		conf_file = optarg;
+		break;
+	case 'r':
+		restrict = optarg;
 		break;
 	case 'm':
 		if(!strcasecmp(optarg, "VERIFY"))
@@ -252,6 +257,11 @@ int main(int ac, char **av){
 			break;
 		}
 	}
+
+if(restrict){
+	printf("=> %d\n", Directory::partOf(root,restrict));
+	exit(EXIT_SUCCESS);
+}
 
 		/***
 		 * Feed in memory data

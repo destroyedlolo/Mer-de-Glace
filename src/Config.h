@@ -21,6 +21,7 @@
 extern bool verbose;
 extern bool debug;
 extern const char *root;
+extern const char *restrict;
 extern const char *dbfile;
 extern const char *report;
 

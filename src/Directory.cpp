@@ -59,7 +59,7 @@ Directory *Directory::findDir(std::string &name, bool recursive){
 
 			return n;
 		} else {	// recurse in subdir
-			if(this->string().compare(0, this->string().length(), name)){
+			if(this->partOf(*this, name)){
 				if(debug)
 					puts("*d* going deeper");
 
@@ -126,4 +126,19 @@ void Directory::save2DB(FILE *f){
 
 	for(auto sub : this->subdirs)
 		sub->save2DB(f);
+}
+
+bool Directory::partOf(const std::filesystem::path root, const std::filesystem::path sub){
+	auto is = sub.begin();
+	for(auto ir = root.begin(); ir != root.end(); ir++){
+		if(is == sub.end())	// sub shorter than root
+			return false;
+
+		if(*is != *ir)	// Different
+			return false;
+
+		is++;
+	}
+
+	return true;
 }

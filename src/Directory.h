@@ -40,6 +40,9 @@ public :
 		// Display content
 	virtual void dump( int ident=0 );
 	virtual void save2DB(FILE *);
+
+		// Check if a path belong to another
+	static bool partOf(const std::filesystem::path root, const std::filesystem::path sub);
 };
 
 #endif
