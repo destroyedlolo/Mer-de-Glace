@@ -17,7 +17,19 @@
 
 void Directory::scan(void){
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
+		int res = 0;	// by default, let scan !
+
+		if(restrict){
+			if((res = Directory::partOf(restrict,entry)) == -2){
+				if(debug)
+					std::cout << "*d* skip "<< entry << std::endl;
+				continue;
+			}
+		}
+
 		if(entry.is_regular_file()){
+			if(res < 0)	// Not inside restrict
+				continue;
 			File *n = new File(entry);
 			assert(n);
 			this->subfiles.push_back(n);
@@ -60,7 +72,7 @@ Directory *Directory::findDir(std::string &name, bool recursive){
 
 			return n;
 		} else {	// recurse in subdir
-			if(this->partOf(*this, name)){
+			if(this->partOf(*this, name) > 0){
 				if(debug)
 					std::cout << "*d* going deeper\n";
 
@@ -127,17 +139,17 @@ void Directory::save2DB(std::ofstream &f){
 		sub->save2DB(f);
 }
 
-bool Directory::partOf(const std::filesystem::path root, const std::filesystem::path sub){
+int Directory::partOf(const std::filesystem::path root, const std::filesystem::path sub){
 	auto is = sub.begin();
 	for(auto ir = root.begin(); ir != root.end(); ir++){
 		if(is == sub.end())	// sub shorter than root
-			return false;
+			return -1;
 
 		if(*is != *ir)	// Different
-			return false;
+			return -2;
 
 		is++;
 	}
 
-	return true;
+	return (is == sub.end()) ? 0 : 1;
 }

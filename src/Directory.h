@@ -42,7 +42,13 @@ public :
 	virtual void save2DB(std::ofstream &);
 
 		// Check if a path belong to another
-	static bool partOf(const std::filesystem::path root, const std::filesystem::path sub);
+		//
+		// root = a/b/c
+		// -2 : sub is outside root ( "a/b/d" )
+		// -1 : sub is upper root ( "a/b" )
+		// 0 : sub is == root ( "a/b/c" )
+		// +1 : sub is inside root ( "a/b/c/d" )
+	static int partOf(const std::filesystem::path root, const std::filesystem::path sub);
 };
 
 #endif

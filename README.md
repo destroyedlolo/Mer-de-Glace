@@ -10,7 +10,8 @@ CLI oriented simple and lightweight archiving solution
 This is the list of identified tasks/behaviors. 
 - *data management*
    - [X] Recursively scan a directory with MD5 checksum (v0.1)
-   - [ ] Save / load state	(v0.2)
+   - [X] Save / load state	(v0.2)
+   - [X] Restrict scanning to a sub directory (v0.3)
    - [ ] re-scan and issue a report
    - [ ] Accept a discrepancy
 

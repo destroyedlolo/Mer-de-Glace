@@ -262,7 +262,7 @@ int main(int ac, char **av){
 	}
 
 	if(restrict){
-		if(!Directory::partOf(root,restrict)){
+		if(Directory::partOf(root,restrict) < 0){
 			std::cerr << "*F* Restrict is not part of the root path\n";
 			exit(EXIT_FAILURE);
 		} else if(!std::filesystem::exists(restrict)){
