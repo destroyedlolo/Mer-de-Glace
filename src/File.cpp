@@ -54,6 +54,16 @@ std::string File::md5( std::string &res ){
 	return res;
 }
 
+bool File::setActual(void){
+	this->md5(this->actual_md5);
+
+	if(this->actual_md5 == this->historical_md5){	// not changed
+		this->actual_md5.clear();
+		return(false);
+	} else
+		return(true);
+}
+
 void File::dump(int ident){
 	for(int i=0; i<ident; i++)
 		putchar('\t');

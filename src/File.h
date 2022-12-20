@@ -38,6 +38,11 @@ public :
 
 		// Compute it's md5
 	std::string md5( std::string & );
+
+		// Set actual md5 (if changed)
+		// -> true : md5 changed
+	bool setActual(void);
+
 	std::string getHistorical( void ){ return this->historical_md5; }
 	std::string getActual( void ){ return this->actual_md5; }
 

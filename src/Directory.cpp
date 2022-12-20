@@ -37,6 +37,10 @@ void Directory::scan(void){
 					std::cout << "*d* Existing file : " << std::filesystem::path(entry).filename() << std::endl;
 
 				n->touch();
+				if(n->setActual()){
+					if(debug)
+						std::cout << "*d* File changed !\n";
+				}
 			} else {
 				if(debug)
 					std::cout << "*d* New file : " << std::filesystem::path(entry).filename() << std::endl;
