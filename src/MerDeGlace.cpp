@@ -147,7 +147,7 @@ int main(int ac, char **av){
 	const char *conf_file = DEFAULT_CONFIGURATION_FILE;
 	int c;
 
-	while((c = getopt(ac, av, "hvdf:m:r:")) != EOF) switch(c){
+	while((c = getopt(ac, av, "hvdf:r:")) != EOF) switch(c){
 	case 'h':
 		std::cerr << basename(av[0]) 
 			<< " (" << std::setprecision(5) << VERSION << ")\n"
