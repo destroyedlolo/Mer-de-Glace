@@ -35,8 +35,12 @@ void Directory::scan(void){
 			if((n = this->findFile(std::filesystem::path(entry).filename()))){
 				if(debug)
 					std::cout << "*d* Existing file : " << std::filesystem::path(entry).filename() << std::endl;
+
 				n->touch();
 			} else {
+				if(debug)
+					std::cout << "*d* New file : " << std::filesystem::path(entry).filename() << std::endl;
+
 				n = new File(entry);
 				assert(n);
 				this->subfiles.push_back(n);
@@ -46,9 +50,13 @@ void Directory::scan(void){
 			if((n = this->findDir(std::filesystem::path(entry).filename()))){
 				if(debug)
 					std::cout << "*d* Existing directory : " << std::filesystem::path(entry).filename() << std::endl;
+
 				n->touch();
 				n->scan();
 			} else {
+				if(debug)
+					std::cout << "*d* New directory : " << std::filesystem::path(entry).filename() << std::endl;
+
 				n = new Directory(entry);
 				assert(n);
 				n->scan();
