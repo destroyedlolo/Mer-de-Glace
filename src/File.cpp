@@ -75,5 +75,4 @@ void File::dump(int ident){
 
 void File::save2DB(std::ofstream &f){
 	f << '\t' << this->getName() << '\t' << this->getHistorical() << std::endl;
-//	fprintf(f, "\t%s\t%s\n", this->getName().c_str(),this->getHistorical().c_str());
 }

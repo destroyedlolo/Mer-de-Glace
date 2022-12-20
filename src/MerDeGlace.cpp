@@ -111,7 +111,7 @@ bool LoadDB(void){
 				std::string fname = l.substr(1,sep-1);
 				std::string md5 = l.substr(sep+1);
 
-				File *n = new File(fname, md5);
+				File *n = new File(*current / fname, md5);
 				if(!(current->addFile(n))){
 					std::cerr << "*F* duplicate File entry '" << fname << "'\n";
 					exit(EXIT_FAILURE);
@@ -268,7 +268,7 @@ SaveDB();
 	rootDir->scan();
 	SaveDB();			// New content need to be saved
 
-#if 0	/* to reduce noise during development */
+#if 1	/* to reduce noise during development */
 	if(debug){
 		std::cout << "\n*I* Current in memory database\n";
 		rootDir->dump();
