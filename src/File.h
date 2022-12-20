@@ -23,8 +23,9 @@ public :
 		this->md5(this->historical_md5);
 	}
 
-		// initialisation from existing data
+		// initialisation from existing data (loading from backup)
 	File( std::string &aname, std::string &amd5 ) : Item(aname, Item::_kind::IT_FILE), historical_md5(amd5){
+		this->loading();
 	}
 
 #if 0

@@ -25,10 +25,4 @@ extern const char *restrict;
 extern const char *dbfile;
 extern const char *report;
 
-enum _Mode {
-	VERIFY = 0,	// look for file changes (default)
-	REBUILD		// Rebuild the database
-};
-
-extern enum _Mode mode;
 #endif

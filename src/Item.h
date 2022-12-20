@@ -23,8 +23,12 @@ private :
 	std::string name;		// Name of the directory
 	enum _kind kind;	// kind ot this item
 
+protected :
+	bool loaded;	// from state backup (otherwise, it has been created during this scan
+	bool notfound;	// not found during last scan
+
 public :
-	Item(const std::filesystem::directory_entry &p, _kind akind) : path(p), kind(akind) {
+	Item(const std::filesystem::directory_entry &p, _kind akind) : path(p), kind(akind), loaded(false), notfound(false) {
 		this->name = this->filename();
 	}
 
@@ -42,6 +46,17 @@ public :
 
 	_kind getKind(void){
 		return this->kind;
+	}
+
+		// This data is create by loading a backed state
+	void loading(void){
+		this->loaded = true;
+		this->notfound = true;
+	}
+
+		// This data has been found during a scan
+	void touch(void){
+		this->notfound = false;
 	}
 
 	virtual void dump( int ident = 0 ) = 0;

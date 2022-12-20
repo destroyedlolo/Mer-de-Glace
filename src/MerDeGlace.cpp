@@ -48,7 +48,6 @@ const char *root = NULL;
 const char *restrict = NULL;
 const char *dbfile = NULL;
 const char *report = NULL;
-enum _Mode mode = _Mode::VERIFY;
 
 Directory *rootDir = NULL;
 
@@ -65,7 +64,7 @@ static void SaveDB(void){
 	f.close();
 }
 
-static bool LoadDB(void){
+bool LoadDB(void){
 /*
  * check if the database can be loaded
  * 	no :
@@ -79,7 +78,7 @@ static bool LoadDB(void){
 
 	if(!file){
 		if(verbose)
-			puts("*E* Can't open the database, creating a new one");
+			std::cerr << "*E* Can't open the database, creating a new one\n";
 		return false;
 	}
 
@@ -96,16 +95,17 @@ static bool LoadDB(void){
 
 		rootDir = new Directory(root);	// Create in memory database
 		assert(rootDir);
+		rootDir->loading();
 
 		if(debug)
-			printf("*D* --> root : %s\n", l.c_str());
+			std::cout << "*D* --> root : " << l << std::endl;
 
 		Directory *current = rootDir;
 		while(std::getline( file, l)){	// Reading the database from disk
 			if(l[0] == '\t'){	// starting with a tab, it's a file
 				size_t sep = l.find('\t', 1);
 				if(sep == std::string::npos){
-					fputs("*F* Malformed database file (missing tab separator)\n", stderr);
+					std::cerr << "*F* Malformed database file (missing tab separator)\n";
 					exit(EXIT_FAILURE);
 				}
 				std::string fname = l.substr(1,sep-1);
@@ -113,7 +113,7 @@ static bool LoadDB(void){
 
 				File *n = new File(fname, md5);
 				if(!(current->addFile(n))){
-					fprintf(stderr,"*F* duplicate File entry '%s'\n", fname.c_str());
+					std::cerr << "*F* duplicate File entry '" << fname << "'\n";
 					exit(EXIT_FAILURE);
 				}
 			} else {	// a directory
@@ -124,7 +124,7 @@ static bool LoadDB(void){
 				if(res)
 					current = res;
 				else {
-					puts("*F* no directory found");
+					std::cerr << "*F* no directory found\n";
 					exit(EXIT_FAILURE);
 				}
 			}
@@ -132,13 +132,13 @@ static bool LoadDB(void){
 
 	} catch(const std::ifstream::failure &e){
 		if(!file.eof()){
-			fprintf(stderr, "*F* %s : %s", dbfile, strerror(errno) );
+			std::cerr << "*F* " << dbfile << " : " << strerror(errno) << std::endl;
 			exit(EXIT_FAILURE);
 		}
 	}
 
 	if(verbose)
-		puts("*I* Database reloaded");
+		std::cout << "*I* Database reloaded\n";
 
 	return true;
 }
@@ -156,9 +156,6 @@ int main(int ac, char **av){
 			"\t-h : this online help\n"
 			"\t-f<file> : read <file> for configuration\n"
 			"\t\t(default is '" << DEFAULT_CONFIGURATION_FILE << "')\n"
-			"\t-m<MODE> : set mode among\n"
-			"\t\tVERIFY : check for files changes\n"
-			"\t\tREBUILD : rebuild the database (set with fresh values)\n"
 			"\t-r<dir> : restrict action to <dir> directory (allow to process only a subset of a tree)\n"
 			"\t-v : enable verbose messages\n"
 			"\t-d : enable debug messages\n";
@@ -175,16 +172,6 @@ int main(int ac, char **av){
 		break;
 	case 'r':
 		restrict = optarg;
-		break;
-	case 'm':
-		if(!strcasecmp(optarg, "VERIFY"))
-			mode = _Mode::VERIFY;
-		else if(!strcasecmp(optarg, "REBUILD"))
-			mode = _Mode::REBUILD;
-		else {
-			std::cerr << "*F* Unknown mode : '" << optarg << ")\n";
-			exit(EXIT_FAILURE);
-		}
 		break;
 	default:
 		std::cerr << "Unknown option\n" << av[0] << " -h\n\tfor some help\n";
@@ -247,14 +234,6 @@ int main(int ac, char **av){
 		std::cout << "\troot directory to scan : '" << root << "'\n";
 		std::cout << "\tDatabase : '" << dbfile << "'\n";
 		std::cout << "\tResulting report : '" << report << "'\n";
-		switch(mode){
-		case _Mode::VERIFY :
-			std::cout << "\tVERIFY mode : checking for files differences\n";
-			break;
-		case _Mode::REBUILD :
-			std::cout << "\tREBUILD mode : Rebuild the database with the actual status\n";
-			break;
-		}
 	}
 	if(!std::filesystem::exists(root)){
 		std::cerr << "*F* Root directory doesn't exists\n";
@@ -274,26 +253,20 @@ int main(int ac, char **av){
 		/***
 		 * Feed in memory data
 		 ***/
-
-	if(mode != _Mode::REBUILD){
-		LoadDB();
+	LoadDB();
 
 #if 0	/* debug only to check reloaded state */
 dbfile = "/tmp/reloaded.mdg";
 SaveDB();
 #endif
-	}
 
-	if(!rootDir){	// The database need to be rebuilt
-		mode = _Mode::REBUILD;
-
+	if(!rootDir){	// Fresh data
 		rootDir = new Directory(root);
 		assert(rootDir);
-
-		rootDir->scan();
-		SaveDB();			// New content need to be saved
 	}
 
+	rootDir->scan();
+	SaveDB();			// New content need to be saved
 
 #if 0	/* to reduce noise during development */
 	if(debug){

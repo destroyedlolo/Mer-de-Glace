@@ -30,26 +30,43 @@ void Directory::scan(void){
 		if(entry.is_regular_file()){
 			if(res < 0)	// Not inside restrict
 				continue;
-			File *n = new File(entry);
-			assert(n);
-			this->subfiles.push_back(n);
+
+			File *n;
+			if((n = this->findFile(std::filesystem::path(entry).filename()))){
+				if(debug)
+					std::cout << "*d* Existing file : " << std::filesystem::path(entry).filename() << std::endl;
+				n->touch();
+			} else {
+				n = new File(entry);
+				assert(n);
+				this->subfiles.push_back(n);
+			}
 		} else if(entry.is_directory()){
-			Directory *n = new Directory(entry);
-			assert(n);
-			n->scan();
-			this->subdirs.push_back(n);
+			Directory *n;
+			if((n = this->findDir(std::filesystem::path(entry).filename()))){
+				if(debug)
+					std::cout << "*d* Existing directory : " << std::filesystem::path(entry).filename() << std::endl;
+				n->touch();
+				n->scan();
+			} else {
+				n = new Directory(entry);
+				assert(n);
+				n->scan();
+				this->subdirs.push_back(n);
+			}
 		}
 		else	// Ignoring all "special" files
 			continue;
 	}
 }
 
-/* -> name, recursive : if recursive is set, name = full path
+/* -> recursive : we can recursively create intermediate directories (we are loading)
+ * -> name : if recursive is set, name = full path
  * otherwise, we are looking only on the Directory and name = filename / last dir
  * <- parent stores parent directory
  * -> up : upper (parent) directory
  */
-Directory *Directory::findDir(std::string &name, bool recursive){
+Directory *Directory::findDir(std::string name, bool recursive){
 	if(recursive){
 		std::filesystem::path path(name);
 
@@ -68,6 +85,7 @@ Directory *Directory::findDir(std::string &name, bool recursive){
 
 			Directory *n = new Directory(name.c_str());
 			assert(n);
+			n->loading();
 			this->addDir(n);
 
 			return n;
@@ -92,7 +110,7 @@ Directory *Directory::findDir(std::string &name, bool recursive){
 	return NULL;
 }
 
-File *Directory::findFile(std::string &name){
+File *Directory::findFile(std::string name){
 	for(auto sub : this->subfiles)
 		if(sub->getName() == name)
 			return sub;
