@@ -159,6 +159,19 @@ void Directory::dump(int ident){
 		sub->dump(ident + 1);
 }
 
+void Directory::Report(std::ostream &rep){
+	if(this->isCreated())
+		rep << "[Created]\t" << *this << std::endl;
+	if(this->isDeleted())
+		rep << "[Delete]\t" << *this << std::endl;
+
+	for(auto sub : this->subfiles)
+		sub->Report(rep);
+
+	for(auto sub : this->subdirs)
+		sub->Report(rep);
+}
+
 void Directory::save2DB(std::ofstream &f){
 	f << this->string() << std::endl;
 

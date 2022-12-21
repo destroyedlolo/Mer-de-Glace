@@ -44,6 +44,14 @@ public :
 		return this->name;
 	}
 
+	bool isCreated(void){
+		return !this->loaded;
+	}
+
+	bool isDeleted(void){
+		return !this->notfound;
+	}
+
 	_kind getKind(void){
 		return this->kind;
 	}
@@ -60,6 +68,7 @@ public :
 	}
 
 	virtual void dump( int ident = 0 ) = 0;
+	virtual void Report(std::ostream &) = 0;
 	virtual void save2DB(std::ofstream &) = 0;
 };
 

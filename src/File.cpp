@@ -64,6 +64,13 @@ bool File::setActual(void){
 		return(true);
 }
 
+void File::Report(std::ostream &rep){
+	if(this->isCreated())
+		rep << "[Created]\t" << *this << std::endl;
+	if(this->isDeleted())
+		rep << "[Delete]\t" << *this << std::endl;
+}
+
 void File::dump(int ident){
 	for(int i=0; i<ident; i++)
 		putchar('\t');

@@ -47,6 +47,7 @@ public :
 	std::string getActual( void ){ return this->actual_md5; }
 
 		// Display content
+	virtual void Report(std::ostream &);
 	virtual void dump(int ident=0);
 	virtual void save2DB(std::ofstream &);
 };

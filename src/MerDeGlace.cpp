@@ -19,7 +19,6 @@
 #include <iostream>
 #include <fstream>
 
-#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <cassert>
@@ -33,6 +32,7 @@
 #include "Config.h"
 #include "Directory.h"
 #include "File.h"
+// #include "SocketInterface.h"
 
 #define DEFAULT_CONFIGURATION_FILE "/usr/local/etc/MerDeGlace.conf"
 
@@ -66,7 +66,7 @@ static void SaveDB(void){
 
 bool LoadDB(void){
 /*
- * check if the database can be loaded
+ * Try to load a backup
  * 	no :
  * 		- continue w/o processing
  * 	yes : 
@@ -253,27 +253,33 @@ int main(int ac, char **av){
 		/***
 		 * Feed in memory data
 		 ***/
-	LoadDB();
+	bool loaded = LoadDB();
 
 #if 0	/* debug only to check reloaded state */
 dbfile = "/tmp/reloaded.mdg";
 SaveDB();
 #endif
 
-	if(!rootDir){	// Fresh data
+	if(!loaded){	// Fresh data
 		rootDir = new Directory(root);
 		assert(rootDir);
 	}
 
 	rootDir->scan();
-	SaveDB();			// New content need to be saved
 
-#if 1	/* to reduce noise during development */
+#if 0	/* to reduce noise during development */
 	if(debug){
 		std::cout << "\n*I* Current in memory database\n";
 		rootDir->dump();
 	}
 #endif
+
+	if(!loaded)
+		SaveDB();			// New content need to be saved
+	else {
+		std::cout << "*I* Discrepancies found \n";
+		rootDir->Report(std::cout);
+	}
 
 	exit(EXIT_SUCCESS);
 }

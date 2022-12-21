@@ -39,6 +39,7 @@ public :
 
 		// Display content
 	virtual void dump(int ident=0);
+	virtual void Report(std::ostream &);
 	virtual void save2DB(std::ofstream &);
 
 		// Check if a path belong to another

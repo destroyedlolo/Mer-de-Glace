@@ -13,7 +13,7 @@
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  *	04/12/2022 - LF - Start of development
- *	20/12/2022 - LF - v0.4 - re-scan and reports
+ *	20/12/2022 - LF - v0.4 
  */
 
 #define VERSION 0.0300
