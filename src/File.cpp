@@ -69,6 +69,9 @@ void File::Report(std::ostream &rep){
 		rep << "[Created]\t" << *this << std::endl;
 	if(this->isDeleted())
 		rep << "[Delete]\t" << *this << std::endl;
+
+	if(this->isChanged())
+		rep << "[Changed]\t" << *this << std::endl;
 }
 
 void File::dump(int ident){
@@ -77,7 +80,12 @@ void File::dump(int ident){
 
 	std::cout << "File '" << this->getName()
 		<< "' : hist:" << this->getHistorical()
-		<< " act:" << this->getActual() << std::endl;
+		<< " act:" << this->getActual() << " ";
+		if(this->isCreated())
+			std::cout << "crt ";
+		if(this->isDeleted())
+			std::cout << "Del";
+		std::cout << std::endl;
 }
 
 void File::save2DB(std::ofstream &f){

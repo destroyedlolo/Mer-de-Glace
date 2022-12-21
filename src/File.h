@@ -43,6 +43,11 @@ public :
 		// -> true : md5 changed
 	bool setActual(void);
 
+		// True if the file has changed
+	bool isChanged(void){
+		return(!this->actual_md5.empty());
+	}
+
 	std::string getHistorical( void ){ return this->historical_md5; }
 	std::string getActual( void ){ return this->actual_md5; }
 

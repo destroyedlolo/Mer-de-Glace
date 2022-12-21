@@ -16,6 +16,8 @@
 #include <cassert>
 
 void Directory::scan(void){
+	this->touch();
+
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		int res = 0;	// by default, let scan !
 
@@ -55,7 +57,6 @@ void Directory::scan(void){
 				if(debug)
 					std::cout << "*d* Existing directory : " << std::filesystem::path(entry).filename() << std::endl;
 
-				n->touch();
 				n->scan();
 			} else {
 				if(debug)
@@ -150,7 +151,12 @@ void Directory::dump(int ident){
 	for(int i=0; i<ident; i++)
 		std::cout << '\t';
 
-	std::cout << "Directory '" << this->getName() << "' ("<< *this <<")\n";
+	std::cout << "Directory '" << this->getName() << "' ("<< *this <<") ";
+	if(this->isCreated())
+		std::cout << "crt ";
+	if(this->isDeleted())
+		std::cout << "Del";
+	std::cout << std::endl;
 
 	for(auto sub : this->subfiles)
 		sub->dump(ident + 1);

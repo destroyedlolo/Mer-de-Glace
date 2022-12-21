@@ -49,7 +49,7 @@ public :
 	}
 
 	bool isDeleted(void){
-		return !this->notfound;
+		return this->notfound;
 	}
 
 	_kind getKind(void){
