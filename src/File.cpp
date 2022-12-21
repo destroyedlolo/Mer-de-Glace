@@ -47,8 +47,9 @@ std::string File::md5( std::string &res ){
 	
 	std::stringstream md5string;
 	md5string << std::hex << std::uppercase << std::setfill('0');
-	for (const auto &byte: result)
-    	md5string << std::setw(2) << (int)byte;
+
+	for(unsigned int i=0; i<md_len; i++)
+    	md5string << std::setw(2) << (int)result[i];
 
 	res = md5string.str();
 	return res;
