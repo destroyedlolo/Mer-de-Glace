@@ -18,7 +18,7 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-#include "MayBeEmptyString.h"
+#include <string>
 
 /* Removes the last character if it's an "\n" */
 extern char *removeLF(char *);
@@ -29,13 +29,7 @@ extern char *removeLF(char *);
  * 	- NULL if the keyword is not found
  */
 extern char *striKWcmp( char *s, const char *kw );
-extern MayBeEmptyString striKWcmp( std::string s, const char *kw );
-extern MayBeEmptyString striKWcmp( std::string s, std::string &kw );
-
-/* Return the extention of a given file
- * -> filename
- * <- pointer to the last '.' or NULL if not found
- */
-extern const char *fileextention( const char *fch );
+extern std::string striKWcmp( std::string s, const char *kw );
+extern std::string striKWcmp( std::string s, std::string &kw );
 
 #endif

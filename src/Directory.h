@@ -11,6 +11,7 @@
 #include "Item.h"
 #include "File.h"
 
+#include <string>
 #include <list>
 
 class Directory : public Item {
@@ -20,7 +21,7 @@ class Directory : public Item {
 public :
 		// directory constructor
 	Directory(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IF_DIRECTORY){}
-	Directory(const char *aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
+	Directory(const std::string aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
 
 		// Look for existing object
 	Directory *findDir(std::string, bool recursive=false);

@@ -19,7 +19,7 @@
 #include <unistd.h>
 #include <poll.h>
 
-SocketInterface::SocketInterface(const char *name) : peer(-1), socketfile(name) {
+SocketInterface::SocketInterface(const std::string name) : peer(-1), socketfile(name) {
 	if((this->s = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC | SOCK_NONBLOCK, 0)) == -1){
 		perror("socket");
 		exit(EXIT_FAILURE);
@@ -27,7 +27,7 @@ SocketInterface::SocketInterface(const char *name) : peer(-1), socketfile(name) 
 
 	struct sockaddr_un local;
 	local.sun_family = AF_UNIX;
-	strcpy(local.sun_path, name);
+	strcpy(local.sun_path, name.c_str());
 	unlink(local.sun_path);	// remove potential existing file
 
 	int len = strlen(local.sun_path) + sizeof(local.sun_family);
@@ -46,7 +46,7 @@ SocketInterface::~SocketInterface(void){
 	if(this->s != -1)
 		close(this->s);
 
-	unlink(this->socketfile);
+	unlink(this->socketfile.c_str());
 }
 
 void SocketInterface::initPoll(struct pollfd *fds, int &act_sz, int max_sz){

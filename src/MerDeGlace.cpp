@@ -28,7 +28,6 @@
 #include <poll.h>
 
 #include "Version.h"
-#include "MayBeEmptyString.h"
 #include "Helpers.h"
 #include "Config.h"
 #include "Directory.h"
@@ -45,10 +44,10 @@
 
 bool verbose = false;
 bool debug = false;
-const char *root = NULL;
-const char *restrict = NULL;
-const char *dbfile = NULL;
-const char *rendezvous = NULL;
+std::string root;
+std::string restrict;
+std::string dbfile;
+std::string rendezvous;
 
 static Directory *rootDir = NULL;	// impersonation of the root directory
 
@@ -56,7 +55,7 @@ static void SaveDB(void){
 	std::ofstream f;
 	f.open(dbfile);
 	if(!f.is_open()){
-		perror(dbfile);
+		perror(dbfile.c_str());
 		exit(EXIT_FAILURE);
 	}
 
@@ -191,18 +190,19 @@ int main(int ac, char **av){
 
 		file.open(conf_file);
 		while( std::getline( file, l) ){
-			MayBeEmptyString arg;
+			std::string arg;
 
 			if( l[0]=='#' )
 				continue;
-			else if( !!(arg = striKWcmp( l, "rootDirectory=" ))){
+			else if( !(arg = striKWcmp( l, "rootDirectory=" )).empty() ){
 				if(arg.back() == '/')	// remove trailing '/'
-					arg = arg.substr(0, arg.size()-1);
-				assert(( root = strdup( arg.c_str() ) ));
-			} else if( !!(arg = striKWcmp( l, "DBFile=" )))
-				assert(( dbfile = strdup( arg.c_str() ) ));
-			else if( !!(arg = striKWcmp( l, "Socket=" )))
-				assert(( rendezvous = strdup( arg.c_str() ) ));
+					root = arg.substr(0, arg.size()-1);
+				else
+					root = arg;
+			} else if( !(arg = striKWcmp( l, "DBFile=" )).empty() )
+				dbfile = arg;
+			else if( !(arg = striKWcmp( l, "Socket=" )).empty() )
+				rendezvous = arg;
 		}
 	} catch(const std::ifstream::failure &e){
 		if(!file.eof()){
@@ -216,17 +216,17 @@ int main(int ac, char **av){
 		/***
 		 * Sanity checks
 		 ***/
-	if(!root){
+	if(root.empty()){
 		std::cerr << "*F* Root directory not defined\n";
 		exit(EXIT_FAILURE);
 	}
 
-	if(!dbfile){
+	if(dbfile.empty()){
 		std::cerr << "*F* Database file not defined\n";
 		exit(EXIT_FAILURE);
 	}
 
-	if(!rendezvous){
+	if(rendezvous.empty()){
 		std::cerr << "*F* No rendez-vous file defined\n";
 		exit(EXIT_FAILURE);
 	}
@@ -241,7 +241,7 @@ int main(int ac, char **av){
 		exit(EXIT_FAILURE);
 	}
 
-	if(restrict){
+	if(!restrict.empty()){
 		if(Directory::partOf(root,restrict) < 0){
 			std::cerr << "*F* Restrict is not part of the root path\n";
 			exit(EXIT_FAILURE);

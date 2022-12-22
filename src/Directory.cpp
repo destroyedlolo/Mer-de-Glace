@@ -21,7 +21,7 @@ void Directory::scan(void){
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		int res = 0;	// by default, let scan !
 
-		if(restrict){
+		if(!restrict.empty()){
 			if((res = Directory::partOf(restrict,entry)) == -2){
 				if(debug)
 					std::cout << "*d* skip "<< entry << std::endl;

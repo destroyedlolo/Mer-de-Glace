@@ -18,14 +18,16 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <string>
+
 	// verbosity
 extern bool verbose;
 extern bool debug;
 
 	// configuration
-extern const char *root;		// Root data directory
-extern const char *restrict;	// (opt) restrict operation to this sub directory
-extern const char *dbfile;		// state's backup
-extern const char *rendezvous;	// CLI communication socket
+extern std::string root;		// Root data directory
+extern std::string restrict;	// (opt) restrict operation to this sub directory
+extern std::string dbfile;		// state's backup
+extern std::string rendezvous;	// CLI communication socket
 
 #endif

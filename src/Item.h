@@ -32,7 +32,7 @@ public :
 		this->name = this->filename();
 	}
 
-	Item(std::string &aname, _kind akind) : path(aname), kind(akind) {
+	Item(const std::string &aname, _kind akind) : path(aname), kind(akind) {
 		this->name = this->filename();
 	}
 

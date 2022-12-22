@@ -8,16 +8,18 @@
 #ifndef SOCKETINTERFACE_H
 #define SOCKETINTERFACE_H
 
+#include <string>
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 
 class SocketInterface {
 	int s, peer;
-	const char *socketfile;
+	std::string socketfile;
 
 public:
-	SocketInterface(const char *);
+	SocketInterface(const std::string);
 	~SocketInterface(void);
 
 	int getSocket(void){
