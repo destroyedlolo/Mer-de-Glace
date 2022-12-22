@@ -25,6 +25,7 @@
 
 #include <unistd.h> 	// getopt()
 #include <libgen.h>		// basename()
+#include <poll.h>
 
 #include "Version.h"
 #include "MayBeEmptyString.h"
@@ -32,7 +33,7 @@
 #include "Config.h"
 #include "Directory.h"
 #include "File.h"
-// #include "SocketInterface.h"
+#include "SocketInterface.h"
 
 #define DEFAULT_CONFIGURATION_FILE "/usr/local/etc/MerDeGlace.conf"
 
@@ -255,11 +256,6 @@ int main(int ac, char **av){
 		 ***/
 	bool loaded = LoadDB();
 
-#if 0	/* debug only to check reloaded state */
-dbfile = "/tmp/reloaded.mdg";
-SaveDB();
-#endif
-
 	if(!loaded){	// Fresh data
 		rootDir = new Directory(root);
 		assert(rootDir);
@@ -274,11 +270,34 @@ SaveDB();
 	}
 #endif
 
-	if(!loaded)
-		SaveDB();			// New content need to be saved
+	if(!loaded) // New content need to be saved
+		SaveDB();
+#if 0
 	else {
 		std::cout << "*I* Discrepancies found \n";
 		rootDir->Report(std::cout);
+	}
+#endif
+
+		/***
+		 * Event handling
+		 ***/
+	SocketInterface clirdv(rendezvous);
+	struct pollfd fds[1];
+	fds[0].fd = clirdv.getSocket();
+	fds[0].events = POLLIN;
+
+	for(;;){
+std::cout << "*d* waiting for event\n";
+		int r=poll(fds, sizeof(fds)/sizeof(fds[0]), -1);
+std::cout << "*d* ok\n";
+
+		if(r < 0){
+			if( errno == EINTR)	/* Signal received */
+				continue;
+			perror("poll()");
+		}
+
 	}
 
 	exit(EXIT_SUCCESS);
