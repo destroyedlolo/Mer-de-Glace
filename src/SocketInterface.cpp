@@ -8,16 +8,19 @@
  */
 
 #include "SocketInterface.h"
+#include "Config.h"
 
 #include <iostream>
 
 #include <cerrno>
 #include <cstdlib>
+#include <cassert>
 
 #include <unistd.h>
+#include <poll.h>
 
 SocketInterface::SocketInterface(const char *name) : peer(-1), socketfile(name) {
-	if((this->s = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0)) == -1){
+	if((this->s = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC | SOCK_NONBLOCK, 0)) == -1){
 		perror("socket");
 		exit(EXIT_FAILURE);
 	}
@@ -45,3 +48,81 @@ SocketInterface::~SocketInterface(void){
 
 	unlink(this->socketfile);
 }
+
+void SocketInterface::initPoll(struct pollfd *fds, int &act_sz, int max_sz){
+	if(this->peer != -1){
+		assert(act_sz < max_sz);
+		fds[act_sz].fd = this->peer;
+		fds[act_sz].events = POLLIN;
+		act_sz++;
+	}
+
+	if(this->s != -1){
+		assert(act_sz < max_sz);
+		fds[act_sz].fd = this->s;
+		fds[act_sz].events = POLLIN;
+		act_sz++;
+	}
+}
+
+void SocketInterface::processSockets(struct pollfd *fds, int &sz){
+	for(int i=0; i<sz; i++){
+		if(fds[i].fd == this->s){	// New connection attempt
+			if(fds[i].revents != POLLIN)
+				continue;
+
+				// Only one new connexion is possible
+			if(this->peer != -1){
+				std::cerr << "*F* peering slot is already in use\n";
+				exit(EXIT_FAILURE);
+			}
+
+			if(debug)
+				std::cout << "*d* connection\n";
+
+			if((this->peer = accept(this->s, NULL, NULL))<0){
+				perror("accept()");
+				return;
+			}
+		}
+
+		if(fds[i].fd == this->peer){	// incoming command
+			bool close_conn = false;	// Do we have to close the connection
+			for(;;){
+				char buffer[2048];
+				int rc = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+				if(rc<0){
+					if(errno != EWOULDBLOCK){
+						perror("recv()");
+						close_conn = true;
+					}
+					break;
+				} else if(rc==0){
+					if(debug)
+						std::cout << "*d* disconnected\n";
+					close_conn = true;
+					break;
+				} else {	// Data received
+std::cout << "*d* received " << rc << " bytes\n";
+					if(buffer[--rc] == '\n')
+						buffer[rc] = 0;
+std::cout << ">> " << buffer << "<<\n";
+					char msg[]="response";
+					rc = send(fds[i].fd, msg, sizeof(msg), 0);
+          			if(rc < 0){
+						perror("send()");
+						close_conn = true;
+						break;
+					}
+				}
+			}
+
+			if(close_conn){
+				close(this->peer);
+				this->peer = -1;
+				fds[i].fd = -1;	// unneeded, but to be sure :)
+			}
+		}
+	}
+}
+

@@ -283,14 +283,17 @@ int main(int ac, char **av){
 		 * Event handling
 		 ***/
 	SocketInterface clirdv(rendezvous);
-	struct pollfd fds[1];
-	fds[0].fd = clirdv.getSocket();
-	fds[0].events = POLLIN;
+#	define MAXFD	2
+	struct pollfd fds[MAXFD];
 
 	for(;;){
-std::cout << "*d* waiting for event\n";
-		int r=poll(fds, sizeof(fds)/sizeof(fds[0]), -1);
-std::cout << "*d* ok\n";
+		int szfd = 0;	// Number of fd to poll
+
+		clirdv.initPoll(fds, szfd, MAXFD);
+
+		if(debug)
+			std::cout << "*d* waiting for event\n";
+		int r=poll(fds, szfd, -1);
 
 		if(r < 0){
 			if( errno == EINTR)	/* Signal received */
@@ -298,6 +301,7 @@ std::cout << "*d* ok\n";
 			perror("poll()");
 		}
 
+		clirdv.processSockets(fds, szfd);
 	}
 
 	exit(EXIT_SUCCESS);

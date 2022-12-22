@@ -27,6 +27,21 @@ public:
 	int getPeer(void){
 		return this->peer;
 	}
+
+		/* Init poolfd structure as per current sockets' state
+		 *
+		 * -> fds : table of fds
+		 * -> act_sz : its actual size (will be increased with newly added sockets)
+		 * -> max_sz : max size of fd table
+		 */
+	void initPoll(struct pollfd *fds, int &act_sz, int max_sz);
+
+		/* Data are waiting on sockets
+		 *
+		 * -> fds : table of fds
+		 * -> sz : size of fds' table
+		 */
+	void processSockets(struct pollfd *fds, int &sz);
 };
 
 #endif
