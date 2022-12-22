@@ -18,11 +18,14 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+	// verbosity
 extern bool verbose;
 extern bool debug;
-extern const char *root;
-extern const char *restrict;
-extern const char *dbfile;
-extern const char *report;
+
+	// configuration
+extern const char *root;		// Root data directory
+extern const char *restrict;	// (opt) restrict operation to this sub directory
+extern const char *dbfile;		// state's backup
+extern const char *rendezvous;	// CLI communication socket
 
 #endif

@@ -47,9 +47,9 @@ bool debug = false;
 const char *root = NULL;
 const char *restrict = NULL;
 const char *dbfile = NULL;
-const char *report = NULL;
+const char *rendezvous = NULL;
 
-Directory *rootDir = NULL;
+static Directory *rootDir = NULL;	// impersonation of the root directory
 
 static void SaveDB(void){
 	std::ofstream f;
@@ -200,8 +200,8 @@ int main(int ac, char **av){
 				assert(( root = strdup( arg.c_str() ) ));
 			} else if( !!(arg = striKWcmp( l, "DBFile=" )))
 				assert(( dbfile = strdup( arg.c_str() ) ));
-			else if( !!(arg = striKWcmp( l, "Report=" )))
-				assert(( report = strdup( arg.c_str() ) ));
+			else if( !!(arg = striKWcmp( l, "Socket=" )))
+				assert(( rendezvous = strdup( arg.c_str() ) ));
 		}
 	} catch(const std::ifstream::failure &e){
 		if(!file.eof()){
@@ -225,15 +225,15 @@ int main(int ac, char **av){
 		exit(EXIT_FAILURE);
 	}
 
-	if(!report){
-		std::cerr << "*F* No report file defined\n";
+	if(!rendezvous){
+		std::cerr << "*F* No rendez-vous file defined\n";
 		exit(EXIT_FAILURE);
 	}
 
 	if(verbose){
 		std::cout << "\troot directory to scan : '" << root << "'\n";
 		std::cout << "\tDatabase : '" << dbfile << "'\n";
-		std::cout << "\tResulting report : '" << report << "'\n";
+		std::cout << "\tRendez-vous : '" << rendezvous << "'\n";
 	}
 	if(!std::filesystem::exists(root)){
 		std::cerr << "*F* Root directory doesn't exists\n";
