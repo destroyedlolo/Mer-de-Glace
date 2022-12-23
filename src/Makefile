@@ -18,8 +18,8 @@ Directory.o : Directory.cpp Directory.h Item.h File.h Config.h \
 File.o : File.cpp File.h Item.h Config.h Makefile 
 	$(cc) -c -o File.o File.cpp $(opts) 
 
-MerDeGlace.o : MerDeGlace.cpp Version.h Config.h Directory.h Item.h \
-  File.h SocketInterface.h Makefile 
+MerDeGlace.o : MerDeGlace.cpp Config.h Directory.h Item.h File.h \
+  SocketInterface.h Makefile 
 	$(cc) -c -o MerDeGlace.o MerDeGlace.cpp $(opts) 
 
 SocketInterface.o : SocketInterface.cpp SocketInterface.h Config.h \
