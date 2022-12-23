@@ -11,6 +11,7 @@
 #include "Config.h"
 
 #include <iostream>
+#include <map>
 
 #include <cerrno>
 #include <cstdlib>
@@ -62,6 +63,38 @@ void SocketInterface::initPoll(struct pollfd *fds, int &act_sz, int max_sz){
 		fds[act_sz].fd = this->s;
 		fds[act_sz].events = POLLIN;
 		act_sz++;
+	}
+}
+
+	/*************************************
+	 * Commands implementation
+	 *************************************/
+
+void socsend(int fd, std::string msg){
+std::cout << msg << std::endl;
+
+	int rc = send(fd, msg.c_str(), msg.length(), 0);
+	if(rc < 0)
+		std::perror("send()");
+}
+
+struct Command {
+	const char *desc;	// description of the command
+	void (&func)(int, std::string);	// function to implement the command
+};
+
+static void cmd_help(int, std::string);
+
+std::map<std::string, Command> commands {
+	{ "help", { "list known commands", cmd_help }}
+};
+
+static void cmd_help(int fd, std::string){
+	std::string res;
+
+	for(const auto &[k,v] : commands){
+		res = k + " : " + v.desc + '\n';
+		socsend(fd, res);
 	}
 }
 
@@ -132,14 +165,22 @@ std::cout << ">>" << buffer << "<<\n";
 				if(debug)
 					std::cout << "*d* disconnected\n";
 			} else {	// Data received
-std::cout << "*d* received " << rc << " bytes\n";
 				buffer[rc] = 0;	// Ensure it's a null terminated string
-std::cout << ">>" << buffer << "<<\n";
-				char msg[]="response\n";
-				rc = send(fds[i].fd, msg, sizeof(msg), 0);
-          		if(rc < 0){
-					std::perror("send()");
+				char *p = strchr(buffer, '\t');
+				if(p)
+					*(p++) = 0;	// buffer is the command, p the argument
+
+				if(debug){
+					std::cout << "command : '" << buffer << "'";
+					if(p)
+						std::cout << " arg: '"<< p << "'";
+					std::cout << std::endl;
 				}
+				
+				if(auto cmd = commands.find(buffer); cmd != commands.end())
+					cmd->second.func(fds[i].fd, p);
+				else
+					socsend(fds[i].fd, "Command not found\n");
 			}
 
 			close(this->peer);
