@@ -12,12 +12,12 @@ This is the list of identified tasks/behaviors.
    - [X] Recursively scan a directory with MD5 checksum (v0.1)
    - [X] Save / load state	(v0.2)
    - [X] Restrict scanning to a sub directory (v0.3)
-   - [ ] re-scan and issue a report
+   - [X] re-scan and issue a report (v0.4)
    - [ ] Accept a discrepancy
 
 - *interfaces*
   - [ ] demonize
-  - [ ] accept commands via a socket
+  - [ ] accept commands via a socket (v0.4)
   - [ ] file system notification
 
 - *for the future*
