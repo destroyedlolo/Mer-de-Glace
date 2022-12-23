@@ -42,10 +42,14 @@
 
 bool verbose = false;
 bool debug = false;
+bool init = false;
+bool autosave = false;
+
 std::string root;
 std::string restrict;
 std::string dbfile;
 std::string rendezvous;	// Command's socket
+
 
 static Directory *rootDir = NULL;	// impersonation of the root directory
 
@@ -145,7 +149,7 @@ int main(int ac, char **av){
 	const char *conf_file = DEFAULT_CONFIGURATION_FILE;
 	int c;
 
-	while((c = getopt(ac, av, "hvdf:r:")) != EOF) switch(c){
+	while((c = getopt(ac, av, "hvdf:r:iS")) != EOF) switch(c){
 	case 'h':
 		std::cerr << basename(av[0]) 
 			<< " (" << std::setprecision(5) << VERSION << ")\n"
@@ -155,6 +159,8 @@ int main(int ac, char **av){
 			"\t-f<file> : read <file> for configuration\n"
 			"\t\t(default is '" << DEFAULT_CONFIGURATION_FILE << "')\n"
 			"\t-r<dir> : restrict action to <dir> directory (allow to process only a subset of a tree)\n"
+			"\t-i : launch a scan at startup (warning : can be very long !)\n"
+			"\t-S : backup the state after the initial scan (imply -i)\n"
 			"\t-v : enable verbose messages\n"
 			"\t-d : enable debug messages\n";
 		exit(EXIT_FAILURE);
@@ -170,6 +176,11 @@ int main(int ac, char **av){
 		break;
 	case 'r':
 		restrict = optarg;
+		break;
+	case 'S':
+		autosave = true;
+	case 'i':
+		init = true;
 		break;
 	default:
 		std::cerr << "Unknown option\n" << av[0] << " -h\n\tfor some help\n";
@@ -259,7 +270,13 @@ int main(int ac, char **av){
 		assert(rootDir);
 	}
 
-	rootDir->scan();
+	if(init){
+		if(verbose)
+			std::cout << "*I* Launching initial scan\n";
+		rootDir->scan();
+		if(autosave)
+			SaveDB();
+	}
 
 #if 1	/* to reduce noise during development */
 	if(debug){
@@ -268,8 +285,6 @@ int main(int ac, char **av){
 	}
 #endif
 
-	if(!loaded) // New content need to be saved
-		SaveDB();
 #if 0
 	else {
 		std::cout << "*I* Discrepancies found \n";

@@ -87,9 +87,11 @@ void SocketInterface::processSockets(struct pollfd *fds, int &sz){
 		}
 
 		if(fds[i].fd == this->peer){	// incoming command
+			char buffer[2048];
+
+#if 0	/* Code for an interactive shell */
 			bool close_conn = false;	// Do we have to close the connection
 			for(;;){
-				char buffer[2048];
 				int rc = recv(fds[i].fd, buffer, sizeof(buffer), 0);
 				if(rc<0){
 					if(errno != EWOULDBLOCK){
@@ -122,6 +124,28 @@ std::cout << ">>" << buffer << "<<\n";
 				this->peer = -1;
 				fds[i].fd = -1;	// unneeded, but to be sure :)
 			}
+#else	/* Simple command/response code */
+			int rc = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+			if(rc<0){
+				std::perror("recv()");
+			} else if(rc==0){
+				if(debug)
+					std::cout << "*d* disconnected\n";
+			} else {	// Data received
+std::cout << "*d* received " << rc << " bytes\n";
+				buffer[rc] = 0;	// Ensure it's a null terminated string
+std::cout << ">>" << buffer << "<<\n";
+				char msg[]="response\n";
+				rc = send(fds[i].fd, msg, sizeof(msg), 0);
+          		if(rc < 0){
+					std::perror("send()");
+				}
+			}
+
+			close(this->peer);
+			this->peer = -1;
+			fds[i].fd = -1;	// unneeded, but to be sure :)
+#endif
 		}
 	}
 }

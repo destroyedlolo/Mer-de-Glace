@@ -19,7 +19,7 @@
  * inspired by https://blog.magnatox.com/posts/c_hashing_files_with_openssl/
  */
 std::string File::md5( std::string &res ){
-	if(debug)
+	if(verbose)
 		std::cout << "*D* md5(" << this->string() << ")\n" << std::flush;
 
 	FILE *fp = fopen(this->c_str(), "rb");
