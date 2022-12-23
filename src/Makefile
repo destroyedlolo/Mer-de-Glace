@@ -5,8 +5,11 @@ gotoall: all
 
 
 #The compiler (may be customized for compiler's options).
-cc=c++ -Wall -O2 -DDEBUG
+cc=c++ -Wall -O2 -I../shared
 opts=$(shell pkg-config --libs openssl)
+
+../shared/Helpers.o : ../shared/Helpers.cpp Makefile 
+	$(cc) -c -o ../shared/Helpers.o ../shared/Helpers.cpp $(opts) 
 
 Directory.o : Directory.cpp Directory.h Item.h File.h Config.h \
   Makefile 
@@ -15,20 +18,17 @@ Directory.o : Directory.cpp Directory.h Item.h File.h Config.h \
 File.o : File.cpp File.h Item.h Config.h Makefile 
 	$(cc) -c -o File.o File.cpp $(opts) 
 
-Helpers.o : Helpers.cpp Helpers.h Makefile 
-	$(cc) -c -o Helpers.o Helpers.cpp $(opts) 
-
-MerDeGlace.o : MerDeGlace.cpp Version.h Helpers.h Config.h Directory.h \
-  Item.h File.h SocketInterface.h Makefile 
+MerDeGlace.o : MerDeGlace.cpp Version.h Config.h Directory.h Item.h \
+  File.h SocketInterface.h Makefile 
 	$(cc) -c -o MerDeGlace.o MerDeGlace.cpp $(opts) 
 
 SocketInterface.o : SocketInterface.cpp SocketInterface.h Config.h \
   Makefile 
 	$(cc) -c -o SocketInterface.o SocketInterface.cpp $(opts) 
 
-../MdG : SocketInterface.o MerDeGlace.o Helpers.o File.o Directory.o \
-  Makefile 
-	 $(cc) -o ../MdG SocketInterface.o MerDeGlace.o Helpers.o \
-  File.o Directory.o $(opts) 
+../MerDeGlaced : SocketInterface.o MerDeGlace.o File.o Directory.o \
+  ../shared/Helpers.o Makefile 
+	 $(cc) -o ../MerDeGlaced SocketInterface.o MerDeGlace.o File.o \
+  Directory.o ../shared/Helpers.o $(opts) 
 
-all: ../MdG 
+all: ../MerDeGlaced 

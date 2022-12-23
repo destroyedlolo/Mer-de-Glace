@@ -2,4 +2,4 @@ all:
 	$(MAKE) -C src
 
 clean:
-	rm MdG src/*.o
+	rm -f MerDeGlaced MdG src/*.o
