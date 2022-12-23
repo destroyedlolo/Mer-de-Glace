@@ -9,6 +9,8 @@
 
 #include "SocketInterface.h"
 #include "Config.h"
+#include "Directory.h"
+#include "SocketHelpers.h"
 
 #include <iostream>
 #include <map>
@@ -70,14 +72,6 @@ void SocketInterface::initPoll(struct pollfd *fds, int &act_sz, int max_sz){
 	 * Commands implementation
 	 *************************************/
 
-void socsend(int fd, std::string msg){
-std::cout << msg << std::endl;
-
-	int rc = send(fd, msg.c_str(), msg.length(), 0);
-	if(rc < 0)
-		std::perror("send()");
-}
-
 struct Command {
 	const char *desc;	// description of the command
 	void (&func)(int, std::string);	// function to implement the command
@@ -85,8 +79,29 @@ struct Command {
 
 static void cmd_help(int, std::string);
 
+static void cmd_restrict(int fd, std::string arg){
+	if(arg.empty()){
+		if(restrict.empty())
+			socsend(fd, "No restriction in place");
+		else {
+			socsend(fd, "Restricted to '" + restrict + "'");
+		}
+	} else {	// new restriction
+		if(Directory::partOf(root,arg) < 0)
+			socsend(fd, "*E* Restrict is not part of the root path");
+		else if(!std::filesystem::exists(arg))
+			socsend(fd, "*E* Restricted directory doesn't exists");
+		else {
+			restrict = arg;
+			socsend(fd, "*I* Restriction changed");
+		}
+	}
+}
+
 std::map<std::string, Command> commands {
-	{ "help", { "list known commands", cmd_help }}
+	{ "help", { "list known commands", cmd_help }},
+	{ "restrict", { "restrict actions to a subdir", cmd_restrict }},
+/*	{ "scan", { "launch a scan", cmd_restrict }} */
 };
 
 static void cmd_help(int fd, std::string){
@@ -178,9 +193,9 @@ std::cout << ">>" << buffer << "<<\n";
 				}
 				
 				if(auto cmd = commands.find(buffer); cmd != commands.end())
-					cmd->second.func(fds[i].fd, p);
+					cmd->second.func(fds[i].fd, p ? p : std::string() );
 				else
-					socsend(fds[i].fd, "Command not found\n");
+					socsend(fds[i].fd, "Command not found");
 			}
 
 			close(this->peer);

@@ -8,6 +8,7 @@
 #include "Directory.h"
 #include "File.h"
 #include "Config.h"
+#include "SocketHelpers.h"
 
 #include <string>
 #include <iostream>
@@ -15,8 +16,11 @@
 #include <list>
 #include <cassert>
 
-void Directory::scan(void){
+void Directory::scan(int fd){
 	this->touch();
+
+	if(fd >= 0)
+		socsend(fd, "In '"+ (std::string)*this + "'");
 
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		int res = 0;	// by default, let scan !
@@ -32,6 +36,9 @@ void Directory::scan(void){
 		if(entry.is_regular_file()){
 			if(res < 0)	// Not inside restrict
 				continue;
+
+			if(fd >= 0)
+				socsend(fd, "File '"+ (std::string)std::filesystem::path(entry).filename() + "'");
 
 			File *n;
 			if((n = this->findFile(std::filesystem::path(entry).filename()))){
@@ -57,7 +64,7 @@ void Directory::scan(void){
 				if(debug)
 					std::cout << "*d* Existing directory : " << std::filesystem::path(entry).filename() << std::endl;
 
-				n->scan();
+				n->scan(fd);
 			} else {
 				if(debug)
 					std::cout << "*d* New directory : " << std::filesystem::path(entry).filename() << std::endl;

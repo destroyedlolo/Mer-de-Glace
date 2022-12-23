@@ -36,7 +36,8 @@ public :
 
 		// Rebuild directory's own information
 		// Typical use : inital scan of ta directory
-	void scan(void);
+		// fd = file descriptor to write to
+	void scan(int fd = -1);
 
 		// Display content
 	virtual void dump(int ident=0);
@@ -53,4 +54,5 @@ public :
 	static int partOf(const std::filesystem::path root, const std::filesystem::path sub);
 };
 
+extern Directory *rootDir;
 #endif

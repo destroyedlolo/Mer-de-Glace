@@ -51,7 +51,7 @@ std::string dbfile;
 std::string rendezvous;	// Command's socket
 
 
-static Directory *rootDir = NULL;	// impersonation of the root directory
+Directory *rootDir = NULL;	// impersonation of the root directory
 
 static void SaveDB(void){
 	std::ofstream f;
@@ -158,7 +158,7 @@ int main(int ac, char **av){
 			"\t-h : this online help\n"
 			"\t-f<file> : read <file> for configuration\n"
 			"\t\t(default is '" << DEFAULT_CONFIGURATION_FILE << "')\n"
-			"\t-r<dir> : restrict action to <dir> directory (allow to process only a subset of a tree)\n"
+			"\t-r<dir> : restrict actions to <dir> directory (allow to process only a subset of a tree)\n"
 			"\t-i : launch a scan at startup (warning : can be very long !)\n"
 			"\t-S : backup the state after the initial scan (imply -i)\n"
 			"\t-v : enable verbose messages\n"
