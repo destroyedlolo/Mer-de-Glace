@@ -53,7 +53,7 @@ std::string rendezvous;	// Command's socket
 
 Directory *rootDir = NULL;	// impersonation of the root directory
 
-static void SaveDB(void){
+void SaveDB(void){
 	std::ofstream f;
 	f.open(dbfile);
 	if(!f.is_open()){
@@ -66,7 +66,7 @@ static void SaveDB(void){
 	f.close();
 }
 
-bool LoadDB(void){
+static bool LoadDB(void){
 /*
  * Try to load a backup
  * 	no :

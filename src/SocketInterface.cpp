@@ -106,10 +106,17 @@ static void cmd_dump(int fd, std::string){
 	::rootDir->dump(0,fd);
 }
 
+static void cmd_save(int fd, std::string){
+	SaveDB();
+
+	socsend(fd, "*I* State saved as '" + dbfile + "'");
+}
+
 std::map<std::string, Command> commands {
 	{ "help", { "list known commands", cmd_help }},
 	{ "restrict", { "restrict actions to a subdir", cmd_restrict }},
 	{ "scan", { "launch a scan", cmd_scan }},
+	{ "save", { "Save on disk the memory database", cmd_save }},
 	{ "dump", { "dump current in memory database", cmd_dump }}
 };
 

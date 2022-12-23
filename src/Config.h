@@ -30,4 +30,6 @@ extern std::string restrict;	// (opt) restrict operation to this sub directory
 extern std::string dbfile;		// state's backup
 extern std::string rendezvous;	// CLI communication socket
 
+	// shared function
+void SaveDB(void);
 #endif
