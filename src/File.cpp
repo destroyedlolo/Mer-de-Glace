@@ -24,7 +24,7 @@ std::string File::md5( std::string &res ){
 
 	FILE *fp = fopen(this->c_str(), "rb");
 	if(!fp){
-		std::cerr << "*F* '"<< *this << "' : " << strerror(errno) << std::endl;
+		std::cerr << "*F* '"<< *this << "' : " << std::strerror(errno) << std::endl;
 		exit(EXIT_FAILURE);
 	}
 

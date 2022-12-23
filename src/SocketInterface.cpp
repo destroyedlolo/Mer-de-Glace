@@ -21,7 +21,7 @@
 
 SocketInterface::SocketInterface(const std::string name) : peer(-1), socketfile(name) {
 	if((this->s = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC | SOCK_NONBLOCK, 0)) == -1){
-		perror("socket");
+		std::perror("socket");
 		exit(EXIT_FAILURE);
 	}
 
@@ -32,12 +32,12 @@ SocketInterface::SocketInterface(const std::string name) : peer(-1), socketfile(
 
 	int len = strlen(local.sun_path) + sizeof(local.sun_family);
 	if(bind(this->s, (struct sockaddr *)&local, len) == -1){
-		perror("bind()");
+		std::perror("bind()");
 		exit(EXIT_FAILURE);
 	}
 
 	if(listen(this->s,1) == -1){
-		perror("listen()");
+		std::perror("listen()");
 		exit(EXIT_FAILURE);
 	}
 }
@@ -81,7 +81,7 @@ void SocketInterface::processSockets(struct pollfd *fds, int &sz){
 				std::cout << "*d* connection\n";
 
 			if((this->peer = accept(this->s, NULL, NULL))<0){
-				perror("accept()");
+				std::perror("accept()");
 				return;
 			}
 		}
@@ -93,7 +93,7 @@ void SocketInterface::processSockets(struct pollfd *fds, int &sz){
 				int rc = recv(fds[i].fd, buffer, sizeof(buffer), 0);
 				if(rc<0){
 					if(errno != EWOULDBLOCK){
-						perror("recv()");
+						std::perror("recv()");
 						close_conn = true;
 					}
 					break;
@@ -106,11 +106,11 @@ void SocketInterface::processSockets(struct pollfd *fds, int &sz){
 std::cout << "*d* received " << rc << " bytes\n";
 					if(buffer[--rc] == '\n')
 						buffer[rc] = 0;
-std::cout << ">> " << buffer << "<<\n";
-					char msg[]="response";
+std::cout << ">>" << buffer << "<<\n";
+					char msg[]="response\n";
 					rc = send(fds[i].fd, msg, sizeof(msg), 0);
           			if(rc < 0){
-						perror("send()");
+						std::perror("send()");
 						close_conn = true;
 						break;
 					}

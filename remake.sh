@@ -19,8 +19,8 @@ echo "Client's source configuration"
 echo "-----------------------------"
 echo
 
-#cd ../client
-#LFMakeMaker -v +f=Makefile \
-#	-cc="c++ -Wall -O2 -I../shared" \
-#	../shared/*.cpp \
-#	*.cpp -t=../MdG > Makefile
+cd ../client
+LFMakeMaker -v +f=Makefile \
+	-cc="c++ -Wall -O2 -I../shared" \
+	../shared/*.cpp \
+	*.cpp -t=../MdG > Makefile

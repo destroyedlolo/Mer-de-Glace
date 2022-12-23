@@ -17,9 +17,9 @@
  */
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
-#include <cstdlib>
 #include <cstring>
 #include <cassert>
 
@@ -34,8 +34,6 @@
 #include "File.h"
 #include "SocketInterface.h"
 
-#define DEFAULT_CONFIGURATION_FILE "/usr/local/etc/MerDeGlace.conf"
-
 // using namespace std;
 
 	/*****
@@ -47,7 +45,7 @@ bool debug = false;
 std::string root;
 std::string restrict;
 std::string dbfile;
-std::string rendezvous;
+std::string rendezvous;	// Command's socket
 
 static Directory *rootDir = NULL;	// impersonation of the root directory
 
@@ -55,7 +53,7 @@ static void SaveDB(void){
 	std::ofstream f;
 	f.open(dbfile);
 	if(!f.is_open()){
-		perror(dbfile.c_str());
+		std::perror(dbfile.c_str());
 		exit(EXIT_FAILURE);
 	}
 
@@ -132,7 +130,7 @@ bool LoadDB(void){
 
 	} catch(const std::ifstream::failure &e){
 		if(!file.eof()){
-			std::cerr << "*F* " << dbfile << " : " << strerror(errno) << std::endl;
+			std::cerr << "*F* " << dbfile << " : " << std::strerror(errno) << std::endl;
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -164,7 +162,7 @@ int main(int ac, char **av){
 	case 'd':
 		debug = true;
 	case 'v':
-		std::cout << "Mer de Glace (" << basename(av[0]) << ") v"<< std::setprecision(5) << VERSION << std::endl;
+		std::cout << "Mer de Glace daemon (" << basename(av[0]) << ") v"<< std::setprecision(5) << VERSION << std::endl;
 		verbose = true;
 		break;
 	case 'f':
@@ -206,7 +204,7 @@ int main(int ac, char **av){
 		}
 	} catch(const std::ifstream::failure &e){
 		if(!file.eof()){
-			std::cerr << "*F* "<< conf_file << " : " << strerror(errno) << std::endl;
+			std::cerr << "*F* "<< conf_file << " : " << std::strerror(errno) << std::endl;
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -298,7 +296,7 @@ int main(int ac, char **av){
 		if(r < 0){
 			if( errno == EINTR)	/* Signal received */
 				continue;
-			perror("poll()");
+			std::perror("poll()");
 		}
 
 		clirdv.processSockets(fds, szfd);

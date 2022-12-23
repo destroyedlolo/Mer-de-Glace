@@ -13,8 +13,11 @@
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  *	04/12/2022 - LF - Start of development
- *	20/12/2022 - LF - v0.4 
+ *	20/12/2022 - LF - v0.4 - End of POC
  */
 
 #define VERSION 0.0400
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022"
+
+/* Default configuration file */
+#define DEFAULT_CONFIGURATION_FILE "/usr/local/etc/MerDeGlace.conf"
