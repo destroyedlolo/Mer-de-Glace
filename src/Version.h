@@ -16,5 +16,5 @@
  *	20/12/2022 - LF - v0.4 
  */
 
-#define VERSION 0.0301
+#define VERSION 0.0400
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022"
