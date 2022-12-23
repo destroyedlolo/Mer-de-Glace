@@ -69,7 +69,7 @@ int main(int ac, char **av){
 	std::string cmd;
 	for(;optind < ac; optind++){
 		if(!cmd.empty())
-			cmd += " ";
+			cmd += '\t';
 		cmd += av[optind];
 	}
 		
@@ -145,8 +145,10 @@ int main(int ac, char **av){
 			}
 		} else if(!rc)	// Socket closed
 			break;
-		else
+		else {
+			buffer[rc] = 0;
 			std::cout << buffer;
+		}
 	}
 	std::cout << std::endl;
 	close(s);
