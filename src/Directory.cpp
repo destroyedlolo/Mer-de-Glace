@@ -19,8 +19,7 @@
 void Directory::scan(int fd){
 	this->touch();
 
-	if(fd >= 0)
-		socsend(fd, "In '"+ (std::string)*this + "'");
+	socsend(fd, "In '"+ (std::string)*this + "'\n");
 
 	for(const auto & entry : std::filesystem::directory_iterator(*this)){
 		int res = 0;	// by default, let scan !
@@ -37,8 +36,7 @@ void Directory::scan(int fd){
 			if(res < 0)	// Not inside restrict
 				continue;
 
-			if(fd >= 0)
-				socsend(fd, "File '"+ (std::string)std::filesystem::path(entry).filename() + "'");
+			socsend(fd, "File '"+ (std::string)std::filesystem::path(entry).filename() + "'\n");
 
 			File *n;
 			if((n = this->findFile(std::filesystem::path(entry).filename()))){
@@ -71,7 +69,7 @@ void Directory::scan(int fd){
 
 				n = new Directory(entry);
 				assert(n);
-				n->scan();
+				n->scan(fd);
 				this->subdirs.push_back(n);
 			}
 		}

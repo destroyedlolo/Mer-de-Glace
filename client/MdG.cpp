@@ -105,7 +105,7 @@ int main(int ac, char **av){
 		 * Socket's
 		 ***/
 	int s;
-	if((s = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC | SOCK_NONBLOCK, 0)) == -1){
+	if((s = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC /*| SOCK_NONBLOCK*/, 0)) == -1){
 		std::perror("socket");
 		exit(EXIT_FAILURE);
     }
