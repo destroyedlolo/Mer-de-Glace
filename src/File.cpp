@@ -7,6 +7,7 @@
 
 #include "File.h"
 #include "Config.h"
+#include "SocketHelpers.h"
 
 #include <openssl/evp.h>
 
@@ -75,18 +76,23 @@ void File::Report(std::ostream &rep){
 		rep << "[Changed]\t" << *this << std::endl;
 }
 
-void File::dump(int ident){
+void File::dump(int ident, int fd){
+	std::string res;
 	for(int i=0; i<ident; i++)
-		putchar('\t');
+		res += '\t';
 
-	std::cout << "File '" << this->getName()
-		<< "' : hist:" << this->getHistorical()
-		<< " act:" << this->getActual() << " ";
-		if(this->isCreated())
-			std::cout << "crt ";
-		if(this->isDeleted())
-			std::cout << "Del";
-		std::cout << std::endl;
+	res += "File '" + (std::string)this->getName()
+		+ "' : hist:" + this->getHistorical()
+		+ " act:" + this->getActual() + ' ';
+	if(this->isCreated())
+		res += "crt ";
+	if(this->isDeleted())
+		res += "Del";
+	res += '\n';
+
+	if(debug)
+		std::cout << res;
+	socsend(fd, res);
 }
 
 void File::save2DB(std::ofstream &f){

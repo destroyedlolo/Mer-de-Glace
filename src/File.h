@@ -53,7 +53,7 @@ public :
 
 		// Display content
 	virtual void Report(std::ostream &);
-	virtual void dump(int ident=0);
+	virtual void dump(int ident=0, int fd=-1);
 	virtual void save2DB(std::ofstream &);
 };
 

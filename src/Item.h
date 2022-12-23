@@ -67,7 +67,7 @@ public :
 		this->notfound = false;
 	}
 
-	virtual void dump( int ident = 0 ) = 0;
+	virtual void dump(int ident = 0, int fd = -1) = 0;
 	virtual void Report(std::ostream &) = 0;
 	virtual void save2DB(std::ofstream &) = 0;
 };

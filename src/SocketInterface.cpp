@@ -98,10 +98,19 @@ static void cmd_restrict(int fd, std::string arg){
 	}
 }
 
+static void cmd_scan(int fd, std::string){
+	::rootDir->scan(fd);
+}
+
+static void cmd_dump(int fd, std::string){
+	::rootDir->dump(0,fd);
+}
+
 std::map<std::string, Command> commands {
 	{ "help", { "list known commands", cmd_help }},
 	{ "restrict", { "restrict actions to a subdir", cmd_restrict }},
-/*	{ "scan", { "launch a scan", cmd_restrict }} */
+	{ "scan", { "launch a scan", cmd_scan }},
+	{ "dump", { "dump current in memory database", cmd_dump }}
 };
 
 static void cmd_help(int fd, std::string){

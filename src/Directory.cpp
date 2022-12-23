@@ -154,22 +154,27 @@ bool Directory::addFile(File *f){
 	return true;
 }
 
-void Directory::dump(int ident){
+void Directory::dump(int ident, int fd){
+	std::string res;
 	for(int i=0; i<ident; i++)
-		std::cout << '\t';
+		res += '\t';
 
-	std::cout << "Directory '" << this->getName() << "' ("<< *this <<") ";
+	res += "Directory '" + (std::string)this->getName() + "' ("+ (std::string)*this +") ";
 	if(this->isCreated())
-		std::cout << "crt ";
+		res += "crt ";
 	if(this->isDeleted())
-		std::cout << "Del";
-	std::cout << std::endl;
+		res += "Del";
+	res += '\n';
+
+	if(debug)
+		std::cout << res;
+	socsend(fd, res);
 
 	for(auto sub : this->subfiles)
-		sub->dump(ident + 1);
+		sub->dump(ident + 1, fd);
 
 	for(auto sub : this->subdirs)
-		sub->dump(ident + 1);
+		sub->dump(ident + 1, fd);
 }
 
 void Directory::Report(std::ostream &rep){
