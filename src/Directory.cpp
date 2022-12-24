@@ -152,14 +152,14 @@ bool Directory::addFile(File *f){
 	return true;
 }
 
-void Directory::raz(void){
-	this->Item::raz();
+void Directory::raz(bool loaded){
+	this->Item::raz(loaded);
 
 	for(auto sub : this->subfiles)
-		sub->raz();
+		sub->raz(loaded);
 
 	for(auto sub : this->subdirs)
-		sub->raz();
+		sub->raz(loaded);
 }
 
 void Directory::dump(int ident, int fd){
@@ -200,7 +200,7 @@ void Directory::Report(int fd){
 
 void Directory::save2DB(std::ofstream &f){
 	f << this->string() << std::endl;
-	this->markCreated();
+	this->markCreated(false);
 
 	for(auto sub : this->subfiles)
 		sub->save2DB(f);

@@ -37,7 +37,7 @@ public :
 		// Refresh directory's own information
 		// fd = file descriptor to write to
 	void scan(int fd = -1);
-	void raz(void);
+	void raz(bool loaded=false);
 
 		// Display content
 	virtual void dump(int ident=0, int fd=-1);

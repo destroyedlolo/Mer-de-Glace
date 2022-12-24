@@ -28,16 +28,19 @@ protected :
 	bool found;		// found during scan
 
 public :
-	Item(const std::filesystem::directory_entry &p, _kind akind) : path(p), kind(akind), created(false), found(false) {
+	Item(const std::filesystem::directory_entry &p, _kind akind) : path(p), kind(akind) {
 		this->name = this->filename();
+		this->raz();
 	}
 
 	Item(const std::string &aname, _kind akind) : path(aname), kind(akind) {
 		this->name = this->filename();
+		this->raz();
 	}
 
 	Item(const char *aname, _kind akind) : path(aname), kind(akind) {
 		this->name = this->filename();
+		this->raz();
 	}
 
 	std::string &getName(void){
@@ -57,13 +60,14 @@ public :
 	}
 
 		// Reset the status before a scan
-	void raz(void){
+		// -> loaded : clear all reporting when data are loaded
+	void raz(bool loaded=false){
 		this->created = false;
-		this->found = false;
+		this->found = loaded;
 	}
 
-	void markCreated(void){
-		this->created = true;
+	void markCreated(bool yes = true){
+		this->created = yes;
 	}
 
 		// This data has been found during a scan

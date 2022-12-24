@@ -97,7 +97,7 @@ static bool LoadDB(void){
 
 		rootDir = new Directory(root);	// Create in memory database
 		assert(rootDir);
-		rootDir->markCreated();
+//	rootDir->markCreated();
 
 		if(debug)
 			std::cout << "*D* --> root : " << l << std::endl;
@@ -139,6 +139,7 @@ static bool LoadDB(void){
 		}
 	}
 
+	rootDir->raz(true);	// Just to avoid wrong reporting
 	if(verbose)
 		std::cout << "*I* Database reloaded\n";
 

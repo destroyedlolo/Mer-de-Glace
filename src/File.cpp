@@ -97,5 +97,5 @@ void File::dump(int ident, int fd){
 
 void File::save2DB(std::ofstream &f){
 	f << '\t' << this->getName() << '\t' << this->getHistorical() << std::endl;
-	this->markCreated();
+	this->markCreated(false);
 }
