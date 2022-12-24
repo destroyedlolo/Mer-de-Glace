@@ -34,10 +34,10 @@ public :
 	bool addDir(Directory *);
 	bool addFile(File *);
 
-		// Rebuild directory's own information
-		// Typical use : inital scan of ta directory
+		// Refresh directory's own information
 		// fd = file descriptor to write to
 	void scan(int fd = -1);
+	void raz(void);
 
 		// Display content
 	virtual void dump(int ident=0, int fd=-1);

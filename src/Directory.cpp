@@ -103,7 +103,7 @@ Directory *Directory::findDir(std::string name, bool recursive){
 
 			Directory *n = new Directory(name.c_str());
 			assert(n);
-			n->loading();
+			n->markCreated();
 			this->addDir(n);
 
 			return n;
@@ -150,6 +150,16 @@ bool Directory::addFile(File *f){
 
 	this->subfiles.push_back(f);
 	return true;
+}
+
+void Directory::raz(void){
+	this->Item::raz();
+
+	for(auto sub : this->subfiles)
+		sub->raz();
+
+	for(auto sub : this->subdirs)
+		sub->raz();
 }
 
 void Directory::dump(int ident, int fd){

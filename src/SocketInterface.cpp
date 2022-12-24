@@ -99,6 +99,7 @@ static void cmd_restrict(int fd, std::string arg){
 }
 
 static void cmd_scan(int fd, std::string){
+	::rootDir->raz();
 	::rootDir->scan(fd);
 }
 

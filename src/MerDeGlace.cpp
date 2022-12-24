@@ -97,7 +97,7 @@ static bool LoadDB(void){
 
 		rootDir = new Directory(root);	// Create in memory database
 		assert(rootDir);
-		rootDir->loading();
+		rootDir->markCreated();
 
 		if(debug)
 			std::cout << "*D* --> root : " << l << std::endl;
@@ -273,6 +273,7 @@ int main(int ac, char **av){
 	if(init){
 		if(verbose)
 			std::cout << "*I* Launching initial scan\n";
+		rootDir->raz();
 		rootDir->scan();
 		if(autosave)
 			SaveDB();
