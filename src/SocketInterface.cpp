@@ -112,12 +112,17 @@ static void cmd_save(int fd, std::string){
 	socsend(fd, "*I* State saved as '" + dbfile + "'");
 }
 
+static void cmd_report(int fd, std::string){
+	rootDir->Report(fd);
+}
+
 std::map<std::string, Command> commands {
 	{ "help", { "list known commands", cmd_help }},
-	{ "restrict", { "restrict actions to a subdir", cmd_restrict }},
+	{ "restrict", { "Restrict actions to a subdir", cmd_restrict }},
 	{ "scan", { "launch a scan", cmd_scan }},
 	{ "save", { "Save on disk the memory database", cmd_save }},
-	{ "dump", { "dump current in memory database", cmd_dump }}
+	{ "report", { "Report discrepancies", cmd_report }},
+	{ "dump", { "Dump current in memory database", cmd_dump }}
 };
 
 static void cmd_help(int fd, std::string){

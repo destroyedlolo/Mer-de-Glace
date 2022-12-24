@@ -20,7 +20,7 @@
  * inspired by https://blog.magnatox.com/posts/c_hashing_files_with_openssl/
  */
 std::string File::md5( std::string &res ){
-	if(verbose)
+	if(debug)
 		std::cout << "*D* md5(" << this->string() << ")\n" << std::flush;
 
 	FILE *fp = fopen(this->c_str(), "rb");
@@ -66,14 +66,14 @@ bool File::setActual(void){
 		return(true);
 }
 
-void File::Report(std::ostream &rep){
+void File::Report(int fd){
 	if(this->isCreated())
-		rep << "[Created]\t" << *this << std::endl;
+		socsend(fd, "[Created]\t" + (std::string)*this + '\n');
 	if(this->isDeleted())
-		rep << "[Delete]\t" << *this << std::endl;
+		socsend(fd, "[Deleted]\t" + (std::string)*this + '\n');
 
 	if(this->isChanged())
-		rep << "[Changed]\t" << *this << std::endl;
+		socsend(fd, "[Changed]\t" + (std::string)*this + '\n');
 }
 
 void File::dump(int ident, int fd){
@@ -97,4 +97,5 @@ void File::dump(int ident, int fd){
 
 void File::save2DB(std::ofstream &f){
 	f << '\t' << this->getName() << '\t' << this->getHistorical() << std::endl;
+	this->markCreated();
 }

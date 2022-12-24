@@ -175,21 +175,22 @@ void Directory::dump(int ident, int fd){
 		sub->dump(ident + 1, fd);
 }
 
-void Directory::Report(std::ostream &rep){
+void Directory::Report(int fd){
 	if(this->isCreated())
-		rep << "[Created]\t" << *this << std::endl;
+		socsend(fd, "[Created]\t" + (std::string)*this + '\n');
 	if(this->isDeleted())
-		rep << "[Delete]\t" << *this << std::endl;
+		socsend(fd, "[Deleted]\t" + (std::string)*this + '\n');
 
 	for(auto sub : this->subfiles)
-		sub->Report(rep);
+		sub->Report(fd);
 
 	for(auto sub : this->subdirs)
-		sub->Report(rep);
+		sub->Report(fd);
 }
 
 void Directory::save2DB(std::ofstream &f){
 	f << this->string() << std::endl;
+	this->markCreated();
 
 	for(auto sub : this->subfiles)
 		sub->save2DB(f);

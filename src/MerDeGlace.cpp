@@ -285,13 +285,6 @@ int main(int ac, char **av){
 	}
 #endif
 
-#if 0
-	else {
-		std::cout << "*I* Discrepancies found \n";
-		rootDir->Report(std::cout);
-	}
-#endif
-
 		/***
 		 * Event handling
 		 ***/
