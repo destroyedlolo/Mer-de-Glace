@@ -23,7 +23,7 @@ std::string File::md5( std::string &res ){
 	if(debug)
 		std::cout << "*D* md5(" << this->string() << ")\n" << std::flush;
 
-	FILE *fp = fopen(this->c_str(), "rb");
+	FILE *fp = fopen64(this->c_str(), "rb");
 	if(!fp){
 		std::cerr << "*F* '"<< *this << "' : " << std::strerror(errno) << std::endl;
 		exit(EXIT_FAILURE);
