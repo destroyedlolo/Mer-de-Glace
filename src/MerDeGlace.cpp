@@ -84,6 +84,16 @@ static bool LoadDB(void){
 		return false;
 	}
 
+		/* Avoid a segfault if the file is empty
+		 * gcc's bug ?
+		 */
+	if(file.peek() == EOF){
+		if(verbose)
+			std::cerr << "*E* Empty database, creating a new one\n";
+		file.close();
+		return false;
+	}
+
 	file.exceptions (std::ios::eofbit | std::ios::failbit);
 	try {
 		std::string l;
