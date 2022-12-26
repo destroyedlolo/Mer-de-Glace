@@ -45,8 +45,8 @@ bool debug = false;
 bool init = false;
 bool autosave = false;
 
-std::string root;
-std::string restrict;
+NoSlashPath root;
+NoSlashPath restrict;
 std::string dbfile;
 std::string rendezvous;	// Command's socket
 
@@ -204,12 +204,9 @@ int main(int ac, char **av){
 
 			if( l[0]=='#' )
 				continue;
-			else if( !(arg = striKWcmp( l, "rootDirectory=" )).empty() ){
-				if(arg.back() == '/')	// remove trailing '/'
-					root = arg.substr(0, arg.size()-1);
-				else
-					root = arg;
-			} else if( !(arg = striKWcmp( l, "DBFile=" )).empty() )
+			else if( !(arg = striKWcmp( l, "rootDirectory=" )).empty() )
+				root = arg;
+			else if( !(arg = striKWcmp( l, "DBFile=" )).empty() )
 				dbfile = arg;
 			else if( !(arg = striKWcmp( l, "Socket=" )).empty() )
 				rendezvous = arg;

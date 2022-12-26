@@ -1,5 +1,5 @@
 # makefile created automaticaly by LFMakeMaker
-# LFMakeMaker 1.6 (May  9 2022 15:11:43) (c)LFSoft 1997
+# LFMakeMaker 1.6 (May  7 2022 20:46:23) (c)LFSoft 1997
 
 gotoall: all
 
@@ -10,6 +10,10 @@ opts=$(shell pkg-config --libs openssl)
 
 ../shared/Helpers.o : ../shared/Helpers.cpp Makefile 
 	$(cc) -c -o ../shared/Helpers.o ../shared/Helpers.cpp $(opts) 
+
+../shared/NoSlashPath.o : ../shared/NoSlashPath.cpp Makefile 
+	$(cc) -c -o ../shared/NoSlashPath.o ../shared/NoSlashPath.cpp \
+  $(opts) 
 
 ../shared/SocketHelpers.o : ../shared/SocketHelpers.cpp Makefile 
 	$(cc) -c -o ../shared/SocketHelpers.o \
@@ -31,8 +35,10 @@ SocketInterface.o : SocketInterface.cpp SocketInterface.h Config.h \
 	$(cc) -c -o SocketInterface.o SocketInterface.cpp $(opts) 
 
 ../MerDeGlaced : SocketInterface.o MerDeGlace.o File.o Directory.o \
-  ../shared/SocketHelpers.o ../shared/Helpers.o Makefile 
+  ../shared/SocketHelpers.o ../shared/NoSlashPath.o \
+  ../shared/Helpers.o Makefile 
 	 $(cc) -o ../MerDeGlaced SocketInterface.o MerDeGlace.o File.o \
-  Directory.o ../shared/SocketHelpers.o ../shared/Helpers.o $(opts) 
+  Directory.o ../shared/SocketHelpers.o ../shared/NoSlashPath.o \
+  ../shared/Helpers.o $(opts) 
 
 all: ../MerDeGlaced 

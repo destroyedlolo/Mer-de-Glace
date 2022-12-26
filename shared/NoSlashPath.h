@@ -1,6 +1,5 @@
-/*
- * Config.h
- * 	Shared configuration
+/* NoSlashPath.h
+ * 	Path without trailing '/'
  *
  * Copyright 2022 Laurent Faillie
  *
@@ -15,23 +14,18 @@
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  */
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef NOSLASHPATH_H
+#define NOSLASHPATH_H
 
-#include "NoSlashPath.h"
-
+#include <filesystem>
 #include <string>
 
-	// verbosity
-extern bool verbose;
-extern bool debug;
 
-	// configuration
-extern NoSlashPath root;		// Root data directory
-extern NoSlashPath restrict;
-extern std::string dbfile;		// state's backup
-extern std::string rendezvous;	// CLI communication socket
+class NoSlashPath : public std::filesystem::path {
+public:
+	NoSlashPath() {};
+	
+	NoSlashPath &operator= (std::string);
+};
 
-	// shared function
-void SaveDB(void);
 #endif

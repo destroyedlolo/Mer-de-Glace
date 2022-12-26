@@ -84,7 +84,7 @@ static void cmd_restrict(int fd, std::string arg){
 		if(restrict.empty())
 			socsend(fd, "No restriction in place");
 		else {
-			socsend(fd, "Restricted to '" + restrict + "'");
+			socsend(fd, "Restricted to '" + (std::string)restrict + "'");
 		}
 	} else {	// new restriction
 		if(Directory::partOf(root,arg) < 0)

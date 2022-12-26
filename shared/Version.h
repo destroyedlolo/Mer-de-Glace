@@ -14,9 +14,10 @@
  *
  *	04/12/2022 - LF - Start of development
  *	20/12/2022 - LF - v0.4 - End of POC
+ *	24/12/2022 - LF - v0.5 - Separate daemon and CLI
  */
 
-#define VERSION 0.0400
+#define VERSION 0.0502
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022"
 
 /* Default configuration file */
