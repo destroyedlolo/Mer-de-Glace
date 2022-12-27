@@ -87,7 +87,10 @@ static void cmd_restrict(int fd, std::string arg){
 			socsend(fd, "Restricted to '" + (std::string)restrict + "'");
 		}
 	} else {	// new restriction
-		if(Directory::partOf(root,arg) < 0)
+		if(arg == "*"){
+			restrict.clear();
+			socsend(fd, "No restriction");
+		} else if(Directory::partOf(root,arg) < 0)
 			socsend(fd, "*E* Restrict is not part of the root path");
 		else if(!std::filesystem::exists(arg))
 			socsend(fd, "*E* Restricted directory doesn't exists");
@@ -119,7 +122,7 @@ static void cmd_report(int fd, std::string){
 
 std::map<std::string, Command> commands {
 	{ "help", { "list known commands", cmd_help }},
-	{ "restrict", { "Restrict actions to a subdir", cmd_restrict }},
+	{ "restrict", { "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
 	{ "scan", { "launch a scan", cmd_scan }},
 	{ "save", { "Save on disk the memory database", cmd_save }},
 	{ "report", { "Report discrepancies", cmd_report }},
