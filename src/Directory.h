@@ -23,8 +23,9 @@ public :
 	Directory(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IF_DIRECTORY){}
 	Directory(const std::string aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
 
-		// Look for existing object
-	Directory *findDir(std::string, bool recursive=false);
+		// Look for an existing object
+	static Item *findItemInRootDir(std::string, int fd=-1);
+	Directory *findDir(std::string, bool recursive=false, bool create=true);
 	File *findFile(std::string);
 	bool exist(Item *sub){
 		return(this->findDir(sub->getName()) || this->findFile(sub->getName()));

@@ -83,13 +83,26 @@ void Directory::scan(int fd){
 	}
 }
 
-/* -> recursive : we can recursively create intermediate directories (we are loading)
+/* Find an existing object in the in memory state.
+ *
+ * Fail if the object or one of the intermediate directory doesn't exist
+ */
+Item *Directory::findItemInRootDir(std::string name, int fd){
+	if(Directory::partOf(*rootDir,name) < 0){
+		socsend(fd, "*E* Object outside root directory");
+		return NULL;
+	}
+
+}
+
+/* Find (or create) a directory.
+ *
+ * -> recursive : scan recursively
  * -> name : if recursive is set, name = full path
  * otherwise, we are looking only on the Directory and name = filename / last dir
- * <- parent stores parent directory
- * -> up : upper (parent) directory
+ * -> create : we can recursively create intermediate directories (we are loading)
  */
-Directory *Directory::findDir(std::string name, bool recursive){
+Directory *Directory::findDir(std::string name, bool recursive, bool create){
 	if(recursive){
 		std::filesystem::path path(name);
 
@@ -103,15 +116,18 @@ Directory *Directory::findDir(std::string name, bool recursive){
 
 			return this;
 		} else if(path.parent_path() == *this){	// We found the parent directory but the target doesn't exist
-			if(debug)
-				std::cout << "*d* Create new directory\n";
+			if(create){
+				if(debug)
+					std::cout << "*d* Create new directory\n";
 
-			Directory *n = new Directory(name.c_str());
-			assert(n);
-			n->markCreated();
-			this->addDir(n);
+				Directory *n = new Directory(name.c_str());
+				assert(n);
+				n->markCreated();
+				this->addDir(n);
 
-			return n;
+				return n;
+			} else
+				return NULL;
 		} else {	// recurse in subdir
 			if(this->partOf(*this, name) > 0){
 				if(debug)
