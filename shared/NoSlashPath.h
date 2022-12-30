@@ -24,6 +24,7 @@
 class NoSlashPath : public std::filesystem::path {
 public:
 	NoSlashPath() {};
+	NoSlashPath(std::string arg){ *this = arg; }
 	
 	NoSlashPath &operator= (std::string);
 };

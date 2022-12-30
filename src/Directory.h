@@ -8,6 +8,7 @@
 #ifndef DIRECTORY_H
 #define DIRECTORY_H
 
+#include "NoSlashPath.h"
 #include "Item.h"
 #include "File.h"
 
@@ -24,7 +25,7 @@ public :
 	Directory(const std::string aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
 
 		// Look for an existing object
-	static Item *findItemInRootDir(std::string, int fd=-1);
+	static Item *findItemInRootDir(NoSlashPath, int fd=-1);
 	Directory *findDir(std::string, bool recursive=false, bool create=true);
 	File *findFile(std::string);
 	bool exist(Item *sub){

@@ -87,12 +87,34 @@ void Directory::scan(int fd){
  *
  * Fail if the object or one of the intermediate directory doesn't exist
  */
-Item *Directory::findItemInRootDir(std::string name, int fd){
+Item *Directory::findItemInRootDir(NoSlashPath name, int fd){
 	if(Directory::partOf(*rootDir,name) < 0){
 		socsend(fd, "*E* Object outside root directory");
 		return NULL;
 	}
 
+		/* Only to cheat as in case we're looking for the root directory
+		 * modification (otherwise, it will find as its parent is outside
+		 */
+	if(name == *rootDir)
+		return rootDir;
+
+		/* Find out the parent of the object */
+	Directory *parent = rootDir->findDir(name.parent_path(), true, false);
+	if(!parent){
+		socsend(fd, "*E* The parent directory doesn't exist in memory's state");
+		return NULL;
+	}
+
+	if(debug)
+		std::cout << "*d* findDir(parent) -> " << *parent << std::endl;
+
+		/* look for the object itself */
+	Item *res = parent->findDir(name.filename());
+	if(!res)
+		res = parent->findFile(name.filename());
+
+	return res;
 }
 
 /* Find (or create) a directory.
@@ -103,6 +125,9 @@ Item *Directory::findItemInRootDir(std::string name, int fd){
  * -> create : we can recursively create intermediate directories (we are loading)
  */
 Directory *Directory::findDir(std::string name, bool recursive, bool create){
+	if(debug)
+		std::cout << "*d* findDir(" << name << ")\n";
+
 	if(recursive){
 		std::filesystem::path path(name);
 

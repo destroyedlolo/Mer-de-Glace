@@ -120,12 +120,26 @@ static void cmd_report(int fd, std::string){
 	rootDir->Report(fd);
 }
 
+/* Restrict doesn't impact accept command */
+static void cmd_accept(int fd, std::string arg){
+	if(arg.empty()){
+		socsend(fd, "*E* Object to be accepted missing");
+		return;
+	}
+
+	Item *obj = Directory::findItemInRootDir(arg, fd);
+
+socsend(fd, obj ? "found" : "not found");
+
+}
+
 std::map<std::string, Command> commands {
 	{ "help", { "list known commands", cmd_help }},
 	{ "restrict", { "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
 	{ "scan", { "launch a scan", cmd_scan }},
 	{ "save", { "Save on disk the memory database", cmd_save }},
 	{ "report", { "Report discrepancies", cmd_report }},
+	{ "accept", { "Validate a discrepancy", cmd_accept }},
 	{ "dump", { "Dump current in memory database", cmd_dump }}
 };
 
