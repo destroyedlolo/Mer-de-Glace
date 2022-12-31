@@ -102,7 +102,7 @@ static void cmd_restrict(int fd, std::string arg){
 }
 
 static void cmd_scan(int fd, std::string){
-	::rootDir->raz();
+//	::rootDir->raz();
 	::rootDir->scan(fd);
 }
 
@@ -118,6 +118,12 @@ static void cmd_save(int fd, std::string){
 
 static void cmd_report(int fd, std::string){
 	rootDir->Report(fd);
+}
+
+static void cmd_raz(int fd, std::string){
+	rootDir->raz();
+
+	socsend(fd, "*I* State reseted");
 }
 
 /* Restrict doesn't impact accept command */
@@ -138,6 +144,8 @@ static void cmd_accept(int fd, std::string arg){
 std::map<std::string, Command> commands {
 	{ "help", { "list known commands", cmd_help }},
 	{ "restrict", { "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
+	{ "RESET", { "reset items status (DANGEROUS)", cmd_raz }},
+	{ "RAZ", { "reset items status (DANGEROUS)", cmd_raz }},
 	{ "scan", { "launch a scan", cmd_scan }},
 	{ "save", { "Save on disk the memory database", cmd_save }},
 	{ "report", { "Report discrepancies", cmd_report }},
