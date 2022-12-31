@@ -149,7 +149,9 @@ std::map<std::string, Command> commands {
 	{ "scan", { "launch a scan", cmd_scan }},
 	{ "save", { "Save on disk the memory database", cmd_save }},
 	{ "report", { "Report discrepancies", cmd_report }},
+	{ "status", { "Report discrepancies (report alias)", cmd_report }},
 	{ "accept", { "Validate a discrepancy", cmd_accept }},
+	{ "status", { "Validate a discrepancy (accept alias", cmd_accept }},
 	{ "dump", { "Dump current in memory database", cmd_dump }}
 };
 
