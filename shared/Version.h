@@ -18,7 +18,7 @@
  *	30/12/2022 - LF - v0.6 - Handle accept
  */
 
-#define VERSION 0.0600
+#define VERSION 0.0601
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022"
 
 /* Default configuration file */

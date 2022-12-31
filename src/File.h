@@ -50,6 +50,8 @@ public :
 	std::string getHistorical( void ){ return this->historical_md5; }
 	std::string getActual( void ){ return this->actual_md5; }
 
+	void raz(bool loaded=false);
+
 		// Display content
 	virtual void Report(int);
 	virtual void dump(int ident=0, int fd=-1);

@@ -199,7 +199,13 @@ bool Directory::addFile(File *f){
 }
 
 void Directory::raz(bool loaded){
-	this->Item::raz(loaded);
+	if(!restrict.empty() && !loaded){
+		if(Directory::partOf(restrict,*this) >= 0)
+			this->Item::raz(loaded);
+		else if(debug)
+			std::cout << "*d* skip "<< *this << std::endl;
+	} else
+		this->Item::raz(loaded);
 
 	for(auto sub : this->subfiles)
 		sub->raz(loaded);

@@ -128,8 +128,10 @@ static void cmd_accept(int fd, std::string arg){
 	}
 
 	Item *obj = Directory::findItemInRootDir(arg, fd);
-
-socsend(fd, obj ? "found" : "not found");
+	if(!obj){
+		socsend(fd, "*E* Not found");
+		return;
+	}
 
 }
 

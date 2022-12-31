@@ -23,7 +23,7 @@ Directory.o : Directory.cpp Directory.h Item.h File.h Config.h \
   Makefile 
 	$(cc) -c -o Directory.o Directory.cpp $(opts) 
 
-File.o : File.cpp File.h Item.h Config.h Makefile 
+File.o : File.cpp File.h Item.h Directory.h Config.h Makefile 
 	$(cc) -c -o File.o File.cpp $(opts) 
 
 MerDeGlace.o : MerDeGlace.cpp Config.h Directory.h Item.h File.h \

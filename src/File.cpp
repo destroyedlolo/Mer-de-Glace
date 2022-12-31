@@ -6,6 +6,7 @@
  */
 
 #include "File.h"
+#include "Directory.h"
 #include "Config.h"
 #include "SocketHelpers.h"
 
@@ -54,6 +55,16 @@ std::string File::md5( std::string &res ){
 
 	res = md5string.str();
 	return res;
+}
+
+void File::raz(bool loaded){
+	if(!restrict.empty() && !loaded){
+		if(Directory::partOf(restrict,*this) >= 0)
+			this->Item::raz(loaded);
+		else if(debug)
+			std::cout << "*d* skip "<< *this << std::endl;
+	} else
+		this->Item::raz(loaded);
 }
 
 bool File::setActual(void){
