@@ -1,7 +1,12 @@
+<p align="center">
+<img src="https://img.shields.io/github/last-commit/destroyedlolo/GPMFMetersGenerator.svg?style=for-the-badge" />
+<hr/>
+
 # Mer-de-Glace
 Simple and lightweight archiving integrity solution
 
-:warning: **Mer-de-Glace** is still in it's very early stage. Documentation will be improved when a stable version will be released
+| :exclamation: | **Notez-bien :** **Mer-de-Glace** is still in it's very early stage. Documentation will be improved when a stable version will be released  |
+|-------------|----------------------------|
 
 ## Dependency
 * **OpenSSL**
@@ -17,6 +22,15 @@ with `./MdG -h` to get list of supported options. `./MdG help` to get the list o
 #### save
 When the state is saved, using `save` command, all files/directories `creation` are *de facto* accepted.
 `modification` and `deletion` still need explicit acceptation (using accept `command`) as it may highlight a storage issue.
+
+#### RESET / RAZ
+**RESET** command will reset the state of each file/directory and is only aimed to be used before a **scan**.
+Typical usage : a lot of not committed modifications as been made, leading to a mess in the in-memory database.
+
+As a rule of thumb, it's **always** better to avoid usage of **RESET** but commit frequently changes.
+
+| :warning: | This command is **very dangerous**. In case of doubte, **restart *MerDeGlaced* without saving** and then launch a scan : it will reset data as per the real situation |
+|-------------|----------------------------|
 
 ## ToDo list
 This is the list of identified tasks/behaviors. 
