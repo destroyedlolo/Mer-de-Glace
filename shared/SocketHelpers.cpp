@@ -10,9 +10,12 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-void socsend(int fd, std::string msg){
+void socsend(int fd, std::string msg, bool nonl){
 	if(fd < 0)
 		return;
+
+	if(!nonl && msg.back() != '\n')
+		msg += '\n';
 
 	int rc = send(fd, msg.c_str(), msg.length(), 0);
 	if(rc < 0)

@@ -20,6 +20,6 @@
 
 #include <string>
 
-extern void socsend(int fd, std::string msg);
+extern void socsend(int fd, std::string msg, bool nonl=false);
 
 #endif
