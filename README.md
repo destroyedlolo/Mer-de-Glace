@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://img.shields.io/github/last-commit/destroyedlolo/GPMFMetersGenerator.svg?style=for-the-badge" />
+<img src="https://img.shields.io/github/last-commit/destroyedlolo/Mer-de-Glace.svg?style=for-the-badge" />
 <hr/>
 
 # Mer-de-Glace
