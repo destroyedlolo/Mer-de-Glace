@@ -150,7 +150,6 @@ int main(int ac, char **av){
 			std::cout << buffer;
 		}
 	}
-	std::cout << std::endl;
 	close(s);
 
 	exit(EXIT_SUCCESS);
