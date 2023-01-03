@@ -110,7 +110,7 @@ Item *Directory::findItemInRootDir(NoSlashPath name, int fd){
 		std::cout << "*d* findDir(parent) -> " << *parent << std::endl;
 
 		/* look for the object itself */
-	Item *res = parent->findDir(name.filename());
+	Item *res = parent->findDir(name.filename(), false, false);
 	if(!res)
 		res = parent->findFile(name.filename());
 
@@ -126,7 +126,7 @@ Item *Directory::findItemInRootDir(NoSlashPath name, int fd){
  */
 Directory *Directory::findDir(std::string name, bool recursive, bool create){
 	if(debug)
-		std::cout << "*d* findDir(" << name << ")\n";
+		std::cout << "*d* findDir(" << name << (recursive ? ", rec" : "") << (create ? ", create":"") << ")\n";
 
 	if(recursive){
 		std::filesystem::path path(name);
@@ -141,6 +141,25 @@ Directory *Directory::findDir(std::string name, bool recursive, bool create){
 
 			return this;
 		} else if(path.parent_path() == *this){	// We found the parent directory but the target doesn't exist
+
+/*
+			for(auto sub : this->subfiles){	// Look in files list
+				if(name == *sub){
+					if(debug)
+						std::cout << "*d* found as sub file\n";
+					return sub;
+				}
+			}
+*/
+
+			for(auto sub : this->subdirs){	// Look in sub directories list
+				if(name == *sub){
+					if(debug)
+						std::cout << "*d* found as sub directory\n";
+					return sub;
+				}
+			}
+
 			if(create){
 				if(debug)
 					std::cout << "*d* Create new directory\n";
@@ -151,33 +170,45 @@ Directory *Directory::findDir(std::string name, bool recursive, bool create){
 				this->addDir(n);
 
 				return n;
-			} else
+			} else {
+				if(debug)
+					std::cout << "*d* parent found but not object '" << *this << "' - '" << name << "'\n";
 				return NULL;
+			}
 		} else {	// recurse in subdir
 			if(this->partOf(*this, name) > 0){
 				if(debug)
 					std::cout << "*d* going deeper\n";
 
 				for(auto sub : this->subdirs){
-					Directory *res = sub->findDir(name, true);
+					Directory *res = sub->findDir(name, true, create);
 					if(res)
 						return res;
 				}
-			} else
+			} else {
+				if(debug)
+					std::cout << "*d* outside '" << *this << "' - '" << name << "'\n";
 				return NULL;
+			}
 		}
-	} else
-		for(auto sub : this->subdirs)
+	} else {
+		for(auto sub : this->subdirs){
 			if(sub->getName() == name)
 				return sub;
+		}
+	}
 
 	return NULL;
 }
 
 File *Directory::findFile(std::string name){
-	for(auto sub : this->subfiles)
-		if(sub->getName() == name)
+	for(auto sub : this->subfiles){
+		if(sub->getName() == name){
+			if(debug)
+				std::cout << "*d* found as sub file\n";
 			return sub;
+		}
+	}
 	
 	return NULL;
 }
@@ -224,10 +255,14 @@ void Directory::dump(int ident, int fd){
 		res += "crt ";
 	if(this->isDeleted())
 		res += "Del";
+
+if(debug) std::cout << res << " (" << (int)this->subdirs.size() << ")\n";
 	res += '\n';
 
+/*
 	if(debug)
 		std::cout << res;
+*/
 	socsend(fd, res);
 
 	for(auto sub : this->subfiles)

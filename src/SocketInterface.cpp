@@ -139,6 +139,7 @@ static void cmd_accept(int fd, std::string arg){
 		return;
 	}
 
+socsend(fd, "*I* found");
 }
 
 std::map<std::string, Command> commands {

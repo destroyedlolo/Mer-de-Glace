@@ -8,7 +8,7 @@ echo "-----------------------------"
 echo
 
 cd src
-LFMakeMaker -v +f=Makefile \
+LFMakeMaker -v +f=Makefile -I../shared/ +g +gr \
 	-cc="c++ -Wall -O2 -I../shared" \
 	--opts="\$(shell pkg-config --libs openssl)" \
 	../shared/*.cpp \
@@ -20,7 +20,7 @@ echo "-----------------------------"
 echo
 
 cd ../client
-LFMakeMaker -v +f=Makefile \
+LFMakeMaker -v +f=Makefile -I../shared/ +g +gr \
 	-cc="c++ -Wall -O2 -I../shared" \
 	../shared/*.cpp \
 	*.cpp -t=../MdG > Makefile

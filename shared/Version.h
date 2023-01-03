@@ -18,8 +18,8 @@
  *	30/12/2022 - LF - v0.6 - Handle accept
  */
 
-#define VERSION 0.0602
-#define COPYRIGHT "Mer de Glace (c) L.Faillie 2022"
+#define VERSION 0.0603
+#define COPYRIGHT "Mer de Glace (c) L.Faillie 2022-23"
 
 /* Default configuration file */
 #define DEFAULT_CONFIGURATION_FILE "/usr/local/etc/MerDeGlace.conf"
