@@ -77,6 +77,13 @@ bool File::setActual(void){
 		return(true);
 }
 
+void File::acceptChange(void){
+	if(this->isChanged()){
+		this->historical_md5 = this->actual_md5;
+		this->actual_md5.clear();
+	}
+}
+
 void File::Report(int fd){
 	if(this->isCreated())
 		socsend(fd, "[Created]\t" + (std::string)*this + '\n');

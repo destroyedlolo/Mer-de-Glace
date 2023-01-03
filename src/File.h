@@ -47,6 +47,8 @@ public :
 		return(!this->actual_md5.empty());
 	}
 
+	void acceptChange(void);
+
 	std::string getHistorical( void ){ return this->historical_md5; }
 	std::string getActual( void ){ return this->actual_md5; }
 

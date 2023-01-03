@@ -139,7 +139,27 @@ static void cmd_accept(int fd, std::string arg){
 		return;
 	}
 
-socsend(fd, "*I* found");
+	if(obj->isCreated()){
+		if(debug)
+			std::cout << "*I* object created\n";
+		obj->markCreated(false);
+	}
+
+	if(obj->isDeleted()){
+		if(debug)
+			std::cout << "*I* object deleted\n";
+std::cout << "*AF* deleted !\n";
+	}
+
+	if(obj->getKind() == Item::_kind::IT_FILE){
+		if(((File *)obj)->isChanged()){
+			if(debug)
+				std::cout << "*I* object changed\n";
+			((File *)obj)->acceptChange();
+		}
+	}
+
+	socsend(fd, "*I* Change accepted");
 }
 
 std::map<std::string, Command> commands {
@@ -152,7 +172,7 @@ std::map<std::string, Command> commands {
 	{ "report", { "Report discrepancies", cmd_report }},
 	{ "status", { "Report discrepancies (report alias)", cmd_report }},
 	{ "accept", { "Validate a discrepancy", cmd_accept }},
-	{ "status", { "Validate a discrepancy (accept alias", cmd_accept }},
+	{ "commit", { "Validate a discrepancy (accept alias", cmd_accept }},
 	{ "dump", { "Dump current in memory database", cmd_dump }}
 };
 
