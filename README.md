@@ -27,8 +27,8 @@ with `./MdG -h` to get list of supported options. `./MdG help` to get the list o
 
 ### Notes about commands
 #### save
-When the state is saved, using `save` command, all files/directories `creation` are *de facto* accepted.
-`modification` and `deletion` still need explicit acceptation (using accept `command`) as it may highlight a storage issue.
+When the state is saved, using `save` command, all files/directories *creation* are de facto accepted.
+*modification* and *deletion* still need explicit acceptation (using `accept` command) as they may highlight a storage issue.
 
 #### RESET / RAZ
 **RESET** command will reset the state of each file/directory and is only aimed to be used before a **scan**.
