@@ -24,7 +24,7 @@ public :
 	Directory(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IF_DIRECTORY){}
 	Directory(const std::string aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
 
-	virtual ~Directory(){}
+	virtual ~Directory();
 
 		// Look for an existing object
 	static Item *findItemInRootDir(NoSlashPath, Directory *&, int fd=-1);
@@ -39,6 +39,9 @@ public :
 	bool addFile(File *);
 
 		// remove sub object
+	void removeDir(Directory *o){
+		this->subdirs.remove(o);
+	}
 	void removeFile(File *o){
 		this->subfiles.remove(o);
 	}

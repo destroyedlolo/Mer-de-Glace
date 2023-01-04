@@ -155,14 +155,18 @@ static void cmd_accept(int fd, std::string arg){
 	}
 
 	if(obj->isDeleted()){
-std::cout << "*AF* deleted !\n";
-
 		if(obj->getKind() == Item::_kind::IT_FILE){
 			parent->removeFile((File *)obj);
 			delete((File *)obj);
 
 			if(debug)
 				std::cout << "*I* File deleted\n";
+		} else if(obj->getKind() == Item::_kind::IF_DIRECTORY){
+			parent->removeDir((Directory *)obj);
+			delete((Directory *)obj);
+
+			if(debug)
+				std::cout << "*I* Directory deleted\n";
 		}
 	}
 

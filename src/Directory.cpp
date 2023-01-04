@@ -16,6 +16,21 @@
 #include <list>
 #include <cassert>
 
+Directory::~Directory(){
+		// Subs need to be delete as well
+	for(auto sub : this->subfiles){
+		if(debug)
+			std::cout << "*D* deleting sub file '" << *sub << "'\n";
+		delete(sub);
+	}
+
+	for(auto sub : this->subdirs){
+		if(debug)
+			std::cout << "*D* deleting sub dir '" << *sub << "'\n";
+		delete(sub);
+	}
+}
+
 void Directory::scan(int fd){
 	this->touch();
 
