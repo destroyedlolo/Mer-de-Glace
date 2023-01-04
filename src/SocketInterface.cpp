@@ -133,7 +133,8 @@ static void cmd_accept(int fd, std::string arg){
 		return;
 	}
 
-	Item *obj = Directory::findItemInRootDir(arg, fd);
+	Directory *parent;
+	Item *obj = Directory::findItemInRootDir(arg, parent, fd);
 	if(!obj){
 		socsend(fd, "*E* Not found");
 		return;
@@ -145,17 +146,23 @@ static void cmd_accept(int fd, std::string arg){
 		obj->markCreated(false);
 	}
 
-	if(obj->isDeleted()){
-		if(debug)
-			std::cout << "*I* object deleted\n";
-std::cout << "*AF* deleted !\n";
-	}
-
 	if(obj->getKind() == Item::_kind::IT_FILE){
 		if(((File *)obj)->isChanged()){
 			if(debug)
 				std::cout << "*I* object changed\n";
 			((File *)obj)->acceptChange();
+		}
+	}
+
+	if(obj->isDeleted()){
+std::cout << "*AF* deleted !\n";
+
+		if(obj->getKind() == Item::_kind::IT_FILE){
+			parent->removeFile((File *)obj);
+			delete((File *)obj);
+
+			if(debug)
+				std::cout << "*I* File deleted\n";
 		}
 	}
 

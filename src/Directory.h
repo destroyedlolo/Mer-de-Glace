@@ -24,17 +24,25 @@ public :
 	Directory(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IF_DIRECTORY){}
 	Directory(const std::string aname) : Item(aname, Item::_kind::IF_DIRECTORY){}
 
+	virtual ~Directory(){}
+
 		// Look for an existing object
-	static Item *findItemInRootDir(NoSlashPath, int fd=-1);
+	static Item *findItemInRootDir(NoSlashPath, Directory *&, int fd=-1);
 	Directory *findDir(std::string, bool recursive=false, bool create=true);
 	File *findFile(std::string);
 	bool exist(Item *sub){
 		return(this->findDir(sub->getName()) || this->findFile(sub->getName()));
 	}
 
-		// add sub objects
+		// add sub object
 	bool addDir(Directory *);
 	bool addFile(File *);
+
+		// remove sub object
+	void removeFile(File *o){
+		this->subfiles.remove(o);
+	}
+	
 
 		// Refresh directory's own information
 		// fd = file descriptor to write to

@@ -87,7 +87,7 @@ void Directory::scan(int fd){
  *
  * Fail if the object or one of the intermediate directory doesn't exist
  */
-Item *Directory::findItemInRootDir(NoSlashPath name, int fd){
+Item *Directory::findItemInRootDir(NoSlashPath name, Directory *&parent, int fd){
 	if(Directory::partOf(*rootDir,name) < 0){
 		socsend(fd, "*E* Object outside root directory");
 		return NULL;
@@ -100,7 +100,7 @@ Item *Directory::findItemInRootDir(NoSlashPath name, int fd){
 		return rootDir;
 
 		/* Find out the parent of the object */
-	Directory *parent = rootDir->findDir(name.parent_path(), true, false);
+	parent = rootDir->findDir(name.parent_path(), true, false);
 	if(!parent){
 		socsend(fd, "*E* The parent directory doesn't exist in memory's state");
 		return NULL;
@@ -141,16 +141,6 @@ Directory *Directory::findDir(std::string name, bool recursive, bool create){
 
 			return this;
 		} else if(path.parent_path() == *this){	// We found the parent directory but the target doesn't exist
-
-/*
-			for(auto sub : this->subfiles){	// Look in files list
-				if(name == *sub){
-					if(debug)
-						std::cout << "*d* found as sub file\n";
-					return sub;
-				}
-			}
-*/
 
 			for(auto sub : this->subdirs){	// Look in sub directories list
 				if(name == *sub){

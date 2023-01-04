@@ -43,6 +43,8 @@ public :
 		this->raz();
 	}
 
+	virtual ~Item(){}
+
 	std::string &getName(void){
 		return this->name;
 	}
