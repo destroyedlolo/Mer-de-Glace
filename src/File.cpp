@@ -86,12 +86,12 @@ void File::acceptChange(void){
 
 void File::Report(int fd){
 	if(this->isCreated())
-		socsend(fd, "[Created]\t" + (std::string)*this + '\n');
+		socsend(fd, "[F][Created]\t" + (std::string)*this + '\n');
 	if(this->isDeleted())
-		socsend(fd, "[Deleted]\t" + (std::string)*this + '\n');
+		socsend(fd, "[F][Deleted]\t" + (std::string)*this + '\n');
 
 	if(this->isChanged())
-		socsend(fd, "[Changed]\t" + (std::string)*this + '\n');
+		socsend(fd, "[F][Changed]\t" + (std::string)*this + '\n');
 }
 
 void File::dump(int ident, int fd){

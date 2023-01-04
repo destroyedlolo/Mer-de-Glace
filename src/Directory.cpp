@@ -264,9 +264,9 @@ if(debug) std::cout << res << " (" << (int)this->subdirs.size() << ")\n";
 
 void Directory::Report(int fd){
 	if(this->isCreated())
-		socsend(fd, "[Created]\t" + (std::string)*this + '\n');
+		socsend(fd, "[D][Created]\t" + (std::string)*this + '\n');
 	if(this->isDeleted())
-		socsend(fd, "[Deleted]\t" + (std::string)*this + '\n');
+		socsend(fd, "[D][Deleted]\t" + (std::string)*this + '\n');
 
 	for(auto sub : this->subfiles)
 		sub->Report(fd);
