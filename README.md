@@ -3,7 +3,14 @@
 <hr/>
 
 # Mer-de-Glace
-Simple and lightweight archiving integrity solution
+
+When talking about ultra-long-term storage, data **integrity quickly** becomes a challenge.
+Software bugs, human errors, hardware failures are the most obvious causes of data loss... but sometimes data degrades "on their own", with no visible external cause. Phenomenon known as [data degradation, data decay or bit decay](https://en.wikipedia.org/wiki/Data_degradation).
+
+A common strategy is to multiply an odd number of backups, compare them and apply a rule where "*the majority gets the vote*". But it's leading to a costly and slow solution.
+
+**Mer-de-Glace** stores an electronic signature when files are created then aims to report all kind of data corruption. 
+Consequently, we can easily verify the integrity of each individual file on a smaller brunch of backups.
 
 | :exclamation: | **Notez-bien :** **Mer-de-Glace** is still in it's very early stage. Documentation will be improved when a stable version will be released  |
 |-------------|----------------------------|
