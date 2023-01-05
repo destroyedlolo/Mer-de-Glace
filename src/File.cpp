@@ -110,7 +110,7 @@ void File::dump(int ident, int fd){
 		res << '\t';
 	
 	res << "File '" << this->getName()
-		<< "' : hist:" << this->getHistorical() << " (" << std::hex << this->getCS() << ")"
+		<< "' : hist:" << this->getHistorical() << " -" << std::hex << this->getCS() << "-"
 		<< " act:" << this->getActual() << ' ';
 
 	if(this->isCreated())

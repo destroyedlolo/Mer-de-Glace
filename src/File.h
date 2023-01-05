@@ -26,7 +26,7 @@ public :
 	}
 
 		// initialisation from existing data (loading from backup)
-	File( std::string aname, std::string amd5 ) : Item(aname, Item::_kind::IT_FILE), historical_md5(amd5){
+	File( std::string aname, std::string amd5, uint16_t acs ) : Item(aname, Item::_kind::IT_FILE), historical_md5(amd5), cs(acs){
 	}
 
 		// Compute it's md5

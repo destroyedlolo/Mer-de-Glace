@@ -44,6 +44,7 @@ bool verbose = false;
 bool debug = false;
 bool init = false;
 bool autosave = false;
+static bool corrupted = false;
 
 NoSlashPath root;
 NoSlashPath restrict;
@@ -115,6 +116,8 @@ static bool LoadDB(void){
 		Directory *current = rootDir;
 		while(std::getline( file, l)){	// Reading the database from disk
 			if(l[0] == '\t'){	// starting with a tab, it's a file
+				uint16_t cs = 0;
+
 				size_t sep = l.find('\t', 1);
 				if(sep == std::string::npos){
 					std::cerr << "*F* Malformed database file (missing tab separator)\n";
@@ -122,8 +125,23 @@ static bool LoadDB(void){
 				}
 				std::string fname = l.substr(1,sep-1);
 				std::string md5 = l.substr(sep+1);
+				sep = md5.find('\t', 1);
+				if(sep == std::string::npos){
+					if(debug){
+						if(!corrupted){
+							corrupted = true;
+							std::cerr << "*E* The backup is corrupted !\n";
+						}
+					} else {
+						std::cerr << "*F* The backup is corrupted !\n";
+						exit(EXIT_FAILURE);
+					}
+				} else {
+					cs = stoi(md5.substr(sep+1));
+					md5 = md5.substr(1,sep-1);
+				}
 
-				File *n = new File(*current / fname, md5);
+				File *n = new File(*current / fname, md5, cs);
 				if(!(current->addFile(n))){
 					std::cerr << "*F* duplicate File entry '" << fname << "'\n";
 					exit(EXIT_FAILURE);
@@ -148,6 +166,8 @@ static bool LoadDB(void){
 			exit(EXIT_FAILURE);
 		}
 	}
+
+	file.close();
 
 	rootDir->raz(true);	// Just to avoid wrong reporting
 	if(verbose)
@@ -293,6 +313,8 @@ int main(int ac, char **av){
 		rootDir->dump();
 	}
 #endif
+	if(corrupted)
+		std::cerr << "\n*W* ***** WARNING WARNING, WARNING *****\n*W* Loaded backup is corrupted\n*W* ***** WARNING WARNING, WARNING *****\n\n";
 
 		/***
 		 * Event handling
