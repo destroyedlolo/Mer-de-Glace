@@ -128,12 +128,14 @@ void File::dump(int ident, int fd){
 	
 	res << "File '" << this->getName()
 		<< "' : hist:" << this->getHistorical() << " -" << std::hex << this->getCS() << "-"
-		<< " act:" << this->getActual() << ' ';
+		<< " act:" << this->getActual();
 
+	if(!this->hasValideSignature())
+		res << " CS";
 	if(this->isCreated())
-		res << "crt ";
+		res << " crt";
 	if(this->isDeleted())
-		res << "Del";
+		res << " Del";
 	res << '\n';
 
 	if(debug)
