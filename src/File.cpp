@@ -94,13 +94,30 @@ void File::acceptChange(void){
 }
 
 void File::Report(int fd){
-	if(this->isCreated())
-		socsend(fd, "[F][Created]\t" + (std::string)*this + '\n');
-	if(this->isDeleted())
-		socsend(fd, "[F][Deleted]\t" + (std::string)*this + '\n');
+	bool issue=false;
+	std::stringstream res("[F]");
 
-	if(this->isChanged())
-		socsend(fd, "[F][Changed]\t" + (std::string)*this + '\n');
+	if(!this->hasValideSignature()){
+		res << "[Bad CS]";
+		issue = true;
+	}
+	if(this->isCreated()){
+		res << "[Created]";
+		issue = true;
+	}
+	if(this->isDeleted()){
+		res << "[Deleted]";
+		issue = true;
+	}
+	if(this->isChanged()){
+		res << "[Changed]";
+		issue = true;
+	}
+
+	if(issue){
+		res << '\t' << (std::string)*this << std::endl;
+		socsend(fd, res.str());
+	}
 }
 
 void File::dump(int ident, int fd){
