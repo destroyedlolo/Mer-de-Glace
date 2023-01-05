@@ -15,28 +15,25 @@
 class File : public Item {
 	std::string name;			// Name of the file
 	std::string historical_md5;	// md5 as computed initially
+	uint16_t cs;					// md5 checksum
 	std::string actual_md5;		// md5 calculated NOW
 
 public :
 		// Create a new file and initialise md5
 	File(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IT_FILE){
 		this->md5(this->historical_md5);
+		this->cs = File::calCS(this->historical_md5);
 	}
 
 		// initialisation from existing data (loading from backup)
 	File( std::string aname, std::string amd5 ) : Item(aname, Item::_kind::IT_FILE), historical_md5(amd5){
 	}
 
-#if 0
-		// update actual md5 from an opened file
-	File( FILE *, const char *aname );
-
-		// accept any modification
-	accept( void );
-#endif
-
 		// Compute it's md5
 	std::string md5( std::string & );
+
+		// calcule the CS of an md5 string
+	static uint16_t calCS( std::string );
 
 		// Set actual md5 (if changed)
 		// -> true : md5 changed
@@ -49,8 +46,9 @@ public :
 
 	void acceptChange(void);
 
-	std::string getHistorical( void ){ return this->historical_md5; }
-	std::string getActual( void ){ return this->actual_md5; }
+	std::string getHistorical(void){ return this->historical_md5; }
+	uint16_t getCS(void){ return this->cs; }
+	std::string getActual(void){ return this->actual_md5; }
 
 	void raz(bool loaded=false);
 

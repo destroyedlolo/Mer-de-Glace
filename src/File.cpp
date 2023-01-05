@@ -57,6 +57,15 @@ std::string File::md5( std::string &res ){
 	return res;
 }
 
+uint16_t File::calCS(std::string md5){
+	uint16_t res = 0;
+
+	for(auto &c : md5)
+		res += c;
+	
+	return res;
+}
+
 void File::raz(bool loaded){
 	if(!restrict.empty() && !loaded){
 		if(Directory::partOf(restrict,*this) >= 0)
@@ -95,22 +104,24 @@ void File::Report(int fd){
 }
 
 void File::dump(int ident, int fd){
-	std::string res;
-	for(int i=0; i<ident; i++)
-		res += '\t';
+	std::stringstream res;
 
-	res += "File '" + (std::string)this->getName()
-		+ "' : hist:" + this->getHistorical()
-		+ " act:" + this->getActual() + ' ';
+	for(int i=0; i<ident; i++)
+		res << '\t';
+	
+	res << "File '" << this->getName()
+		<< "' : hist:" << this->getHistorical() << " (" << std::hex << this->getCS() << ")"
+		<< " act:" << this->getActual() << ' ';
+
 	if(this->isCreated())
-		res += "crt ";
+		res << "crt ";
 	if(this->isDeleted())
-		res += "Del";
-	res += '\n';
+		res << "Del";
+	res << '\n';
 
 	if(debug)
-		std::cout << res;
-	socsend(fd, res);
+		std::cout << res.str();
+	socsend(fd, res.str());
 }
 
 void File::save2DB(std::ofstream &f){
