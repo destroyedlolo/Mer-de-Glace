@@ -5,7 +5,7 @@
 # Mer-de-Glace
 
 When talking about ultra-long-term storage, data **integrity quickly** becomes a challenge.
-Software bugs, human errors, hardware failures are the most obvious causes of data loss... but sometimes data degrades "on their own", with no visible external cause. Phenomenon known as [data degradation, data decay or bit decay](https://en.wikipedia.org/wiki/Data_degradation).
+Software bugs, human errors, hardware failures are the most obvious causes of data loss... but sometimes data degrades "on their own", with no visible external cause. Phenomenon known as [data decay, data rot or bit rot](https://en.wikipedia.org/wiki/Data_degradation).
 
 A common strategy is to multiply an odd number of backups, compare them and apply a rule where "*the majority gets the vote*". But it's leading to a costly and slow solution.
 
