@@ -127,7 +127,7 @@ void File::dump(int ident, int fd){
 		res << '\t';
 	
 	res << "File '" << this->getName()
-		<< "' : hist:" << this->getHistorical() << " -" << std::hex << this->getCS() << "-"
+		<< "' : hist:" << this->getHistorical() << " -" << std::hex << this->getCS() << "/" << File::calCS(this->getHistorical()) << "-"
 		<< " act:" << this->getActual();
 
 	if(!this->hasValideSignature())
@@ -144,6 +144,6 @@ void File::dump(int ident, int fd){
 }
 
 void File::save2DB(std::ofstream &f){
-	f << '\t' << this->getName() << '\t' << this->getHistorical() << std::endl;
+	f << '\t' << this->getName() << '\t' << this->getHistorical() << '\t' << this->getCS() << std::endl;
 	this->markCreated(false);
 }

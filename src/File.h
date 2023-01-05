@@ -34,9 +34,6 @@ public :
 
 		// calcule the CS of an md5 string
 	static uint16_t calCS( std::string );
-	bool hasValideSignature(void){
-		return(!(this->historical_md5.empty() || calCS(this->historical_md5) != this->cs));
-	}
 
 		// Set actual md5 (if changed)
 		// -> true : md5 changed
@@ -52,6 +49,10 @@ public :
 	std::string getHistorical(void){ return this->historical_md5; }
 	uint16_t getCS(void){ return this->cs; }
 	std::string getActual(void){ return this->actual_md5; }
+
+	bool hasValideSignature(void){
+		return(!(this->historical_md5.empty() || calCS(this->historical_md5) != this->cs));
+	}
 
 	void raz(bool loaded=false);
 	void recalculateCS(void){
