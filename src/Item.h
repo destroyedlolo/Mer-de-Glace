@@ -67,6 +67,7 @@ public :
 		this->created = false;
 		this->found = loaded;
 	}
+	virtual void recalculateCS(void)=0;
 
 	void markCreated(bool yes = true){
 		this->created = yes;

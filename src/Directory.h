@@ -50,7 +50,10 @@ public :
 		// Refresh directory's own information
 		// fd = file descriptor to write to
 	void scan(int fd = -1);
+
+		// test and recovery functions
 	void raz(bool loaded=false);
+	void recalculateCS(void);
 
 		// Display content
 	virtual void dump(int ident=0, int fd=-1);

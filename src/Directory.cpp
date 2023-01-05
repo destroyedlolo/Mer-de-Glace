@@ -236,18 +236,38 @@ bool Directory::addFile(File *f){
 
 void Directory::raz(bool loaded){
 	if(!restrict.empty() && !loaded){
-		if(Directory::partOf(restrict,*this) >= 0)
+		if(Directory::partOf(restrict,*this) >= 0){
 			this->Item::raz(loaded);
-		else if(debug)
+
+			for(auto sub : this->subfiles)
+				sub->raz(loaded);
+		} else if(debug)
 			std::cout << "*d* skip "<< *this << std::endl;
-	} else
+	} else {
 		this->Item::raz(loaded);
 
-	for(auto sub : this->subfiles)
-		sub->raz(loaded);
+		for(auto sub : this->subfiles)
+			sub->raz(loaded);
+	}
 
 	for(auto sub : this->subdirs)
 		sub->raz(loaded);
+}
+
+void Directory::recalculateCS(void){
+	if(!restrict.empty()){
+		if(Directory::partOf(restrict,*this) >= 0){
+			for(auto sub : this->subfiles)
+				sub->recalculateCS();
+		} else if(debug)
+			std::cout << "*d* skip "<< *this << std::endl;
+	} else {
+		for(auto sub : this->subfiles)
+			sub->recalculateCS();
+	}
+
+	for(auto sub : this->subdirs)
+		sub->recalculateCS();
 }
 
 void Directory::dump(int ident, int fd){

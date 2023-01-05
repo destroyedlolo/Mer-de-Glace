@@ -102,7 +102,6 @@ static void cmd_restrict(int fd, std::string arg){
 }
 
 static void cmd_scan(int fd, std::string){
-//	::rootDir->raz();
 	::rootDir->scan(fd);
 }
 
@@ -124,6 +123,14 @@ static void cmd_raz(int fd, std::string){
 	rootDir->raz();
 
 	socsend(fd, "*I* State reseted");
+}
+
+static void cmd_recs(int fd, std::string){
+	if(debug){
+		rootDir->recalculateCS();
+		socsend(fd, "*W* Checksum recalculated");
+	} else
+		socsend(fd, "*E* Checksum recalculation is allowed only when the daemon is in debug mode");
 }
 
 /* Restrict doesn't impact accept command */
@@ -178,6 +185,7 @@ std::map<std::string, Command> commands {
 	{ "restrict", { "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
 	{ "RESET", { "reset items status (DANGEROUS)", cmd_raz }},
 	{ "RAZ", { "reset items status (DANGEROUS)", cmd_raz }},
+	{ "RECS", { "recalculate checksums (VERY DANGEROUS, debug mode only)", cmd_recs }},
 	{ "scan", { "launch a scan", cmd_scan }},
 	{ "save", { "Save on disk the memory database", cmd_save }},
 	{ "report", { "Report discrepancies", cmd_report }},

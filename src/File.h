@@ -51,6 +51,9 @@ public :
 	std::string getActual(void){ return this->actual_md5; }
 
 	void raz(bool loaded=false);
+	void recalculateCS(void){
+		this->cs = File::calCS(this->historical_md5);
+	}
 
 		// Display content
 	virtual void Report(int);
