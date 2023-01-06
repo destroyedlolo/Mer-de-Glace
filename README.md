@@ -15,7 +15,7 @@ Consequently, we can easily verify the integrity of each individual file on a sm
 | :exclamation: | **Notez-bien :** **Mer-de-Glace** is still in it's very early stage. Documentation will be improved when a stable version will be released  |
 |-------------|----------------------------|
 
-See **UseCase** directory for compehensive example and use cases.
+See **Use Cases** directory for compehensive example and use cases.
 
 ## Dependency
 * **OpenSSL**
