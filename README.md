@@ -15,6 +15,8 @@ Consequently, we can easily verify the integrity of each individual file on a sm
 | :exclamation: | **Notez-bien :** **Mer-de-Glace** is still in it's very early stage. Documentation will be improved when a stable version will be released  |
 |-------------|----------------------------|
 
+See **UseCase** directory for compehensive example and use cases.
+
 ## Dependency
 * **OpenSSL**
 
@@ -46,7 +48,8 @@ This is the list of identified tasks/behaviors.
    - [X] Save / load state	(v0.2)
    - [X] Restrict scanning to a sub directory (v0.3)
    - [X] re-scan and issue a report (v0.4)
-   - [ ] Accept a discrepancy
+   - [X] Accept a discrepancy (v0.6)
+   - [X] verify in memory and backup integrity (v0.7)
 
 - *interfaces*
   - [X] accept commands via a socket (v0.4)
