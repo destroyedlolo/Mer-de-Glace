@@ -42,9 +42,9 @@
 
 bool verbose = false;
 bool debug = false;
-bool init = false;
-bool autosave = false;
-static bool corrupted = false;
+static bool init = false;
+static bool autosave = false;
+bool corrupted;
 
 NoSlashPath root;
 NoSlashPath restrict;
@@ -78,6 +78,8 @@ static bool LoadDB(void){
  * 		- load all data from the database
  */
 	std::ifstream file(dbfile, std::ios::binary);
+
+	corrupted = false;
 
 	if(!file){
 		if(verbose)
@@ -138,6 +140,18 @@ static bool LoadDB(void){
 				} else {
 					cs = stoi(md5.substr(sep+1));
 					md5 = md5.substr(0,sep);
+
+					if(cs != File::calCS(md5)){
+						if(debug){
+							if(!corrupted){
+								corrupted = true;
+								std::cerr << "*E* The backup is corrupted (wrong checksum) !\n";
+							}
+						} else {
+							std::cerr << "*F* The backup is corrupted (wrong checksum) !\n";
+							exit(EXIT_FAILURE);
+						}
+					}
 				}
 
 				File *n = new File(*current / fname, md5, cs);

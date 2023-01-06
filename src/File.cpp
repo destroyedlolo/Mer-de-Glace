@@ -90,6 +90,7 @@ void File::acceptChange(void){
 	if(this->isChanged()){
 		this->historical_md5 = this->actual_md5;
 		this->actual_md5.clear();
+		this->cs = File::calCS(this->getHistorical());
 	}
 }
 
@@ -100,6 +101,7 @@ void File::Report(int fd){
 	if(!this->hasValideSignature()){
 		res << "[Bad CS]";
 		issue = true;
+		corrupted = true;
 	}
 	if(this->isCreated()){
 		res << "[Created]";

@@ -16,9 +16,10 @@
  *	20/12/2022 - LF - v0.4 - End of POC
  *	24/12/2022 - LF - v0.5 - Separate daemon and CLI
  *	30/12/2022 - LF - v0.6 - Handle accept
+ *	06/01/2023 - LF - v0.7 - Add md5's checksum
  */
 
-#define VERSION 0.0604
+#define VERSION 0.0700
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022-23"
 
 /* Default configuration file */

@@ -281,13 +281,10 @@ void Directory::dump(int ident, int fd){
 	if(this->isDeleted())
 		res += "Del";
 
-if(debug) std::cout << res << " (" << (int)this->subdirs.size() << ")\n";
 	res += '\n';
 
-/*
 	if(debug)
 		std::cout << res;
-*/
 	socsend(fd, res);
 
 	for(auto sub : this->subfiles)

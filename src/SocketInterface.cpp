@@ -116,7 +116,15 @@ static void cmd_save(int fd, std::string){
 }
 
 static void cmd_report(int fd, std::string){
+	corrupted = false;
+
 	rootDir->Report(fd);
+
+	if(corrupted){
+		if(verbose)
+			std::cout << "*E* In memory state is corrupted\n";
+		socsend(fd, "*E* In memory state is corrupted\n");
+	}
 }
 
 static void cmd_raz(int fd, std::string){

@@ -25,6 +25,7 @@
 	// verbosity
 extern bool verbose;
 extern bool debug;
+extern bool corrupted;
 
 	// configuration
 extern NoSlashPath root;		// Root data directory
