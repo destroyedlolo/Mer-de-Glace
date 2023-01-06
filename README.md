@@ -56,6 +56,7 @@ This is the list of identified tasks/behaviors.
    - [X] Restrict scanning to a sub directory (v0.3)
    - [X] re-scan and issue a report (v0.4)
    - [X] Accept a discrepancy (v0.6)
+   - [ ] Guess dupplicate entries
    - [X] verify in memory and backup integrity (v0.7)
 
 - *interfaces*
