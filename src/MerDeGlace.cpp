@@ -108,7 +108,6 @@ static bool LoadDB(void){
 
 		rootDir = new Directory(root);	// Create in memory database
 		assert(rootDir);
-//	rootDir->markCreated();
 
 		if(debug)
 			std::cout << "*D* --> root : " << l << std::endl;
@@ -138,7 +137,7 @@ static bool LoadDB(void){
 					}
 				} else {
 					cs = stoi(md5.substr(sep+1));
-					md5 = md5.substr(1,sep-1);
+					md5 = md5.substr(0,sep);
 				}
 
 				File *n = new File(*current / fname, md5, cs);
