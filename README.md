@@ -38,7 +38,14 @@ Typical usage : a lot of not committed modifications as been made, leading to a 
 
 As a rule of thumb, it's **always** better to avoid usage of **RESET** but commit frequently changes.
 
-| :warning: | This command is **very dangerous**. In case of doubte, **restart *MerDeGlaced* without saving** and then launch a scan : it will reset data as per the real situation |
+| :eyes: | After a **RESET**, in memory state is not anymore consistent until the next scan. In case of doubte, **restart *MerDeGlaced* without saving** and then launch a scan : it will reset data as per the real situation |
+|-------------|----------------------------|
+
+#### RECS
+**Mer-de-Glace** keeps internal checksums to ensure in memory state as well as backup ones are not corrupted.
+In **very rare** occasion, rebuilding them is needed : it's the goal of **RECS** (for *recalculate checksum*).
+
+| :warning: | This command is **very dangerous** as checksum discrepancy is a proof of something going very bad (disk being corrupted, memory fault, hardware failure, ...). Consequently, this command is allowed ONLY if the daemon as been started in debug mode. |
 |-------------|----------------------------|
 
 ## ToDo list
