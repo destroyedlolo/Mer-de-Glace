@@ -12,7 +12,8 @@ FindDuplicate::FindDuplicate(int treesize) : sz(treesize){
 	this->dt = new std::vector<File *>[treesize];
 }
 
-void FindDuplicate::addFile(File *){
+void FindDuplicate::addFile(File *file){
+	this->dt[file->getCS() % this->sz].push_back(file);
 }
 
 void FindDuplicate::report(int fd){

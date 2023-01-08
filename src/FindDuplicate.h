@@ -17,6 +17,9 @@ class FindDuplicate {
 
 public:
 	FindDuplicate(int treesize);
+	~FindDuplicate(){
+		delete this->dt;
+	}
 
 	void addFile(File *);
 
