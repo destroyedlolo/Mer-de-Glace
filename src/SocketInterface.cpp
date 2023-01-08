@@ -11,6 +11,7 @@
 #include "Config.h"
 #include "Directory.h"
 #include "SocketHelpers.h"
+#include "FindDuplicate.h"
 
 #include <iostream>
 #include <map>
@@ -188,6 +189,22 @@ static void cmd_accept(int fd, std::string arg){
 	socsend(fd, "*I* Change accepted");
 }
 
+static void cmd_duplicate(int fd, std::string arg){
+	int nbre = 1024;
+	
+	if(!arg.empty()){
+		nbre = stoi(arg);
+		if(nbre <= 0){
+			socsend(fd, "*E* Tree size can't be <= 0\n");
+			return;
+		}
+	}
+
+	FindDuplicate rep(nbre);
+	rep.init(fd, rootDir);
+	rep.lookForDuplicate(fd);
+}
+
 std::map<std::string, Command> commands {
 	{ "help", { "list known commands", cmd_help }},
 	{ "restrict", { "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
@@ -198,6 +215,7 @@ std::map<std::string, Command> commands {
 	{ "save", { "Save on disk the memory database", cmd_save }},
 	{ "report", { "Report discrepancies", cmd_report }},
 	{ "status", { "Report discrepancies (report alias)", cmd_report }},
+	{ "duplicate", { "Report potential duplication", cmd_duplicate }},
 	{ "accept", { "Validate a discrepancy", cmd_accept }},
 	{ "commit", { "Validate a discrepancy (accept alias", cmd_accept }},
 	{ "dump", { "Dump current in memory database", cmd_dump }}

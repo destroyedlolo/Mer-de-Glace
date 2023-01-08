@@ -67,6 +67,17 @@ File.o : File.cpp File.h Item.h Directory.h Config.h \
   ../shared/SocketHelpers.h ../shared/NoSlashPath.h Makefile 
 	$(cc) -c -o File.o File.cpp $(opts) 
 
+# Warning : 'filesystem' can't be located for this node.
+# Warning : 'string' can't be located for this node.
+# Warning : 'string' can't be located for this node.
+# Warning : 'filesystem' can't be located for this node.
+# Warning : 'fstream' can't be located for this node.
+# Warning : 'string' can't be located for this node.
+# Warning : 'list' can't be located for this node.
+FindDuplicate.o : FindDuplicate.cpp FindDuplicate.h Directory.h Item.h \
+  File.h ../shared/NoSlashPath.h Makefile 
+	$(cc) -c -o FindDuplicate.o FindDuplicate.cpp $(opts) 
+
 # Warning : 'iostream' can't be located for this node.
 # Warning : 'iomanip' can't be located for this node.
 # Warning : 'fstream' can't be located for this node.
@@ -114,15 +125,15 @@ MerDeGlace.o : MerDeGlace.cpp Config.h Directory.h Item.h File.h \
 # Warning : 'unistd.h' can't be located for this node.
 # Warning : 'poll.h' can't be located for this node.
 SocketInterface.o : SocketInterface.cpp SocketInterface.h Config.h \
-  Directory.h Item.h File.h ../shared/SocketHelpers.h \
+  Directory.h Item.h File.h FindDuplicate.h ../shared/SocketHelpers.h \
   ../shared/NoSlashPath.h Makefile 
 	$(cc) -c -o SocketInterface.o SocketInterface.cpp $(opts) 
 
-../MerDeGlaced : SocketInterface.o MerDeGlace.o File.o Directory.o \
-  ../shared/SocketHelpers.o ../shared/NoSlashPath.o \
-  ../shared/Helpers.o Makefile 
-	 $(cc) -o ../MerDeGlaced SocketInterface.o MerDeGlace.o File.o \
+../MerDeGlaced : SocketInterface.o MerDeGlace.o FindDuplicate.o File.o \
   Directory.o ../shared/SocketHelpers.o ../shared/NoSlashPath.o \
-  ../shared/Helpers.o $(opts) 
+  ../shared/Helpers.o Makefile 
+	 $(cc) -o ../MerDeGlaced SocketInterface.o MerDeGlace.o \
+  FindDuplicate.o File.o Directory.o ../shared/SocketHelpers.o \
+  ../shared/NoSlashPath.o ../shared/Helpers.o $(opts) 
 
 all: ../MerDeGlaced 
