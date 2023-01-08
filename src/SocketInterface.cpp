@@ -203,6 +203,8 @@ static void cmd_duplicate(int fd, std::string arg){
 	try {
 		FindDuplicate rep(nbre);
 		rootDir->feedDuplicate(fd, rep);
+		if(debug)
+			rep.dump();
 		rep.report(fd);
 	} catch(std::bad_alloc& ex){
 		socsend(fd, "*E* Ran out of memory, sorry\n");

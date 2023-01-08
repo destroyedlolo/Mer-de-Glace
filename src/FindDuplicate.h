@@ -10,21 +10,26 @@
 #include "File.h"
 
 #include <vector>
+#include <map>
 
 class FindDuplicate {
 	int sz;
-	std::vector<File *> *dt;
+	std::map<std::string, std::vector<File *>> *dt;
 
 public:
 	FindDuplicate(int treesize);
 	~FindDuplicate(){
-		delete this->dt;
+		delete[] this->dt;
 	}
 
+		// Add a file in the in memory database
 	void addFile(File *);
 
 		// Populate in memory database
 	void report(int);
+
+		// dump in memory database
+	void dump(void);
 };
 
 #endif
