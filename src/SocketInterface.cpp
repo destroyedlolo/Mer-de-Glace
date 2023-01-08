@@ -18,7 +18,7 @@
 
 #include <cerrno>
 #include <cstdlib>
-#include <cassert>
+#include <cassert>	// Sanities for situation that should never happen
 
 #include <unistd.h>
 #include <poll.h>
@@ -200,9 +200,13 @@ static void cmd_duplicate(int fd, std::string arg){
 		}
 	}
 
-	FindDuplicate rep(nbre);
-	rep.init(fd, rootDir);
-	rep.report(fd);
+	try {
+		FindDuplicate rep(nbre);
+		rootDir->feedDuplicate(fd, rep);
+		rep.report(fd);
+	} catch(std::bad_alloc& ex){
+		socsend(fd, "*E* Ran out of memory, sorry\n");
+	}
 }
 
 std::map<std::string, Command> commands {

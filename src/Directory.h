@@ -11,6 +11,7 @@
 #include "NoSlashPath.h"
 #include "Item.h"
 #include "File.h"
+#include "FindDuplicate.h"
 
 #include <string>
 #include <list>
@@ -50,6 +51,7 @@ public :
 		// Refresh directory's own information
 		// fd = file descriptor to write to
 	void scan(int fd = -1);
+	void feedDuplicate(int, FindDuplicate &);
 
 		// test and recovery functions
 	void raz(bool loaded=false);

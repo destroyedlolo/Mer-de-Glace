@@ -7,16 +7,20 @@
 #ifndef FINDDUPLICATE_H
 #define FINDDUPLICATE_H
 
-#include "Directory.h"
+#include "File.h"
+
+#include <vector>
 
 class FindDuplicate {
 	int sz;
+	std::vector<File *> *dt;
 
 public:
 	FindDuplicate(int treesize);
 
+	void addFile(File *);
+
 		// Populate in memory database
-	bool init(int, Directory *);
 	void report(int);
 };
 

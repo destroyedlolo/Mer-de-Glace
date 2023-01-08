@@ -1,5 +1,5 @@
 # makefile created automaticaly by LFMakeMaker
-# LFMakeMaker 1.6 (May  7 2022 20:46:23) (c)LFSoft 1997
+# LFMakeMaker 1.6 (May  9 2022 15:11:43) (c)LFSoft 1997
 
 gotoall: all
 
@@ -37,6 +37,7 @@ opts=$(shell pkg-config --libs openssl)
 # Warning : 'string' can't be located for this node.
 # Warning : 'filesystem' can't be located for this node.
 # Warning : 'fstream' can't be located for this node.
+# Warning : 'vector' can't be located for this node.
 # Warning : 'string' can't be located for this node.
 # Warning : 'list' can't be located for this node.
 # Warning : 'string' can't be located for this node.
@@ -46,8 +47,8 @@ opts=$(shell pkg-config --libs openssl)
 # Warning : 'filesystem' can't be located for this node.
 # Warning : 'list' can't be located for this node.
 # Warning : 'cassert' can't be located for this node.
-Directory.o : Directory.cpp Directory.h Item.h File.h Config.h \
-  ../shared/SocketHelpers.h ../shared/NoSlashPath.h Makefile 
+Directory.o : Directory.cpp Directory.h Item.h File.h FindDuplicate.h \
+  Config.h ../shared/SocketHelpers.h ../shared/NoSlashPath.h Makefile 
 	$(cc) -c -o Directory.o Directory.cpp $(opts) 
 
 # Warning : 'string' can't be located for this node.
@@ -55,6 +56,7 @@ Directory.o : Directory.cpp Directory.h Item.h File.h Config.h \
 # Warning : 'fstream' can't be located for this node.
 # Warning : 'filesystem' can't be located for this node.
 # Warning : 'string' can't be located for this node.
+# Warning : 'vector' can't be located for this node.
 # Warning : 'string' can't be located for this node.
 # Warning : 'list' can't be located for this node.
 # Warning : 'string' can't be located for this node.
@@ -63,7 +65,7 @@ Directory.o : Directory.cpp Directory.h Item.h File.h Config.h \
 # Warning : 'fstream' can't be located for this node.
 # Warning : 'iostream' can't be located for this node.
 # Warning : 'cstring' can't be located for this node.
-File.o : File.cpp File.h Item.h Directory.h Config.h \
+File.o : File.cpp File.h Item.h Directory.h FindDuplicate.h Config.h \
   ../shared/SocketHelpers.h ../shared/NoSlashPath.h Makefile 
 	$(cc) -c -o File.o File.cpp $(opts) 
 
@@ -74,6 +76,7 @@ File.o : File.cpp File.h Item.h Directory.h Config.h \
 # Warning : 'fstream' can't be located for this node.
 # Warning : 'string' can't be located for this node.
 # Warning : 'list' can't be located for this node.
+# Warning : 'vector' can't be located for this node.
 FindDuplicate.o : FindDuplicate.cpp FindDuplicate.h Directory.h Item.h \
   File.h ../shared/NoSlashPath.h Makefile 
 	$(cc) -c -o FindDuplicate.o FindDuplicate.cpp $(opts) 
@@ -93,6 +96,7 @@ FindDuplicate.o : FindDuplicate.cpp FindDuplicate.h Directory.h Item.h \
 # Warning : 'string' can't be located for this node.
 # Warning : 'filesystem' can't be located for this node.
 # Warning : 'fstream' can't be located for this node.
+# Warning : 'vector' can't be located for this node.
 # Warning : 'string' can't be located for this node.
 # Warning : 'list' can't be located for this node.
 # Warning : 'string' can't be located for this node.
@@ -100,8 +104,8 @@ FindDuplicate.o : FindDuplicate.cpp FindDuplicate.h Directory.h Item.h \
 # Warning : 'sys/socket.h' can't be located for this node.
 # Warning : 'sys/un.h' can't be located for this node.
 MerDeGlace.o : MerDeGlace.cpp Config.h Directory.h Item.h File.h \
-  SocketInterface.h ../shared/NoSlashPath.h ../shared/Helpers.h \
-  ../shared/Version.h Makefile 
+  FindDuplicate.h SocketInterface.h ../shared/NoSlashPath.h \
+  ../shared/Helpers.h ../shared/Version.h Makefile 
 	$(cc) -c -o MerDeGlace.o MerDeGlace.cpp $(opts) 
 
 # Warning : 'string' can't be located for this node.
@@ -114,6 +118,7 @@ MerDeGlace.o : MerDeGlace.cpp Config.h Directory.h Item.h File.h \
 # Warning : 'string' can't be located for this node.
 # Warning : 'filesystem' can't be located for this node.
 # Warning : 'fstream' can't be located for this node.
+# Warning : 'vector' can't be located for this node.
 # Warning : 'string' can't be located for this node.
 # Warning : 'list' can't be located for this node.
 # Warning : 'string' can't be located for this node.
