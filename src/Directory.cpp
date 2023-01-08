@@ -270,6 +270,22 @@ void Directory::recalculateCS(void){
 		sub->recalculateCS();
 }
 
+void Directory::feedDuplicate(int fd, FindDuplicate &dup){
+	if(!restrict.empty()){
+		if(Directory::partOf(restrict,*this) >= 0){
+			for(auto sub : this->subfiles)
+				dup.addFile(sub);
+		} else if(debug)
+			std::cout << "*d* skip "<< *this << std::endl;
+	} else {
+		for(auto sub : this->subfiles)
+			dup.addFile(sub);
+	}
+
+	for(auto sub : this->subdirs)
+		sub->feedDuplicate(fd,dup);
+}
+
 void Directory::dump(int ident, int fd){
 	std::string res;
 	for(int i=0; i<ident; i++)

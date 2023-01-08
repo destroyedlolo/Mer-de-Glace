@@ -66,6 +66,10 @@ uint16_t File::calCS(std::string md5){
 	return res;
 }
 
+bool File::potentialEq(File *other){
+	return(this->getCS() == other->getCS() && this->getHistorical() == other->getHistorical());
+}
+
 void File::raz(bool loaded){
 	if(!restrict.empty() && !loaded){
 		if(Directory::partOf(restrict,*this) >= 0)

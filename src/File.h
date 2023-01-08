@@ -31,9 +31,10 @@ public :
 
 		// Compute it's md5
 	std::string md5( std::string & );
-
 		// calcule the CS of an md5 string
 	static uint16_t calCS( std::string );
+		// Signature are the same
+	bool potentialEq(File *);
 
 		// Set actual md5 (if changed)
 		// -> true : md5 changed
