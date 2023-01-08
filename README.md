@@ -103,16 +103,27 @@ It will take a long time, depending on your disk speed, CPU workforce, number of
 
 #### Check the result
 
-`./MdG report`
+```
+./MdG report
+[D][Deleted]	/home/laurent/Images/Brute/_AArchiver/test/tst
+[F][Deleted]	/home/laurent/Images/Brute/_AArchiver/test/tst/truc
+```
 
 * If it's the initial scan, it will report all files as [Created].
 * If it's not the initial scan, each discrepancy needs to be investigated : `accept` those who are legitimate.
+
+| :bulb: | `Accept`ing deletion of a directory will commit the deletion of all it sub object. |
+|-------------|----------------------------|
+
+Notez-bien : 
+- don't forget to `save` the state after validating all the discrepancies, otherwise they will reappear when the daemon is restarted.
+- it's not possible to validate checksum issues : they are highlighting potential hardware problems leading to severe data loss.
 
 #### if needed, save the new state
 
 `./MdG save`
 
-#### additionally, Mer-De-Glace can identify duplication
+### 4- additionally, Mer-De-Glace can identify duplication
 
 Notez-bien : it is comparing numerical signature. It's up to **YOU** to decide if some cleaning is needed or not.
 
