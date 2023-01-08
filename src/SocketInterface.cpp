@@ -202,7 +202,7 @@ static void cmd_duplicate(int fd, std::string arg){
 
 	FindDuplicate rep(nbre);
 	rep.init(fd, rootDir);
-	rep.lookForDuplicate(fd);
+	rep.report(fd);
 }
 
 std::map<std::string, Command> commands {

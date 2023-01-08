@@ -15,9 +15,9 @@ class FindDuplicate {
 public:
 	FindDuplicate(int treesize);
 
-
+		// Populate in memory database
 	bool init(int, Directory *);
-	void lookForDuplicate(int);
+	void report(int);
 };
 
 #endif

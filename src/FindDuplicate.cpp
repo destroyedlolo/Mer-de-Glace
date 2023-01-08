@@ -14,8 +14,14 @@
 FindDuplicate::FindDuplicate(int treesize) : sz(treesize){
 }
 
-void FindDuplicate::init(int fd, Directory *root){
+	/* Populate in memory database.
+	 * -> fd : to display messages
+	 * -> root : root directory for document
+	 * <- false in case of error
+	 */
+bool FindDuplicate::init(int fd, Directory *root){
+	return true;
 }
 
-void FindDuplicate::lookForDuplicate(int fd){
+void FindDuplicate::report(int fd){
 }
