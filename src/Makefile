@@ -71,17 +71,18 @@ File.o : File.cpp File.h Item.h Directory.h FindDuplicate.h Config.h \
   ../shared/SocketHelpers.h ../shared/NoSlashPath.h Makefile 
 	$(cc) -c -o File.o File.cpp $(opts) 
 
-# Warning : 'filesystem' can't be located for this node.
-# Warning : 'string' can't be located for this node.
-# Warning : 'string' can't be located for this node.
 # Warning : 'string' can't be located for this node.
 # Warning : 'filesystem' can't be located for this node.
 # Warning : 'fstream' can't be located for this node.
 # Warning : 'vector' can't be located for this node.
 # Warning : 'map' can't be located for this node.
+# Warning : 'filesystem' can't be located for this node.
+# Warning : 'string' can't be located for this node.
+# Warning : 'string' can't be located for this node.
+# Warning : 'string' can't be located for this node.
 # Warning : 'iostream' can't be located for this node.
-FindDuplicate.o : FindDuplicate.cpp Config.h FindDuplicate.h File.h \
-  Item.h ../shared/NoSlashPath.h Makefile 
+FindDuplicate.o : FindDuplicate.cpp FindDuplicate.h File.h Item.h \
+  Config.h ../shared/SocketHelpers.h ../shared/NoSlashPath.h Makefile 
 	$(cc) -c -o FindDuplicate.o FindDuplicate.cpp $(opts) 
 
 # Warning : 'iostream' can't be located for this node.

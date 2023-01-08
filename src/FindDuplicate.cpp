@@ -5,8 +5,9 @@
  * Copyright 2022 Laurent Faillie
  */
 
-#include "Config.h"
 #include "FindDuplicate.h"
+#include "Config.h"
+#include "SocketHelpers.h"
 
 #include <iostream>
 
@@ -22,6 +23,17 @@ void FindDuplicate::addFile(File *file){
 }
 
 void FindDuplicate::report(int fd){
+	for(int i=0; i<this->sz; i++){
+		for(const auto &[k,v] : this->dt[i]){
+			if(v.size() > 1){
+				socsend(fd, "Potential duplicate found :\n");
+				for(auto d : v){
+					socsend(fd, "  ", true);
+					socsend(fd, *d);
+				}
+			}
+		}
+	}	
 }
 
 void FindDuplicate::dump(void){

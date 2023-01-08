@@ -29,6 +29,7 @@ public:
 	void report(int);
 
 		// dump in memory database
+		// (to be called only in debut mode as output to daemon's std::cout)
 	void dump(void);
 };
 
