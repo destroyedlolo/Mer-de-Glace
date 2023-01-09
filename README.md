@@ -127,6 +127,62 @@ Notez-bien :
 
 Notez-bien : it is comparing numerical signature. It's up to **YOU** to decide if some cleaning is needed or not.
 
+#### check for duplication
+
+```
+./MdG -f ~/Config/Musiques.mdg duplicate
+Potential duplicate found :
+  /mnt/sda4/Musiques/Noir Désir/Noir Désir - 1993 - Tostaky/03 - Oublié.mp3
+  /mnt/sda4/Musiques/Noir Desir/1993 - Tostaky/03 - Oublie.mp3
+Potential duplicate found :
+  /mnt/sda4/Musiques/Noir Désir/Noir Désir - 1994 - Dies Irae/11 - It Spurts.mp3
+  /mnt/sda4/Musiques/Noir Desir/1994 - Dies Irae/11 - It Spurts.mp3
+Potential duplicate found :
+  /mnt/sda4/Musiques/Noir Désir/Noir Désir - 2001 - Des Visages Des Figures/Noir Désir - 2001 - Des Visages Des Figures - Back.jpg
+  /mnt/sda4/Musiques/Noir Desir/2001 - Des Visages Des Figures/Noir Désir - 2001 - Des Visages Des Figures - Back.jpg
+...
+```
+#### Do needed cleaning
+
+I made a mistake by converting twice my CD to MP3, using a different naming convention : Directories ".../Noir Désir/Noir Désir -\*" can be removed.
+
+#### re-scan to detect deletion
+
+In order to speed up the operation, `restrict` to the directory changed.
+```
+./MdG -f ~/Config/Musiques.mdg restrict "./MdG -f ~/Config/Musiques.mdg restrict"
+```
+
+`RESET` the in memory state.
+```
+$ ./MdG -f ~/Config/Musiques.mdg RESET
+*I* State reseted
+```
+
+and finaly, launch a new scan.
+```
+./MdG -f ~/Config/Musiques.mdg scan
+```
+
+#### accept deletion
+
+```
+./MdG -f ~/Config/Musiques.mdg report
+[D][Deleted]	/mnt/sda4/Musiques/Noir Désir
+[D][Deleted]	/mnt/sda4/Musiques/Noir Désir/Noir Désir - 1994 - Dies Irae
+[F][Deleted]	/mnt/sda4/Musiques/Noir Désir/Noir Désir - 1994 - Dies Irae/13 - The Holy Economic War.mp3
+[F][Deleted]	/mnt/sda4/Musiques/Noir Désir/Noir Désir - 1994 - Dies Irae/21 - I Want You (She'S So Heavy).mp3
+...
+```
+```
+./MdG -f ~/Config/Musiques.mdg accept '/mnt/sda4/Musiques/Noir Désir'
+```
+
+#### save the changes
+```
+./MdG -f ~/Config/Musiques.mdg save
+```
+
 ## ToDo list
 This is the list of identified tasks/behaviors. 
 - *data management*
