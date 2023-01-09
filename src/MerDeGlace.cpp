@@ -48,6 +48,7 @@ bool corrupted;
 
 NoSlashPath root;
 NoSlashPath restrict;
+NoSlashPath altroot;
 std::string dbfile;
 std::string rendezvous;	// Command's socket
 
@@ -108,7 +109,10 @@ static bool LoadDB(void){
 			exit(EXIT_FAILURE);
 		}
 
-		rootDir = new Directory(root);	// Create in memory database
+		if(altroot.empty())
+			rootDir = new Directory(root);	// Create in memory database
+		else
+			rootDir = new Directory(altroot);
 		assert(rootDir);
 
 		if(debug)
@@ -162,6 +166,13 @@ static bool LoadDB(void){
 			} else {	// a directory
 				Directory *res;
 
+if(!altroot.empty()){
+	std::filesystem::path p(l);
+	std::cout << "*d* " << l 
+			<< " " << p.lexically_relative(root)
+			<< " " << std::filesystem::path(altroot) / p.lexically_relative(*rootDir)
+			<< std::endl;
+}
 				res = rootDir->findDir(l, true);
 
 				if(res)
@@ -193,7 +204,7 @@ int main(int ac, char **av){
 	const char *conf_file = DEFAULT_CONFIGURATION_FILE;
 	int c;
 
-	while((c = getopt(ac, av, "hvdf:r:iS")) != EOF) switch(c){
+	while((c = getopt(ac, av, "hvdf:r:iSa:")) != EOF) switch(c){
 	case 'h':
 		std::cerr << basename(av[0]) 
 			<< " (" << std::setprecision(5) << VERSION << ")\n"
@@ -203,6 +214,7 @@ int main(int ac, char **av){
 			"\t-f<file> : read <file> for configuration\n"
 			"\t\t(default is '" << DEFAULT_CONFIGURATION_FILE << "')\n"
 			"\t-r<dir> : restrict actions to <dir> directory (allow to process only a subset of a tree)\n"
+			"\t-a : alternative root directory\n"
 			"\t-i : launch a scan at startup (warning : can be very long !)\n"
 			"\t-S : backup the state after the initial scan (imply -i)\n"
 			"\t-v : enable verbose messages\n"
@@ -220,6 +232,9 @@ int main(int ac, char **av){
 		break;
 	case 'r':
 		restrict = optarg;
+		break;
+	case 'a':
+		altroot = optarg;
 		break;
 	case 'S':
 		autosave = true;
