@@ -19,15 +19,15 @@ As a consequence, we are needing replicas only to overcome the failures of the m
 
 See **Use Cases** directory for comprehensive examples and use cases.
 
-## Installation
+## Installation from source
 
 **Mer-de-Glace** is a command-line tool targeting to run on slow headless machines.
 
-If like me, the goal is to recycle old boxes as backup servers, such hardware is probably no longer supported by recent mainstream Linux distributions : this may be a problem to compile Mer-De-Glace as a C++20 compiler is required. 
+My goal when starting this project was to recycle old/slow boxes as backup server. Unfortunately, mainstream Linux distributions are dropping such obsolete hardwares leading to compilation problem as **Mer-De-Glace is requiring C++20 compliant compiler**. 
 
-Alternatives exist :
-* some distributions like [TinyCoreLinux](http://www.tinycorelinux.net/) are still supporting quite old hardware
-* To the extreme, **Mer-De-Glace** binary can be installed only on one machine : states can be calculated remotely (see use cases).
+But alternatives exist :
+* some distributions like [TinyCoreLinux](http://www.tinycorelinux.net/) are still supporting old hardware (32 bits, low memory, low processor power). However, before attempting to install from source, check that a binary package does not exist (*I will make one for TinyCoreLinux x86-32b*).
+* To the extreme, **Mer-De-Glace** binary can be installed only on one machine : states will be calculated remotely (as explained in "use cases").
 
 ### Dependency
 
@@ -187,12 +187,14 @@ and finaly, launch a new scan.
 This is the list of identified tasks/behaviors. 
 - *data management*
    - [X] Recursively scan a directory with MD5 checksum (v0.1)
+   - [ ] smart status reset before scanning to avoir usage of explicite `RESET` command
    - [X] Save / load state	(v0.2)
    - [X] Restrict scanning to a sub directory (v0.3)
    - [X] re-scan and issue a report (v0.4)
    - [X] Accept a discrepancy (v0.6)
-   - [X] Guess dupplicate entries (v0.8)
+   - [X] Guess duplicate entries (v0.8)
    - [X] verify in memory and backup integrity (v0.7)
+   - [ ] Can use alternate root
 
 - *interfaces*
   - [X] accept commands via a socket (v0.4)
@@ -200,6 +202,7 @@ This is the list of identified tasks/behaviors.
   - [X] Command line tool (v0.5)
   - [ ] long standing commands are aborted when client connection is lost
   - [ ] file system notification
+  - [ ] Shell file name completion
 
 - *for the future*
   - [ ] access to remote stats (is it really useful ?)
