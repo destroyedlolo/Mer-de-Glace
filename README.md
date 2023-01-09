@@ -51,18 +51,22 @@ You will get 2 binaries :
 * **MdG** command line tool
 
 
-## About Command line
+## MdG, the Command line client
 **MdG** is the command line client to communication with **MerDeGlaced** daemon
 
 `./MdG [-opt] command [arguments ...]`
 
-with `./MdG -h` to get list of supported options. `./MdG help` to get the list of known command.
+with `./MdG -h` to get list of supported options. `./MdG help` to get the list of commands known by the daemon.
 
 ### Notes about commands
-#### save
-When the state is saved, using `save` command, all files/directories *creation* are de facto accepted.
 
-*modification* and *deletion* still need explicit acceptation (using `accept` command) as they may highlight a storage issue.
+#### save
+
+Mer-De-Glace maintains in memory files' state, which will be lost obviously when the server is restarted. It can put a snapshot of this state on disk using `save` command, a snapshot that will be automatically reloaded at daemon start.
+
+Notez-bien :
+- When the state is saved, using `save` command, all files/directories *creation* are de facto accepted.
+- *modification* and *deletion* still need explicit acceptation (using `accept` command) as they may highlight a storage issue.
 
 #### RESET / RAZ
 **RESET** command will reset the state of each file/directory and is only aimed to be used before a **scan**.
@@ -99,7 +103,9 @@ Notez-bien : loading an existing backup may be long. Add verbosity **-v** to kno
 
 `./MdG scan`
 
-It will take a long time, depending on your disk speed, CPU workforce, number of size of files to handle.
+Retrieve the current status of your monitored directory tree.
+
+It will take a long time, depending on your disk speed, CPU workforce, number and size of files to handle.
 
 #### Check the result
 
@@ -109,10 +115,10 @@ It will take a long time, depending on your disk speed, CPU workforce, number of
 [F][Deleted]	/home/laurent/Images/Brute/_AArchiver/test/tst/truc
 ```
 
-* If it's the initial scan, it will report all files as [Created].
-* If it's not the initial scan, each discrepancy needs to be investigated : `accept` those who are legitimate.
+* If it's the initial scan, it will report all files as [Created] : you're starting from an empty database and all files seems new.
+* If it's not the initial scan, each discrepancy needs to be investigated : `accept` those legitimate.
 
-| :bulb: | `Accept`ing deletion of a directory will commit the deletion of all it sub object. |
+| :bulb: | `Accept`ing deletion of a directory will commit as well the deletion of all it sub object. |
 |-------------|----------------------------|
 
 Notez-bien : 
@@ -125,7 +131,7 @@ Notez-bien :
 
 ### 4- additionally, Mer-De-Glace can identify duplication
 
-Notez-bien : it is comparing numerical signature. It's up to **YOU** to decide if some cleaning is needed or not.
+Notez-bien : it's about comparing numerical signature, not the files themselves. It's up to **YOU** to decide if some cleaning is needed or not.
 
 #### check for duplication
 
@@ -144,13 +150,13 @@ Potential duplicate found :
 ```
 #### Do needed cleaning
 
-I made a mistake by converting twice my CD to MP3, using a different naming convention : Directories ".../Noir Désir/Noir Désir -\*" can be removed.
+I made a mistake by converting twice my CD to MP3, using a different naming convention : I have to delete ".../Noir Désir" directory (using shell's `rm -f`, a graphical interface or whatever).
 
 #### re-scan to detect deletion
 
 In order to speed up the operation, `restrict` to the directory changed.
 ```
-./MdG -f ~/Config/Musiques.mdg restrict "./MdG -f ~/Config/Musiques.mdg restrict"
+./MdG -f ~/Config/Musiques.mdg restrict "/mnt/sda4/Musiques/Noir Désir/"
 ```
 
 `RESET` the in memory state.
