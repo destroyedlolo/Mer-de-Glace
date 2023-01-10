@@ -287,21 +287,21 @@ void Directory::feedDuplicate(int fd, FindDuplicate &dup){
 }
 
 void Directory::dump(int ident, int fd){
-	std::string res;
+	std::stringstream res;
 	for(int i=0; i<ident; i++)
-		res += '\t';
+		res << '\t';
 
-	res += "Directory '" + (std::string)this->getName() + "' ("+ (std::string)*this +") ";
+	res << "Directory '" << this->getName() << "' (" << Directory::swapAlternate(*this) << ") ";
 	if(this->isCreated())
-		res += "crt ";
+		res << "crt ";
 	if(this->isDeleted())
-		res += "Del";
+		res << "Del";
 
-	res += '\n';
+	res << '\n';
 
 	if(debug)
-		std::cout << res;
-	socsend(fd, res);
+		std::cout << res.str();
+	socsend(fd, res.str());
 
 	for(auto sub : this->subfiles)
 		sub->dump(ident + 1, fd);
@@ -312,9 +312,9 @@ void Directory::dump(int ident, int fd){
 
 void Directory::Report(int fd){
 	if(this->isCreated())
-		socsend(fd, "[D][Created]\t" + (std::string)*this + '\n');
+		socsend(fd, "[D][Created]\t" + Directory::swapAlternate(*this) + '\n');
 	if(this->isDeleted())
-		socsend(fd, "[D][Deleted]\t" + (std::string)*this + '\n');
+		socsend(fd, "[D][Deleted]\t" + Directory::swapAlternate(*this) + '\n');
 
 	for(auto sub : this->subfiles)
 		sub->Report(fd);
@@ -348,3 +348,11 @@ int Directory::partOf(const std::filesystem::path root, const std::filesystem::p
 
 	return (is == sub.end()) ? 0 : 1;
 }
+
+std::string Directory::swapAlternate(const std::filesystem::path p){
+	if(altroot.empty())
+		return p;
+	else
+		return std::filesystem::path(altroot) / p.lexically_relative(*rootDir);
+}
+

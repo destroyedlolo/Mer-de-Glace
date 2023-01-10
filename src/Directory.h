@@ -70,6 +70,9 @@ public :
 		// 0 : sub is == root ( "a/b/c" )
 		// +1 : sub is inside root ( "a/b/c/d" )
 	static int partOf(const std::filesystem::path root, const std::filesystem::path sub);
+
+		// Swap rootDir with the alternate if it set
+	static std::string swapAlternate(const std::filesystem::path);
 };
 
 extern Directory *rootDir;

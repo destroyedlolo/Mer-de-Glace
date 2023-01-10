@@ -100,7 +100,8 @@ void File::acceptChange(void){
 
 void File::Report(int fd){
 	bool issue=false;
-	std::stringstream res("[F]");
+	std::stringstream res;
+	res << "[F]";
 
 	if(!this->hasValideSignature()){
 		res << "[Bad CS]";
@@ -121,7 +122,7 @@ void File::Report(int fd){
 	}
 
 	if(issue){
-		res << '\t' << (std::string)*this << std::endl;
+		res << '\t' << Directory::swapAlternate(*this) << std::endl;
 		socsend(fd, res.str());
 	}
 }

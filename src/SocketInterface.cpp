@@ -90,7 +90,7 @@ static void cmd_restrict(int fd, std::string arg){
 	} else {	// new restriction
 		if(arg == "*"){
 			restrict.clear();
-			socsend(fd, "No restriction");
+			socsend(fd, "*I* No restriction");
 		} else if(Directory::partOf(root,arg) < 0)
 			socsend(fd, "*E* Restrict is not part of the root path");
 		else if(!std::filesystem::exists(arg))
@@ -98,6 +98,37 @@ static void cmd_restrict(int fd, std::string arg){
 		else {
 			restrict = arg;
 			socsend(fd, "*I* Restriction changed");
+		}
+	}
+}
+
+static void cmd_alternate(int fd, std::string arg){
+	if(arg.empty()){
+		if(altroot.empty())
+			socsend(fd, "No alternate root");
+		else {
+			socsend(fd, "Alternate root : '" + (std::string)altroot + "'");
+		}
+	} else {	// new restriction
+		if(arg == "*"){
+			altroot.clear();
+			socsend(fd, "*I* No alternate root");
+			if(!restrict.empty() && Directory::partOf(root,restrict) < 0){
+				restrict.clear();
+				socsend(fd, "*I* Restriction cleared as outside root directory");
+			}
+		} else if(!std::filesystem::exists(arg))
+			socsend(fd, "*E* Alternate root doesn't exists");
+		else {
+			altroot = arg;
+			socsend(fd, "*I* Alternate root set");
+			if(!restrict.empty()){
+				if(Directory::partOf(altroot,restrict) < 0){
+					restrict.clear();
+					socsend(fd, "*I* Restriction cleared as outside alternative root");
+				} else
+					socsend(fd, "*I* Restriction kept as inside alternative root");
+			}
 		}
 	}
 }
@@ -214,6 +245,8 @@ static void cmd_duplicate(int fd, std::string arg){
 std::map<std::string, Command> commands {
 	{ "help", { "list known commands", cmd_help }},
 	{ "restrict", { "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
+	{ "alternate", { "Select alternate root, '*' to remove", cmd_alternate }},
+	{ "altroot", { "Select alternate root, '*' to remove", cmd_alternate }},
 	{ "RESET", { "reset items status (DANGEROUS)", cmd_raz }},
 	{ "RAZ", { "reset items status (DANGEROUS)", cmd_raz }},
 	{ "RECS", { "recalculate checksums (VERY DANGEROUS, debug mode only)", cmd_recs }},
