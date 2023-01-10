@@ -24,15 +24,16 @@ public :
 		this->md5(this->historical_md5);
 		this->cs = File::calCS(this->historical_md5);
 	}
+	File(const std::string aname);
 
 		// initialisation from existing data (loading from backup)
 	File( std::string aname, std::string amd5, uint16_t acs ) : Item(aname, Item::_kind::IT_FILE), historical_md5(amd5), cs(acs){
 	}
 
 		// Compute it's md5
-	std::string md5( std::string & );
+	std::string md5(std::string &);
 		// calcule the CS of an md5 string
-	static uint16_t calCS( std::string );
+	static uint16_t calCS(std::string);
 		// Signature are the same
 	bool potentialEq(File *);
 

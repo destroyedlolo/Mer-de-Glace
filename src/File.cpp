@@ -17,10 +17,15 @@
 
 #include <cstring>
 
+File::File(const std::string aname) : Item(Directory::swapAlternate(aname), Item::_kind::IT_FILE){
+	this->md5(this->historical_md5);
+	this->cs = File::calCS(this->historical_md5);
+}
+
 /* Calculate md5
  * inspired by https://blog.magnatox.com/posts/c_hashing_files_with_openssl/
  */
-std::string File::md5( std::string &res ){
+std::string File::md5(std::string &res){
 	if(debug)
 		std::cout << "*D* md5(" << this->string() << ")\n" << std::flush;
 
@@ -127,7 +132,7 @@ void File::Report(int fd){
 	}
 
 	if(issue){
-		res << '\t' << Directory::swapAlternate(*this) << std::endl;
+		res << '\t' << Directory::swapAlternate(*this) << " -> " << *this<< std::endl;
 		socsend(fd, res.str());
 	}
 }

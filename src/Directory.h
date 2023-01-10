@@ -73,6 +73,8 @@ public :
 
 		// Swap rootDir with the alternate if it set
 	static std::string swapAlternate(const std::filesystem::path);
+		// reverse to rootDir if the alternate is set
+	static std::string backToRoot(const std::filesystem::path);
 };
 
 extern Directory *rootDir;

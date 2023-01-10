@@ -72,7 +72,7 @@ void Directory::scan(int fd){
 				if(debug)
 					std::cout << "*d* New file : " << std::filesystem::path(entry).filename() << std::endl;
 
-				n = new File(entry);
+				n = new File(backToRoot(entry));
 				assert(n);
 				n->markCreated();	// New file
 				n->touch();			// File found
@@ -90,7 +90,7 @@ void Directory::scan(int fd){
 				if(debug)
 					std::cout << "*d* New directory : " << std::filesystem::path(entry).filename() << std::endl;
 
-				n = new Directory(entry);
+				n = new Directory(backToRoot(entry));
 				assert(n);
 				n->markCreated();	// New directory
 				n->touch();
@@ -361,3 +361,9 @@ std::string Directory::swapAlternate(const std::filesystem::path p){
 		return std::filesystem::path(altroot) / p.lexically_relative(*rootDir);
 }
 
+std::string Directory::backToRoot(const std::filesystem::path p){
+	if(altroot.empty())
+		return p;
+	else
+		return std::filesystem::path(*rootDir) / p.lexically_relative(altroot);
+}
