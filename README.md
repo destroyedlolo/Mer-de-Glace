@@ -159,11 +159,13 @@ In order to speed up the operation, `restrict` to the directory changed.
 ./MdG -f ~/Config/Musiques.mdg restrict "/mnt/sda4/Musiques/Noir Désir/"
 ```
 
+<!-- As per v0.9, it's not anymore needed
 `RESET` the in memory state.
 ```
 $ ./MdG -f ~/Config/Musiques.mdg RESET
 *I* State reseted
 ```
+-->
 
 and finaly, launch a new scan.
 ```
@@ -193,7 +195,7 @@ and finaly, launch a new scan.
 This is the list of identified tasks/behaviors. 
 - *data management*
    - [X] Recursively scan a directory with MD5 checksum (v0.1)
-   - [ ] smart status reset before scanning to avoir usage of explicite `RESET` command
+   - [X] smart status reset before scanning to avoir usage of explicite `RESET` command (v0.9)
    - [X] Save / load state	(v0.2)
    - [X] Restrict scanning to a sub directory (v0.3)
    - [X] re-scan and issue a report (v0.4)

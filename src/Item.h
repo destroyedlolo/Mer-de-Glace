@@ -74,8 +74,8 @@ public :
 	}
 
 		// This data has been found during a scan
-	void touch(void){
-		this->found = true;
+	void touch(bool f = true){
+		this->found = f;
 	}
 
 	virtual void save2DB(std::ofstream &) = 0;
