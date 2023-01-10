@@ -41,7 +41,7 @@ void Directory::scan(int fd){
 	
 	socsend(fd, "In '"+ (std::string)*this + "'\n");
 
-	for(const auto & entry : std::filesystem::directory_iterator(*this)){
+	for(const auto & entry : std::filesystem::directory_iterator(swapAlternate(*this))){
 		int res = 0;	// by default, let scan !
 
 		if(!restrict.empty()){
