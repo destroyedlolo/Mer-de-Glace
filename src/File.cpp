@@ -72,12 +72,17 @@ bool File::potentialEq(File *other){
 
 void File::raz(bool loaded){
 	if(!restrict.empty() && !loaded){
-		if(Directory::partOf(restrict,*this) >= 0)
+		if(Directory::partOf(restrict,*this) >= 0){
+			if(loaded)
+				this->acceptChange();
 			this->Item::raz(loaded);
-		else if(debug)
+		} else if(debug)
 			std::cout << "*d* skip "<< *this << std::endl;
-	} else
+	} else {
+		if(loaded)
+			this->acceptChange();
 		this->Item::raz(loaded);
+	}
 }
 
 bool File::setActual(void){

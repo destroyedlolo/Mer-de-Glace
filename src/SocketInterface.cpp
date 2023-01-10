@@ -117,6 +117,8 @@ static void cmd_alternate(int fd, std::string arg){
 				restrict.clear();
 				socsend(fd, "*I* Restriction cleared as outside root directory");
 			}
+			rootDir->raz(true);
+			socsend(fd, "*W* State reseted");
 		} else if(!std::filesystem::exists(arg))
 			socsend(fd, "*E* Alternate root doesn't exists");
 		else {
@@ -129,6 +131,8 @@ static void cmd_alternate(int fd, std::string arg){
 				} else
 					socsend(fd, "*I* Restriction kept as inside alternative root");
 			}
+			rootDir->raz(true);
+			socsend(fd, "*W* State reseted");
 		}
 	}
 }
@@ -161,7 +165,6 @@ static void cmd_report(int fd, std::string){
 
 static void cmd_raz(int fd, std::string){
 	rootDir->raz();
-
 	socsend(fd, "*I* State reseted");
 }
 
