@@ -296,7 +296,7 @@ void Directory::dump(int ident, int fd){
 	for(int i=0; i<ident; i++)
 		res << '\t';
 
-	res << "Directory '" << this->getName() << "' (" << Directory::swapAlternate(*this) << ") ";
+	res << "Directory '" << this->getName() << "' (" << *this << ") ";
 	if(this->isCreated())
 		res << "crt ";
 	if(this->isDeleted())
@@ -316,11 +316,32 @@ void Directory::dump(int ident, int fd){
 }
 
 void Directory::Report(int fd){
-	if(this->isCreated())
+	bool issue=false;
+	std::stringstream res;
+	res << "[D]";
+
+	if(this->isCreated()){
+		res << "[Created]";
+		issue = true;
+	}
+	if(this->isDeleted()){
+		res << "[Deleted]";
+		issue = true;
+	}
+
+	if(issue){
+		res << '\t' << Directory::swapAlternate(*this);
+		if(!altroot.empty())
+			res << " (original : " << *this << ")";
+		res << std::endl;
+		socsend(fd, res.str());
+	}
+/*
+if(this->isCreated())
 		socsend(fd, "[D][Created]\t" + Directory::swapAlternate(*this) + '\n');
 	if(this->isDeleted())
 		socsend(fd, "[D][Deleted]\t" + Directory::swapAlternate(*this) + '\n');
-
+*/
 	for(auto sub : this->subfiles)
 		sub->Report(fd);
 
@@ -357,8 +378,19 @@ int Directory::partOf(const std::filesystem::path root, const std::filesystem::p
 std::string Directory::swapAlternate(const std::filesystem::path p){
 	if(altroot.empty())
 		return p;
-	else
-		return std::filesystem::path(altroot) / p.lexically_relative(*rootDir);
+	else {
+		if(p == *rootDir)
+			return(altroot);
+		else if(Directory::partOf(root,p) >= 0){
+			if(debug)
+				std::cout << "*d* swapAlternate r:" << root << " | a:" << altroot << " | " << p << " | " << p.lexically_relative(*rootDir) << std::endl;
+			return std::filesystem::path(altroot) / p.lexically_relative(*rootDir);
+		} else {
+			if(debug)
+				std::cout << "swapAlternate : local -> " << p << std::endl;
+			return p;
+		}
+	}
 }
 
 std::string Directory::backToRoot(const std::filesystem::path p){

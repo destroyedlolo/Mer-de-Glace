@@ -17,6 +17,8 @@
 
 #include <cstring>
 
+	// As this constructor is used mostly when creating an object during a scan
+	// with an altroot, swapAlternate() is needed
 File::File(const std::string aname) : Item(Directory::swapAlternate(aname), Item::_kind::IT_FILE){
 	this->md5(this->historical_md5);
 	this->cs = File::calCS(this->historical_md5);
@@ -132,7 +134,10 @@ void File::Report(int fd){
 	}
 
 	if(issue){
-		res << '\t' << Directory::swapAlternate(*this) << " -> " << *this<< std::endl;
+		res << '\t' << Directory::swapAlternate(*this);
+		if(!altroot.empty())
+			res << " (original : " << *this << ")";
+		res << std::endl;
 		socsend(fd, res.str());
 	}
 }
