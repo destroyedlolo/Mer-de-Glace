@@ -321,7 +321,7 @@ void Directory::Report(int fd){
 	res << "[D]";
 
 	if(this->isCreated()){
-		res << (altroot.empty() ? "[Created]" : "[Replicat only]");
+		res << (altroot.empty() ? "[Created]" : "[Replica only]");
 		issue = true;
 	}
 	if(this->isDeleted()){
