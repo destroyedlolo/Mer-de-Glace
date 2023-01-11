@@ -121,11 +121,11 @@ void File::Report(int fd){
 		corrupted = true;
 	}
 	if(this->isCreated()){
-		res << (altroot.empty() ? "[Created]" : "[Master only]");
+		res << (altroot.empty() ? "[Created]" : "[Replica only]");
 		issue = true;
 	}
 	if(this->isDeleted()){
-		res << (altroot.empty() ? "[Deleted]" : "[Replica only]");
+		res << (altroot.empty() ? "[Deleted]" : "[Master only]");
 		issue = true;
 	}
 	if(this->isChanged()){

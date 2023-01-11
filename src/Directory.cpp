@@ -321,11 +321,11 @@ void Directory::Report(int fd){
 	res << "[D]";
 
 	if(this->isCreated()){
-		res << (altroot.empty() ? "[Created]" : "[Master only]");
+		res << (altroot.empty() ? "[Created]" : "[Replicat only]");
 		issue = true;
 	}
 	if(this->isDeleted()){
-		res << (altroot.empty() ? "[Deleted]" : "[Replicat only]");
+		res << (altroot.empty() ? "[Deleted]" : "[Master only]");
 		issue = true;
 	}
 
