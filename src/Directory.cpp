@@ -321,11 +321,11 @@ void Directory::Report(int fd){
 	res << "[D]";
 
 	if(this->isCreated()){
-		res << "[Created]";
+		res << (altroot.empty() ? "[Created]" : "[Master only]");
 		issue = true;
 	}
 	if(this->isDeleted()){
-		res << "[Deleted]";
+		res << (altroot.empty() ? "[Deleted]" : "[Replicat only]");
 		issue = true;
 	}
 
@@ -336,12 +336,7 @@ void Directory::Report(int fd){
 		res << std::endl;
 		socsend(fd, res.str());
 	}
-/*
-if(this->isCreated())
-		socsend(fd, "[D][Created]\t" + Directory::swapAlternate(*this) + '\n');
-	if(this->isDeleted())
-		socsend(fd, "[D][Deleted]\t" + Directory::swapAlternate(*this) + '\n');
-*/
+
 	for(auto sub : this->subfiles)
 		sub->Report(fd);
 
