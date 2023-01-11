@@ -74,6 +74,7 @@ void SocketInterface::initPoll(struct pollfd *fds, int &act_sz, int max_sz){
 	 *************************************/
 
 struct Command {
+	bool en_altroot;	// enable in alternative root mode
 	const char *desc;	// description of the command
 	void (&func)(int, std::string);	// function to implement the command
 };
@@ -246,21 +247,21 @@ static void cmd_duplicate(int fd, std::string arg){
 }
 
 std::map<std::string, Command> commands {
-	{ "help", { "list known commands", cmd_help }},
-	{ "restrict", { "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
-	{ "alternate", { "Select alternate root, '*' to remove", cmd_alternate }},
-	{ "altroot", { "Select alternate root, '*' to remove", cmd_alternate }},
-	{ "RESET", { "reset items status (DANGEROUS)", cmd_raz }},
-	{ "RAZ", { "reset items status (DANGEROUS)", cmd_raz }},
-	{ "RECS", { "recalculate checksums (VERY DANGEROUS, debug mode only)", cmd_recs }},
-	{ "scan", { "launch a scan", cmd_scan }},
-	{ "save", { "Save on disk the memory database", cmd_save }},
-	{ "report", { "Report discrepancies", cmd_report }},
-	{ "status", { "Report discrepancies (report alias)", cmd_report }},
-	{ "duplicate", { "Report potential duplication", cmd_duplicate }},
-	{ "accept", { "Validate a discrepancy", cmd_accept }},
-	{ "commit", { "Validate a discrepancy (accept alias", cmd_accept }},
-	{ "dump", { "Dump current in memory database", cmd_dump }}
+	{ "help", { true, "list known commands", cmd_help }},
+	{ "restrict", { true, "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
+	{ "alternate", { true, "Select alternate root, '*' to remove", cmd_alternate }},
+	{ "altroot", { true, "Select alternate root, '*' to remove", cmd_alternate }},
+	{ "RESET", { true, "reset items status (DANGEROUS)", cmd_raz }},
+	{ "RAZ", { true, "reset items status (DANGEROUS)", cmd_raz }},
+	{ "RECS", { true, "recalculate checksums (VERY DANGEROUS, debug mode only)", cmd_recs }},
+	{ "scan", { true, "launch a scan", cmd_scan }},
+	{ "save", { false, "Save on disk the memory database", cmd_save }},
+	{ "report", { true, "Report discrepancies", cmd_report }},
+	{ "status", { true, "Report discrepancies (report alias)", cmd_report }},
+	{ "duplicate", { true, "Report potential duplication", cmd_duplicate }},
+	{ "accept", { false, "Validate a discrepancy", cmd_accept }},
+	{ "commit", { false, "Validate a discrepancy (accept alias", cmd_accept }},
+	{ "dump", { true, "Dump current in memory database", cmd_dump }}
 };
 
 static void cmd_help(int fd, std::string){
@@ -351,10 +352,13 @@ std::cout << ">>" << buffer << "<<\n";
 					std::cout << std::endl;
 				}
 				
-				if(auto cmd = commands.find(buffer); cmd != commands.end())
-					cmd->second.func(fds[i].fd, p ? p : std::string() );
-				else
-					socsend(fds[i].fd, "Command not found");
+				if(auto cmd = commands.find(buffer); cmd != commands.end()){
+					if(!cmd->second.en_altroot && !altroot.empty())
+						socsend(fds[i].fd, "*E* Command not available within an alternate root");
+					else
+						cmd->second.func(fds[i].fd, p ? p : std::string() );
+				} else
+					socsend(fds[i].fd, "*E* Command not found");
 			}
 
 			close(this->peer);
