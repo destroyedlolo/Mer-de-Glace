@@ -92,7 +92,7 @@ static void cmd_restrict(int fd, std::string arg){
 		if(arg == "*"){
 			restrict.clear();
 			socsend(fd, "*I* No restriction");
-		} else if(Directory::partOf(root,arg) < 0)
+		} else if(Directory::partOf(altroot.empty() ? root : altroot,arg) < 0)
 			socsend(fd, "*E* Restrict is not part of the root path");
 		else if(!std::filesystem::exists(arg))
 			socsend(fd, "*E* Restricted directory doesn't exists");
@@ -114,10 +114,17 @@ static void cmd_alternate(int fd, std::string arg){
 		if(arg == "*"){
 			altroot.clear();
 			socsend(fd, "*I* No alternate root");
+#if 0
 			if(!restrict.empty() && Directory::partOf(root,restrict) < 0){
 				restrict.clear();
 				socsend(fd, "*I* Restriction cleared as outside root directory");
 			}
+#else
+			if(!restrict.empty()){
+				restrict.clear();
+				socsend(fd, "*I* Restriction cleared");
+			}
+#endif
 			rootDir->raz(true);
 			socsend(fd, "*W* State reseted");
 		} else if(!std::filesystem::exists(arg))
@@ -125,6 +132,7 @@ static void cmd_alternate(int fd, std::string arg){
 		else {
 			altroot = arg;
 			socsend(fd, "*I* Alternate root set");
+#if 0
 			if(!restrict.empty()){
 				if(Directory::partOf(altroot,restrict) < 0){
 					restrict.clear();
@@ -132,6 +140,12 @@ static void cmd_alternate(int fd, std::string arg){
 				} else
 					socsend(fd, "*I* Restriction kept as inside alternative root");
 			}
+#else
+			if(!restrict.empty()){
+				restrict.clear();
+				socsend(fd, "*I* Restriction cleared");
+			}
+#endif
 			rootDir->raz(true);
 			socsend(fd, "*W* State reseted");
 		}

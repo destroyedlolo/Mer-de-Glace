@@ -356,6 +356,8 @@ void Directory::save2DB(std::ofstream &f){
 }
 
 int Directory::partOf(const std::filesystem::path root, const std::filesystem::path sub){
+	if(debug)
+		std::cout << "*d* partOf(" << (std::string)root << " , " << (std::string)sub << ")\n";
 	auto is = sub.begin();
 	for(auto ir = root.begin(); ir != root.end(); ir++){
 		if(is == sub.end())	// sub shorter than root
