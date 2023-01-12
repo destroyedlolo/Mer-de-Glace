@@ -34,10 +34,13 @@ Directory::~Directory(){
 void Directory::scan(int fd){
 		// Reset state of locals'
 	for(auto sub : this->subdirs)
-		sub->touch(false);
+		if(!(!restrict.empty() && Directory::partOf(restrict,*sub)))
+			sub->touch(false);
 	for(auto sub : this->subfiles)
-		sub->touch(false);
-	this->touch();	// The current directory was found
+		if(!(!restrict.empty() && Directory::partOf(restrict,*sub)))
+			sub->touch(false);
+	if(!(!restrict.empty() && Directory::partOf(restrict,*this)))
+		this->touch();	// The current directory was found
 	
 	socsend(fd, "In '"+ (std::string)*this + "'\n");
 
