@@ -86,7 +86,7 @@ It will take a long time, depending on your disk speed, CPU workforce, number an
 * If it's the initial scan, it will report all files as [Created] : you're starting from an empty database and all files seems new.
 * If it's not the initial scan, each discrepancy needs to be investigated : `accept` those legitimate.
 
-| :bulb: | `Accept`ing deletion of a directory will commit as well the deletion of all it sub object. |
+| :bulb: | `Accept`ing deletion of a directory will commit as well the deletion of all it sub objects. |
 |-------------|----------------------------|
 
 Notez-bien : 
