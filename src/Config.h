@@ -30,6 +30,8 @@ extern bool corrupted;
 	// configuration
 extern NoSlashPath root;		// Root data directory
 extern NoSlashPath restrict;
+extern NoSlashPath altroot;		// alternate root directory
+
 extern std::string dbfile;		// state's backup
 extern std::string rendezvous;	// CLI communication socket
 

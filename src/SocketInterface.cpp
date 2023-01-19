@@ -74,6 +74,7 @@ void SocketInterface::initPoll(struct pollfd *fds, int &act_sz, int max_sz){
 	 *************************************/
 
 struct Command {
+	bool en_altroot;	// enable in alternative root mode
 	const char *desc;	// description of the command
 	void (&func)(int, std::string);	// function to implement the command
 };
@@ -90,14 +91,63 @@ static void cmd_restrict(int fd, std::string arg){
 	} else {	// new restriction
 		if(arg == "*"){
 			restrict.clear();
-			socsend(fd, "No restriction");
-		} else if(Directory::partOf(root,arg) < 0)
+			socsend(fd, "*I* No restriction");
+		} else if(Directory::partOf(altroot.empty() ? root : altroot,arg) < 0)
 			socsend(fd, "*E* Restrict is not part of the root path");
 		else if(!std::filesystem::exists(arg))
 			socsend(fd, "*E* Restricted directory doesn't exists");
 		else {
 			restrict = arg;
 			socsend(fd, "*I* Restriction changed");
+		}
+	}
+}
+
+static void cmd_alternate(int fd, std::string arg){
+	if(arg.empty()){
+		if(altroot.empty())
+			socsend(fd, "No alternate root");
+		else {
+			socsend(fd, "Alternate root : '" + (std::string)altroot + "'");
+		}
+	} else {	// new restriction
+		if(arg == "*"){
+			altroot.clear();
+			socsend(fd, "*I* No alternate root");
+#if 0
+			if(!restrict.empty() && Directory::partOf(root,restrict) < 0){
+				restrict.clear();
+				socsend(fd, "*I* Restriction cleared as outside root directory");
+			}
+#else
+			if(!restrict.empty()){
+				restrict.clear();
+				socsend(fd, "*I* Restriction cleared");
+			}
+#endif
+			rootDir->raz(true);
+			socsend(fd, "*W* State reseted");
+		} else if(!std::filesystem::exists(arg))
+			socsend(fd, "*E* Alternate root doesn't exists");
+		else {
+			altroot = arg;
+			socsend(fd, "*I* Alternate root set");
+#if 0
+			if(!restrict.empty()){
+				if(Directory::partOf(altroot,restrict) < 0){
+					restrict.clear();
+					socsend(fd, "*I* Restriction cleared as outside alternative root");
+				} else
+					socsend(fd, "*I* Restriction kept as inside alternative root");
+			}
+#else
+			if(!restrict.empty()){
+				restrict.clear();
+				socsend(fd, "*I* Restriction cleared");
+			}
+#endif
+			rootDir->raz(true);
+			socsend(fd, "*W* State reseted");
 		}
 	}
 }
@@ -130,7 +180,6 @@ static void cmd_report(int fd, std::string){
 
 static void cmd_raz(int fd, std::string){
 	rootDir->raz();
-
 	socsend(fd, "*I* State reseted");
 }
 
@@ -212,19 +261,21 @@ static void cmd_duplicate(int fd, std::string arg){
 }
 
 std::map<std::string, Command> commands {
-	{ "help", { "list known commands", cmd_help }},
-	{ "restrict", { "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
-	{ "RESET", { "reset items status (DANGEROUS)", cmd_raz }},
-	{ "RAZ", { "reset items status (DANGEROUS)", cmd_raz }},
-	{ "RECS", { "recalculate checksums (VERY DANGEROUS, debug mode only)", cmd_recs }},
-	{ "scan", { "launch a scan", cmd_scan }},
-	{ "save", { "Save on disk the memory database", cmd_save }},
-	{ "report", { "Report discrepancies", cmd_report }},
-	{ "status", { "Report discrepancies (report alias)", cmd_report }},
-	{ "duplicate", { "Report potential duplication", cmd_duplicate }},
-	{ "accept", { "Validate a discrepancy", cmd_accept }},
-	{ "commit", { "Validate a discrepancy (accept alias", cmd_accept }},
-	{ "dump", { "Dump current in memory database", cmd_dump }}
+	{ "help", { true, "list known commands", cmd_help }},
+	{ "restrict", { true, "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
+	{ "alternate", { true, "Select alternate root, '*' to remove", cmd_alternate }},
+	{ "altroot", { true, "Select alternate root, '*' to remove", cmd_alternate }},
+	{ "RESET", { true, "reset items status (DANGEROUS)", cmd_raz }},
+	{ "RAZ", { true, "reset items status (DANGEROUS)", cmd_raz }},
+	{ "RECS", { true, "recalculate checksums (VERY DANGEROUS, debug mode only)", cmd_recs }},
+	{ "scan", { true, "launch a scan", cmd_scan }},
+	{ "save", { false, "Save on disk the memory database", cmd_save }},
+	{ "report", { true, "Report discrepancies", cmd_report }},
+	{ "status", { true, "Report discrepancies (report alias)", cmd_report }},
+	{ "duplicate", { true, "Report potential duplication", cmd_duplicate }},
+	{ "accept", { false, "Validate a discrepancy", cmd_accept }},
+	{ "commit", { false, "Validate a discrepancy (accept alias", cmd_accept }},
+	{ "dump", { true, "Dump current in memory database", cmd_dump }}
 };
 
 static void cmd_help(int fd, std::string){
@@ -315,10 +366,13 @@ std::cout << ">>" << buffer << "<<\n";
 					std::cout << std::endl;
 				}
 				
-				if(auto cmd = commands.find(buffer); cmd != commands.end())
-					cmd->second.func(fds[i].fd, p ? p : std::string() );
-				else
-					socsend(fds[i].fd, "Command not found");
+				if(auto cmd = commands.find(buffer); cmd != commands.end()){
+					if(!cmd->second.en_altroot && !altroot.empty())
+						socsend(fds[i].fd, "*E* Command not available within an alternate root");
+					else
+						cmd->second.func(fds[i].fd, p ? p : std::string() );
+				} else
+					socsend(fds[i].fd, "*E* Command not found");
 			}
 
 			close(this->peer);

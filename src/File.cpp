@@ -17,10 +17,17 @@
 
 #include <cstring>
 
+	// As this constructor is used mostly when creating an object during a scan
+	// with an altroot, swapAlternate() is needed
+File::File(const std::string aname) : Item(Directory::swapAlternate(aname), Item::_kind::IT_FILE){
+	this->md5(this->historical_md5);
+	this->cs = File::calCS(this->historical_md5);
+}
+
 /* Calculate md5
  * inspired by https://blog.magnatox.com/posts/c_hashing_files_with_openssl/
  */
-std::string File::md5( std::string &res ){
+std::string File::md5(std::string &res){
 	if(debug)
 		std::cout << "*D* md5(" << this->string() << ")\n" << std::flush;
 
@@ -72,12 +79,17 @@ bool File::potentialEq(File *other){
 
 void File::raz(bool loaded){
 	if(!restrict.empty() && !loaded){
-		if(Directory::partOf(restrict,*this) >= 0)
+		if(Directory::partOf(restrict,*this) >= 0){
+			if(loaded)
+				this->acceptChange();
 			this->Item::raz(loaded);
-		else if(debug)
+		} else if(debug)
 			std::cout << "*d* skip "<< *this << std::endl;
-	} else
+	} else {
+		if(loaded)
+			this->acceptChange();
 		this->Item::raz(loaded);
+	}
 }
 
 bool File::setActual(void){
@@ -100,7 +112,8 @@ void File::acceptChange(void){
 
 void File::Report(int fd){
 	bool issue=false;
-	std::stringstream res("[F]");
+	std::stringstream res;
+	res << "[F]";
 
 	if(!this->hasValideSignature()){
 		res << "[Bad CS]";
@@ -108,20 +121,23 @@ void File::Report(int fd){
 		corrupted = true;
 	}
 	if(this->isCreated()){
-		res << "[Created]";
+		res << (altroot.empty() ? "[Created]" : "[Replica only]");
 		issue = true;
 	}
 	if(this->isDeleted()){
-		res << "[Deleted]";
+		res << (altroot.empty() ? "[Deleted]" : "[Master only]");
 		issue = true;
 	}
 	if(this->isChanged()){
-		res << "[Changed]";
+		res << (altroot.empty() ? "[Changed]" : "[Discrepancy]");
 		issue = true;
 	}
 
 	if(issue){
-		res << '\t' << (std::string)*this << std::endl;
+		res << '\t' << Directory::swapAlternate(*this);
+		if(!altroot.empty())
+			res << " (original : " << *this << ")";
+		res << std::endl;
 		socsend(fd, res.str());
 	}
 }

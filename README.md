@@ -12,7 +12,7 @@ A common strategy is to multiply an odd number of backups, compare them and appl
 **Mer-de-Glace** stores an electronic signature when a file is created. 
 The user can ensure the sanity of its data by comparing this archived signature with the current state. 
 
-As a consequence, we are needing replicas only to overcome the failures of the master and not anymore to check data integrity (in my setup, I'm using a quite fast machine as a master but replicas runs on old and slow hardware).
+As a consequence, we are needing replicas only to overcome the failures of the master and not anymore to check data integrity.
 
 | :exclamation: | **Notez-bien :** **Mer-de-Glace** is still in *beta* stage. Documentation will be improved when a stable version will be released  |
 |-------------|----------------------------|
@@ -50,40 +50,6 @@ You will get 2 binaries :
 * **MerDeGlaced** is the master daemon managing data
 * **MdG** command line tool
 
-
-## MdG, the Command line client
-**MdG** is the command line client to communication with **MerDeGlaced** daemon
-
-`./MdG [-opt] command [arguments ...]`
-
-with `./MdG -h` to get list of supported options. `./MdG help` to get the list of commands known by the daemon.
-
-### Notes about commands
-
-#### save
-
-Mer-De-Glace maintains in memory files' state, which will be lost obviously when the server is restarted. It can put a snapshot of this state on disk using `save` command, a snapshot that will be automatically reloaded at daemon start.
-
-Notez-bien :
-- When the state is saved, using `save` command, all files/directories *creation* are de facto accepted.
-- *modification* and *deletion* still need explicit acceptation (using `accept` command) as they may highlight a storage issue.
-
-#### RESET / RAZ
-**RESET** command will reset the state of each file/directory and is only aimed to be used before a **scan**.
-Typical usage : a lot of not committed modifications as been made, leading to a mess in the in-memory database.
-
-As a rule of thumb, it's **always** better to issue a `report` and handle discrepancies found before using this command.
-
-| :eyes: | After a **RESET**, in memory state is not anymore consistent until the next scan and all identified discrepancies are lost. In case of doubt, **restart *MerDeGlaced* without saving** and then launch a scan : it will reset data as per the real situation |
-|-------------|----------------------------|
-
-#### RECS
-**Mer-de-Glace** keeps internal checksums to ensure in memory state as well as backup ones are not corrupted.
-In **very rare** occasion, rebuilding them is needed : it's the goal of **RECS** (for *recalculate checksum*).
-
-| :warning: | This command is **very dangerous** as checksum discrepancy is a proof of something going very bad (disk being corrupted, memory fault, hardware failure, ...). Consequently, this command is allowed ONLY if the daemon as been started in debug mode. |
-|-------------|----------------------------|
-
 ## Typical usage
 
 ### 1- edit configuration file (/usr/local/etc/MerDeGlace.conf by default)
@@ -91,11 +57,13 @@ With :
 * `rootDirectory=` the root directory of document to track
 * `DBFile=` where the state backup is stored
 
+:bulb: Different data stored (photo, music, films) ? Run dedicated **MerDeGlaced** for each of them, using dedicated configuration file with separate rootDirectory, DBFile and rendez-vous. It will spead up all operations.
+
 ### 2- Start MerDeGlaced
 
 `MerDeGlaced &`
 
-Notez-bien : loading an existing backup may be long. Add verbosity **-v** to know when application is ready.
+Notez-bien : loading an existing backup for large amount of data may be long. Add verbosity **-v** to know when application is ready. Alternatively, the "*rendez-vous*" socket is created only when the deamon is ready.
 
 ### 3- use MdG to communicate
 
@@ -118,7 +86,7 @@ It will take a long time, depending on your disk speed, CPU workforce, number an
 * If it's the initial scan, it will report all files as [Created] : you're starting from an empty database and all files seems new.
 * If it's not the initial scan, each discrepancy needs to be investigated : `accept` those legitimate.
 
-| :bulb: | `Accept`ing deletion of a directory will commit as well the deletion of all it sub object. |
+| :bulb: | `Accept`ing deletion of a directory will commit as well the deletion of all it sub objects. |
 |-------------|----------------------------|
 
 Notez-bien : 
@@ -129,7 +97,7 @@ Notez-bien :
 
 `./MdG save`
 
-### 4- additionally, Mer-De-Glace can identify duplication
+### 4- additionally, Mer-De-Glace can hilight duplication
 
 Notez-bien : it's about comparing numerical signature, not the files themselves. It's up to **YOU** to decide if some cleaning is needed or not.
 
@@ -150,7 +118,7 @@ Potential duplicate found :
 ```
 #### Do needed cleaning
 
-I made a mistake by converting twice my CD to MP3, using a different naming convention : I have to delete ".../Noir Désir" directory (using shell's `rm -f`, a graphical interface or whatever).
+I made a mistake by converting twice my CD to MP3, using a different naming convention : I have to delete ".../Noir Désir" directory (using shell's `rm -rf`, a graphical interface or whatever).
 
 #### re-scan to detect deletion
 
@@ -159,11 +127,13 @@ In order to speed up the operation, `restrict` to the directory changed.
 ./MdG -f ~/Config/Musiques.mdg restrict "/mnt/sda4/Musiques/Noir Désir/"
 ```
 
+<!-- As per v0.9, it's not anymore needed
 `RESET` the in memory state.
 ```
 $ ./MdG -f ~/Config/Musiques.mdg RESET
 *I* State reseted
 ```
+-->
 
 and finaly, launch a new scan.
 ```
@@ -189,11 +159,44 @@ and finaly, launch a new scan.
 ./MdG -f ~/Config/Musiques.mdg save
 ```
 
+## MdG, the Command line client
+**MdG** is the command line client to communication with **MerDeGlaced** daemon
+
+`./MdG [-opt] command [arguments ...]`
+
+with `./MdG -h` to get list of supported options. `./MdG help` to get the list of commands known by the daemon.
+
+### Notes about commands
+
+#### save
+
+Mer-De-Glace maintains in memory files' state. You can (have) to `save` it to retrieve it at restart and check if data remains safe.
+
+Notez-bien :
+- When the state is saved, using `save` command, all files/directories *creation* are de facto accepted.
+- *modification* and *deletion* are pending as they may highlight a storage issue.
+
+#### RESET / RAZ
+**RESET** command will reset the state of each file/directory as *clean* item. 
+
+As discrepancies will be lost, is command is **dangerous** and need to be used with caution !
+
+| :eyes: | After a **RESET**, in memory state is not anymore consistent until the next scan and all identified discrepancies are lost. In case of doubt, **restart *MerDeGlaced* without saving** and then launch a scan : it will reset data as per the real situation |
+|-------------|----------------------------|
+
+#### RECS
+**Mer-de-Glace** keeps internal checksums to ensure in memory state as well as backup ones are not corrupted.
+In **very rare** occasions, rebuilding them is needed : it's the goal of **RECS** (for *recalculate checksum*).
+
+| :warning: | This command is **very dangerous** as checksum discrepancy is a proof of something going very bad (disk being corrupted, memory fault, hardware failure, ...). Consequently, this command is allowed ONLY if the daemon as been started in debug mode. |
+|-------------|----------------------------|
+
+
 ## ToDo list
 This is the list of identified tasks/behaviors. 
 - *data management*
    - [X] Recursively scan a directory with MD5 checksum (v0.1)
-   - [ ] smart status reset before scanning to avoir usage of explicite `RESET` command
+   - [X] smart status reset before scanning to avoir usage of explicite `RESET` command (v0.9)
    - [X] Save / load state	(v0.2)
    - [X] Restrict scanning to a sub directory (v0.3)
    - [X] re-scan and issue a report (v0.4)

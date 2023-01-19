@@ -18,9 +18,10 @@
  *	30/12/2022 - LF - v0.6 - Handle accept
  *	06/01/2023 - LF - v0.7 - Add md5's checksum
  *	07/01/2023 - LF - v0.8 - Report for duplicate
+ *	09/01/2023 - LF - v0.9 - Add alternative root
  */
 
-#define VERSION 0.0800
+#define VERSION 0.0904
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022-23"
 
 /* Default configuration file */

@@ -48,6 +48,7 @@ bool corrupted;
 
 NoSlashPath root;
 NoSlashPath restrict;
+NoSlashPath altroot;
 std::string dbfile;
 std::string rendezvous;	// Command's socket
 
@@ -163,7 +164,6 @@ static bool LoadDB(void){
 				Directory *res;
 
 				res = rootDir->findDir(l, true);
-
 				if(res)
 					current = res;
 				else {

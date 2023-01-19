@@ -32,11 +32,19 @@ Directory::~Directory(){
 }
 
 void Directory::scan(int fd){
-	this->touch();
-
+		// Reset state of locals'
+	for(auto sub : this->subdirs)
+		if(!(!restrict.empty() && Directory::partOf(restrict,*sub)))
+			sub->touch(false);
+	for(auto sub : this->subfiles)
+		if(!(!restrict.empty() && Directory::partOf(restrict,*sub)))
+			sub->touch(false);
+	if(!(!restrict.empty() && Directory::partOf(restrict,*this)))
+		this->touch();	// The current directory was found
+	
 	socsend(fd, "In '"+ (std::string)*this + "'\n");
 
-	for(const auto & entry : std::filesystem::directory_iterator(*this)){
+	for(const auto & entry : std::filesystem::directory_iterator(swapAlternate(*this))){
 		int res = 0;	// by default, let scan !
 
 		if(!restrict.empty()){
@@ -67,7 +75,7 @@ void Directory::scan(int fd){
 				if(debug)
 					std::cout << "*d* New file : " << std::filesystem::path(entry).filename() << std::endl;
 
-				n = new File(entry);
+				n = new File(backToRoot(entry));
 				assert(n);
 				n->markCreated();	// New file
 				n->touch();			// File found
@@ -85,7 +93,7 @@ void Directory::scan(int fd){
 				if(debug)
 					std::cout << "*d* New directory : " << std::filesystem::path(entry).filename() << std::endl;
 
-				n = new Directory(entry);
+				n = new Directory(backToRoot(entry));
 				assert(n);
 				n->markCreated();	// New directory
 				n->touch();
@@ -287,21 +295,21 @@ void Directory::feedDuplicate(int fd, FindDuplicate &dup){
 }
 
 void Directory::dump(int ident, int fd){
-	std::string res;
+	std::stringstream res;
 	for(int i=0; i<ident; i++)
-		res += '\t';
+		res << '\t';
 
-	res += "Directory '" + (std::string)this->getName() + "' ("+ (std::string)*this +") ";
+	res << "Directory '" << this->getName() << "' (" << *this << ") ";
 	if(this->isCreated())
-		res += "crt ";
+		res << "crt ";
 	if(this->isDeleted())
-		res += "Del";
+		res << "Del";
 
-	res += '\n';
+	res << '\n';
 
 	if(debug)
-		std::cout << res;
-	socsend(fd, res);
+		std::cout << res.str();
+	socsend(fd, res.str());
 
 	for(auto sub : this->subfiles)
 		sub->dump(ident + 1, fd);
@@ -311,10 +319,26 @@ void Directory::dump(int ident, int fd){
 }
 
 void Directory::Report(int fd){
-	if(this->isCreated())
-		socsend(fd, "[D][Created]\t" + (std::string)*this + '\n');
-	if(this->isDeleted())
-		socsend(fd, "[D][Deleted]\t" + (std::string)*this + '\n');
+	bool issue=false;
+	std::stringstream res;
+	res << "[D]";
+
+	if(this->isCreated()){
+		res << (altroot.empty() ? "[Created]" : "[Replica only]");
+		issue = true;
+	}
+	if(this->isDeleted()){
+		res << (altroot.empty() ? "[Deleted]" : "[Master only]");
+		issue = true;
+	}
+
+	if(issue){
+		res << '\t' << Directory::swapAlternate(*this);
+		if(!altroot.empty())
+			res << " (original : " << *this << ")";
+		res << std::endl;
+		socsend(fd, res.str());
+	}
 
 	for(auto sub : this->subfiles)
 		sub->Report(fd);
@@ -335,6 +359,8 @@ void Directory::save2DB(std::ofstream &f){
 }
 
 int Directory::partOf(const std::filesystem::path root, const std::filesystem::path sub){
+	if(debug)
+		std::cout << "*d* partOf(" << (std::string)root << " , " << (std::string)sub << ")\n";
 	auto is = sub.begin();
 	for(auto ir = root.begin(); ir != root.end(); ir++){
 		if(is == sub.end())	// sub shorter than root
@@ -347,4 +373,29 @@ int Directory::partOf(const std::filesystem::path root, const std::filesystem::p
 	}
 
 	return (is == sub.end()) ? 0 : 1;
+}
+
+std::string Directory::swapAlternate(const std::filesystem::path p){
+	if(altroot.empty())
+		return p;
+	else {
+		if(p == *rootDir)
+			return(altroot);
+		else if(Directory::partOf(root,p) >= 0){
+			if(debug)
+				std::cout << "*d* swapAlternate r:" << root << " | a:" << altroot << " | " << p << " | " << p.lexically_relative(*rootDir) << std::endl;
+			return std::filesystem::path(altroot) / p.lexically_relative(*rootDir);
+		} else {
+			if(debug)
+				std::cout << "swapAlternate : local -> " << p << std::endl;
+			return p;
+		}
+	}
+}
+
+std::string Directory::backToRoot(const std::filesystem::path p){
+	if(altroot.empty())
+		return p;
+	else
+		return std::filesystem::path(*rootDir) / p.lexically_relative(altroot);
 }
