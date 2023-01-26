@@ -135,6 +135,14 @@ int main(int ac, char **av){
 		exit(EXIT_FAILURE);
 	}
 
+
+		/***
+		 * If the daemon returns nothing, EXIT_SUCCESS is returned
+		 * If it returns a text starting by '*E*' or '*F*', an error occurred
+		 * and EXIT_FAILURE is returned
+		 * Otherwise, the daemon returns data issue and 100 is returned
+		 ***/
+
 	char buffer[2048];
 	int ret=EXIT_SUCCESS;
 	for(;;){
@@ -149,7 +157,12 @@ int main(int ac, char **av){
 		else {
 			buffer[rc] = 0;
 			std::cout << buffer;
-			ret = 100;
+			if(ret == EXIT_SUCCESS){	// Change the return code if 1st line
+				if(!strncmp(buffer, "*E*", 3) || !strncmp(buffer, "*F*", 3))
+					ret = EXIT_FAILURE;
+				else
+					ret = 100;
+			}
 		}
 	}
 	close(s);

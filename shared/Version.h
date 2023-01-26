@@ -22,7 +22,7 @@
  *	26/01/2023 - LF - v0.10 - Add return code to MdG
  */
 
-#define VERSION 0.1000
+#define VERSION 0.1001
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022-23"
 
 /* Default configuration file */
