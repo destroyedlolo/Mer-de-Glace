@@ -136,6 +136,7 @@ int main(int ac, char **av){
 	}
 
 	char buffer[2048];
+	int ret=EXIT_SUCCESS;
 	for(;;){
 		int rc = recv(s, buffer, sizeof(buffer), 0);
 		if(rc < 0){
@@ -148,9 +149,10 @@ int main(int ac, char **av){
 		else {
 			buffer[rc] = 0;
 			std::cout << buffer;
+			ret = 100;
 		}
 	}
 	close(s);
 
-	exit(EXIT_SUCCESS);
+	exit(ret);
 }
