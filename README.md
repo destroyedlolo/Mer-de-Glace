@@ -166,6 +166,29 @@ and finaly, launch a new scan.
 
 with `./MdG -h` to get list of supported options. `./MdG help` to get the list of commands known by the daemon.
 
+### scripting
+**MdG** issues following return codes :
+
+-   0 : everything goes right
+- 100 : something has been found by `report` or `duplicate` commands
+-   1 : technical issue
+
+So following code can be used for automation needs
+
+```shell
+if ./MdG -f tst.conf report > /dev/null
+then
+    echo "everything is fine"
+else
+    if [[ $? -eq 100 ]]
+    then
+        echo "something found"
+    else
+        echo "technical issue"
+    fi
+fi
+```
+
 ### Notes about commands
 
 #### save
@@ -211,7 +234,7 @@ This is the list of identified tasks/behaviors.
   - [X] Command line tool (v0.5)
   - [ ] long standing commands are aborted when client connection is lost
   - [ ] Shell file name completion
-  - [ ] Generate return code to make automatic scripts easier
+  - [X] Generate return code to make automatic scripts easier (v0.10)
 
 - *for the future*
   - [ ] access to remote stats (is it really useful ? Mounting remote FS and using alternate root is already doing the job, see Use Cases)
