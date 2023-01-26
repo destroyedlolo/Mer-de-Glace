@@ -203,17 +203,22 @@ This is the list of identified tasks/behaviors.
    - [X] Accept a discrepancy (v0.6)
    - [X] Guess duplicate entries (v0.8)
    - [X] verify in memory and backup integrity (v0.7)
-   - [ ] Can use alternate root
+   - [X] Can use alternate root (v0.8)
 
 - *interfaces*
   - [X] accept commands via a socket (v0.4)
   - [ ] daemonize (avoid as much as possible exiting in case of issue)
   - [X] Command line tool (v0.5)
   - [ ] long standing commands are aborted when client connection is lost
-  - [ ] file system notification
   - [ ] Shell file name completion
+  - [ ] Generate return code to make automatic scripts easier
 
 - *for the future*
-  - [ ] access to remote stats (is it really useful ?)
+  - [ ] access to remote stats (is it really useful ? Mounting remote FS and using alternate root is already doing the job, see Use Cases)
   - [ ] local configuration file (*à la .access*)
   - [ ] versioning
+
+- *Questionable*
+Stuffs I'm thinking about but having big impacts, imply issues or potentially not useful.
+  - [ ] Asynchronous action :arrow_right: Will require deep architecture review and makes the source code more complex (semaphores, how to handle a file processing if the user already asks for its deletion, ...). And in any case, as the disk IO is definitively a bottleneck, is it really useful ?
+  - [ ] file system notification :arrow_right: primary test highlights the notification is not fully reliable. As processing a file may be long, asynchronous actions would be needed and probably an action queue as well. Frankly speaking, it will also encourage the laziness of users, leading to less frequent full scan.
