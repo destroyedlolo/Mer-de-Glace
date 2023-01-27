@@ -161,9 +161,8 @@ static void cmd_dump(int fd, std::string){
 }
 
 static void cmd_save(int fd, std::string){
-	SaveDB();
-
-	socsend(fd, "*I* State saved as '" + dbfile + "'");
+	if(SaveDB(fd))
+		socsend(fd, "*I* State saved as '" + dbfile + "'");
 }
 
 static void cmd_report(int fd, std::string){

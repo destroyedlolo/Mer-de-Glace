@@ -33,6 +33,7 @@
 #include "Directory.h"
 #include "File.h"
 #include "SocketInterface.h"
+#include "SocketHelpers.h"
 
 // using namespace std;
 
@@ -55,17 +56,27 @@ std::string rendezvous;	// Command's socket
 
 Directory *rootDir = NULL;	// impersonation of the root directory
 
-void SaveDB(void){
+bool SaveDB(int fd){
 	std::ofstream f;
 	f.open(dbfile);
 	if(!f.is_open()){
-		std::perror(dbfile.c_str());
-		exit(EXIT_FAILURE);
+		std::stringstream msg;
+		msg << "*E* " << dbfile << " : " << std::strerror(errno);
+
+		if(debug || fd < 0)
+			std::cerr << msg.str() << std::endl;
+		
+		if(fd > 0)
+			socsend(fd, msg.str());
+
+		return false;
 	}
 
 	rootDir->save2DB(f);
 
 	f.close();
+
+	return true;
 }
 
 static bool LoadDB(void){
@@ -317,7 +328,7 @@ int main(int ac, char **av){
 		rootDir->raz();
 		rootDir->scan();
 		if(autosave)
-			SaveDB();
+			SaveDB(-1);
 	}
 
 #if 1	/* to reduce noise during development */

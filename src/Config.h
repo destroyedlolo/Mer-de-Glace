@@ -36,5 +36,5 @@ extern std::string dbfile;		// state's backup
 extern std::string rendezvous;	// CLI communication socket
 
 	// shared function
-void SaveDB(void);
+bool SaveDB(int);
 #endif
