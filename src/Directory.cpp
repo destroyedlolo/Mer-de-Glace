@@ -44,65 +44,90 @@ void Directory::scan(int fd){
 	
 	socsend(fd, "In '"+ (std::string)*this + "'\n");
 
-	for(const auto & entry : std::filesystem::directory_iterator(swapAlternate(*this))){
-		int res = 0;	// by default, let scan !
+	try {
+		for(const auto & entry : std::filesystem::directory_iterator(swapAlternate(*this))){
+			int res = 0;	// by default, let scan !
 
-		if(!restrict.empty()){
-			if((res = Directory::partOf(restrict,entry)) == -2){
-				if(debug)
-					std::cout << "*d* skip "<< entry << std::endl;
-				continue;
-			}
-		}
-
-		if(entry.is_regular_file()){
-			if(res < 0)	// Not inside restrict
-				continue;
-
-			socsend(fd, "File '"+ (std::string)std::filesystem::path(entry).filename() + "'\n");
-
-			File *n;
-			if((n = this->findFile(std::filesystem::path(entry).filename()))){
-				if(debug)
-					std::cout << "*d* Existing file : " << std::filesystem::path(entry).filename() << std::endl;
-
-				n->touch();
-				if(n->setActual()){
+			if(!restrict.empty()){
+				if((res = Directory::partOf(restrict,entry)) == -2){
 					if(debug)
-						std::cout << "*d* File changed !\n";
+						std::cout << "*d* skip "<< entry << std::endl;
+					continue;
 				}
-			} else {
-				if(debug)
-					std::cout << "*d* New file : " << std::filesystem::path(entry).filename() << std::endl;
-
-				n = new File(backToRoot(entry));
-				assert(n);
-				n->markCreated();	// New file
-				n->touch();			// File found
-				this->subfiles.push_back(n);
 			}
-		} else if(entry.is_directory()){
-			Directory *n;
-			if((n = this->findDir(std::filesystem::path(entry).filename()))){
-				if(debug)
-					std::cout << "*d* Existing directory : " << std::filesystem::path(entry).filename() << std::endl;
 
-				n->touch();
-				n->scan(fd);
-			} else {
-				if(debug)
-					std::cout << "*d* New directory : " << std::filesystem::path(entry).filename() << std::endl;
+			if(entry.is_regular_file()){
+				if(res < 0)	// Not inside restrict
+					continue;
 
-				n = new Directory(backToRoot(entry));
-				assert(n);
-				n->markCreated();	// New directory
-				n->touch();
-				n->scan(fd);
-				this->subdirs.push_back(n);
-			}
+				socsend(fd, "File '"+ (std::string)std::filesystem::path(entry).filename() + "'\n");
+
+				File *n;
+				if((n = this->findFile(std::filesystem::path(entry).filename()))){
+					if(debug)
+						std::cout << "*d* Existing file : " << std::filesystem::path(entry).filename() << std::endl;
+
+					n->touch();
+					if(n->setActual(fd)){
+						if(debug)
+							std::cout << "*d* File changed !\n";
+					}
+				} else {
+					if(debug)
+						std::cout << "*d* New file : " << std::filesystem::path(entry).filename() << std::endl;
+
+					n = new File(backToRoot(entry), fd);
+					assert(n);
+					n->markCreated();	// New file
+					n->touch();			// File found
+					this->subfiles.push_back(n);
+				}
+			} else if(entry.is_directory()){
+				Directory *n;
+				if((n = this->findDir(std::filesystem::path(entry).filename()))){
+					if(debug)
+						std::cout << "*d* Existing directory : " << std::filesystem::path(entry).filename() << std::endl;
+
+					n->touch();
+					n->scan(fd);
+				} else {
+					if(debug)
+						std::cout << "*d* New directory : " << std::filesystem::path(entry).filename() << std::endl;
+
+					n = new Directory(backToRoot(entry));
+					assert(n);
+					n->markCreated();	// New directory
+					n->touch();
+					n->scan(fd);
+					this->subdirs.push_back(n);
+				}
+			} else	// Ignoring all "special" files
+				continue;
 		}
-		else	// Ignoring all "special" files
-			continue;
+	} 
+	catch(const std::runtime_error& e){
+		std::stringstream msg;
+		msg << "*E* " << e.what();
+
+		if(debug)
+			std::cerr << msg.str() << std::endl;
+		this->markBad();
+		socsend(fd, msg.str());
+	}
+	catch(const std::exception & e){
+		std::stringstream msg;
+		msg << "*E* " << e.what();
+
+		if(debug)
+			std::cerr << msg.str() << std::endl;
+		this->markBad();
+		socsend(fd, msg.str());
+	}
+	catch(...){
+		if(debug)
+			std::cerr << "*E* Unknown error\n";
+		this->markBad();
+		socsend(fd, "*E* Unknown error\n");
 	}
 }
 
@@ -300,6 +325,8 @@ void Directory::dump(int ident, int fd){
 		res << '\t';
 
 	res << "Directory '" << this->getName() << "' (" << *this << ") ";
+	if(this->isBad())
+		res << "BAD ";
 	if(this->isCreated())
 		res << "crt ";
 	if(this->isDeleted())
@@ -329,6 +356,10 @@ void Directory::Report(int fd){
 	}
 	if(this->isDeleted()){
 		res << (altroot.empty() ? "[Deleted]" : "[Master only]");
+		issue = true;
+	}
+	if(this->isBad()){
+		res << "[ERROR]";
 		issue = true;
 	}
 

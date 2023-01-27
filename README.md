@@ -191,6 +191,19 @@ fi
 
 ### Notes about commands
 
+#### report
+Reports of state discrepancies as :
+```console
+[D][Created]	/home/laurent/Images/Brute/_AArchiver/test/new
+[F][Changed]	/home/laurent/Images/Brute/_AArchiver/test/toto
+```
+With
+- the object type can be `[D]` for a directory or `[F]` for a file.
+- `[Created]`, `[Deleted]`, `[Changed]` as the names said
+- `[Replica only]`, `[Master only]`, `[Discrepancy]` while comparing an alternate root
+- `[Bad CS]` the checksum doesn't correspond to the signature **highlighting server corruption**
+- `[ERROR]` an issue has been encountered while processing (typically, a file that is not readable)
+
 #### save
 
 Mer-De-Glace maintains in memory files' state. You can (have) to `save` it to retrieve it at restart and check if data remains safe.

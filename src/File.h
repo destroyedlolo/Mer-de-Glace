@@ -20,18 +20,18 @@ class File : public Item {
 
 public :
 		// Create a new file and initialise md5
-	File(const std::filesystem::directory_entry &e) : Item(e, Item::_kind::IT_FILE){
-		this->md5(this->historical_md5);
+	File(const std::filesystem::directory_entry &e, int fd) : Item(e, Item::_kind::IT_FILE){
+		this->md5(this->historical_md5, fd);
 		this->cs = File::calCS(this->historical_md5);
 	}
-	File(const std::string aname);
+	File(const std::string aname, int);
 
 		// initialisation from existing data (loading from backup)
 	File( std::string aname, std::string amd5, uint16_t acs ) : Item(aname, Item::_kind::IT_FILE), historical_md5(amd5), cs(acs){
 	}
 
 		// Compute it's md5
-	std::string md5(std::string &);
+	std::string md5(std::string &, int);
 		// calcule the CS of an md5 string
 	static uint16_t calCS(std::string);
 		// Signature are the same
@@ -39,7 +39,7 @@ public :
 
 		// Set actual md5 (if changed)
 		// -> true : md5 changed
-	bool setActual(void);
+	bool setActual(int);
 
 		// True if the file has changed
 	bool isChanged(void){
