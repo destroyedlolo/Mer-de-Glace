@@ -26,6 +26,7 @@ private :
 protected :
 	bool created;	// discovered during scan
 	bool found;		// found during scan
+	bool bad;		// Technical error encountered
 
 public :
 	Item(const std::filesystem::directory_entry &p, _kind akind) : path(p), kind(akind) {
@@ -57,6 +58,10 @@ public :
 		return(!this->found);
 	}
 
+	bool isBad(void){
+		return(this->bad);
+	}
+
 	_kind getKind(void){
 		return this->kind;
 	}
@@ -66,11 +71,16 @@ public :
 	void raz(bool loaded=false){
 		this->created = false;
 		this->found = loaded;
+		this->bad = false;
 	}
 	virtual void recalculateCS(void)=0;
 
 	void markCreated(bool yes = true){
 		this->created = yes;
+	}
+
+	void markBad(bool yes = true){
+		this->bad = yes;
 	}
 
 		// This data has been found during a scan

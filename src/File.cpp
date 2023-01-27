@@ -33,8 +33,10 @@ std::string File::md5(std::string &res){
 
 	FILE *fp = fopen64(this->c_str(), "rb");
 	if(!fp){
-		std::cerr << "*F* '"<< *this << "' : " << std::strerror(errno) << std::endl;
-		exit(EXIT_FAILURE);
+		std::cerr << "*E* '"<< *this << "' : " << std::strerror(errno) << std::endl;
+		res = "ERROR";
+		this->markBad();
+		return res;
 	}
 
 	EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
@@ -61,6 +63,7 @@ std::string File::md5(std::string &res){
     	md5string << std::setw(2) << (int)result[i];
 
 	res = md5string.str();
+	this->markBad(false);
 	return res;
 }
 
@@ -124,6 +127,10 @@ void File::Report(int fd){
 		res << (altroot.empty() ? "[Created]" : "[Replica only]");
 		issue = true;
 	}
+	if(this->isBad()){
+		res << "[ERROR]";
+		issue = true;
+	}
 	if(this->isDeleted()){
 		res << (altroot.empty() ? "[Deleted]" : "[Master only]");
 		issue = true;
@@ -154,6 +161,8 @@ void File::dump(int ident, int fd){
 
 	if(!this->hasValideSignature())
 		res << " CS";
+	if(this->isBad())
+		res << " BAD";
 	if(this->isCreated())
 		res << " crt";
 	if(this->isDeleted())

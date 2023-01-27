@@ -20,6 +20,7 @@
  *	07/01/2023 - LF - v0.8 - Report for duplicate
  *	09/01/2023 - LF - v0.9 - Add alternative root
  *	26/01/2023 - LF - v0.10 - Add return code to MdG
+ *	27/01/2023 - LF - v0.11 - Clean up deamon's fatal error
  */
 
 #define VERSION 0.1001
