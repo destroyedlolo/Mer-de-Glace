@@ -67,7 +67,7 @@ void Directory::scan(int fd){
 					std::cout << "*d* Existing file : " << std::filesystem::path(entry).filename() << std::endl;
 
 				n->touch();
-				if(n->setActual()){
+				if(n->setActual(fd)){
 					if(debug)
 						std::cout << "*d* File changed !\n";
 				}
@@ -75,7 +75,7 @@ void Directory::scan(int fd){
 				if(debug)
 					std::cout << "*d* New file : " << std::filesystem::path(entry).filename() << std::endl;
 
-				n = new File(backToRoot(entry));
+				n = new File(backToRoot(entry), fd);
 				assert(n);
 				n->markCreated();	// New file
 				n->touch();			// File found

@@ -19,21 +19,27 @@
 
 	// As this constructor is used mostly when creating an object during a scan
 	// with an altroot, swapAlternate() is needed
-File::File(const std::string aname) : Item(Directory::swapAlternate(aname), Item::_kind::IT_FILE){
-	this->md5(this->historical_md5);
+File::File(const std::string aname, int fd) : Item(Directory::swapAlternate(aname), Item::_kind::IT_FILE){
+	this->md5(this->historical_md5, fd);
 	this->cs = File::calCS(this->historical_md5);
 }
 
 /* Calculate md5
  * inspired by https://blog.magnatox.com/posts/c_hashing_files_with_openssl/
  */
-std::string File::md5(std::string &res){
+std::string File::md5(std::string &res, int fd){
 	if(debug)
 		std::cout << "*D* md5(" << this->string() << ")\n" << std::flush;
 
 	FILE *fp = fopen64(this->c_str(), "rb");
 	if(!fp){
-		std::cerr << "*E* '"<< *this << "' : " << std::strerror(errno) << std::endl;
+		std::stringstream msg;
+		msg << "*E* '"<< *this << "' : " << std::strerror(errno);
+
+		if(debug)
+			std::cerr << msg.str() << std::endl;
+		socsend(fd, msg.str());
+
 		res = "ERROR";
 		this->markBad();
 		return res;
@@ -95,8 +101,8 @@ void File::raz(bool loaded){
 	}
 }
 
-bool File::setActual(void){
-	this->md5(this->actual_md5);
+bool File::setActual(int fd){
+	this->md5(this->actual_md5,fd);
 
 	if(this->actual_md5 == this->historical_md5){	// not changed
 		this->actual_md5.clear();
