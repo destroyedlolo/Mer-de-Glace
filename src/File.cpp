@@ -1,4 +1,4 @@
-/* File.h
+/* File.cpp
  *
  * Instantiate a file
  *

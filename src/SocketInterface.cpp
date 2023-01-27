@@ -260,6 +260,29 @@ static void cmd_duplicate(int fd, std::string arg){
 	}
 }
 
+#if DEV
+static void cmd_busy(int fd, std::string arg){
+	int sec;
+
+	try {
+		sec = std::stoi(arg);
+	} catch(...) {
+		socsend(fd, "*E* invalid argument");
+		return;
+	}
+
+	if(sec <= 0)
+		socsend(fd, "*E* Argument must be a positive number\n");
+
+	for(auto i=0; i<sec; i++){
+		std::stringstream res;
+		res << "*I* looping " << i;
+		sleep(1);
+		socsend(fd, res.str());
+	}
+}
+#endif
+
 std::map<std::string, Command> commands {
 	{ "help", { true, "list known commands", cmd_help }},
 	{ "restrict", { true, "Restrict actions to a subdir, '*' to remove restriction", cmd_restrict }},
@@ -274,7 +297,10 @@ std::map<std::string, Command> commands {
 	{ "status", { true, "Report discrepancies (report alias)", cmd_report }},
 	{ "duplicate", { true, "Report potential duplication", cmd_duplicate }},
 	{ "accept", { false, "Validate a discrepancy", cmd_accept }},
-	{ "commit", { false, "Validate a discrepancy (accept alias", cmd_accept }},
+	{ "commit", { false, "Validate a discrepancy (accept alias)", cmd_accept }},
+#if DEV
+	{ "busy", { true, "wait for <arg> seconds (testing purpose only)", cmd_busy }},
+#endif
 	{ "dump", { true, "Dump current in memory database", cmd_dump }}
 };
 

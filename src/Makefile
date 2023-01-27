@@ -8,7 +8,7 @@ gotoall: all
 # Warning : 'cstdarg' can't be located for this node.
 
 #The compiler (may be customized for compiler's options).
-cc=c++ -Wall -O2 -I../shared
+cc=c++ -Wall -O2 -I../shared -DDEV 
 opts=$(shell pkg-config --libs openssl)
 
 ../shared/Helpers.o : ../shared/Helpers.cpp ../shared/Helpers.h \
