@@ -1,5 +1,5 @@
 # makefile created automaticaly by LFMakeMaker
-# LFMakeMaker 1.6 (May  9 2022 15:11:43) (c)LFSoft 1997
+# LFMakeMaker 1.6 (May  7 2022 20:46:23) (c)LFSoft 1997
 
 gotoall: all
 
@@ -8,7 +8,7 @@ gotoall: all
 # Warning : 'cstdarg' can't be located for this node.
 
 #The compiler (may be customized for compiler's options).
-cc=c++ -Wall -O2 -I../shared
+cc=c++ -Wall -O2 -I../shared -DDEV 
 opts=$(shell pkg-config --libs openssl)
 
 ../shared/Helpers.o : ../shared/Helpers.cpp ../shared/Helpers.h \
@@ -108,9 +108,11 @@ FindDuplicate.o : FindDuplicate.cpp FindDuplicate.h File.h Item.h \
 # Warning : 'sys/types.h' can't be located for this node.
 # Warning : 'sys/socket.h' can't be located for this node.
 # Warning : 'sys/un.h' can't be located for this node.
+# Warning : 'string' can't be located for this node.
 MerDeGlace.o : MerDeGlace.cpp Config.h Directory.h Item.h File.h \
-  FindDuplicate.h SocketInterface.h ../shared/NoSlashPath.h \
-  ../shared/Helpers.h ../shared/Version.h Makefile 
+  FindDuplicate.h SocketInterface.h ../shared/SocketHelpers.h \
+  ../shared/NoSlashPath.h ../shared/Helpers.h ../shared/Version.h \
+  Makefile 
 	$(cc) -c -o MerDeGlace.o MerDeGlace.cpp $(opts) 
 
 # Warning : 'string' can't be located for this node.
