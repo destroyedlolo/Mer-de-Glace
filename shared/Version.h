@@ -23,7 +23,7 @@
  *	27/01/2023 - LF - v0.11 - Clean up deamon's fatal error
  */
 
-#define VERSION 0.1001
+#define VERSION 0.1102
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022-23"
 
 /* Default configuration file */

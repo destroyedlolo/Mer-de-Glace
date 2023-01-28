@@ -42,9 +42,9 @@ void Directory::scan(int fd){
 	if(!(!restrict.empty() && Directory::partOf(restrict,*this)))
 		this->touch();	// The current directory was found
 	
-	socsend(fd, "In '"+ (std::string)*this + "'\n");
-
 	try {
+		socsend(fd, "In '"+ (std::string)*this + "'\n");
+
 		for(const auto & entry : std::filesystem::directory_iterator(swapAlternate(*this))){
 			int res = 0;	// by default, let scan !
 
@@ -59,7 +59,6 @@ void Directory::scan(int fd){
 			if(entry.is_regular_file()){
 				if(res < 0)	// Not inside restrict
 					continue;
-
 				socsend(fd, "File '"+ (std::string)std::filesystem::path(entry).filename() + "'\n");
 
 				File *n;
@@ -112,7 +111,13 @@ void Directory::scan(int fd){
 		if(debug)
 			std::cerr << msg.str() << std::endl;
 		this->markBad();
-		socsend(fd, msg.str());
+		try {	// another exception will raised in case of abortion
+			socsend(fd, msg.str());
+		} catch(...) {
+			if(verbose)
+				std::cout << "*W* Aborted\n";
+			throw;
+		}
 	}
 	catch(const std::exception & e){
 		std::stringstream msg;

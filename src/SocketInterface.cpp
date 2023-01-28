@@ -153,7 +153,10 @@ static void cmd_alternate(int fd, std::string arg){
 }
 
 static void cmd_scan(int fd, std::string){
-	::rootDir->scan(fd);
+	try {
+		::rootDir->scan(fd);
+	} catch(...){	// Just to avoid the deamon to crash
+	}
 }
 
 static void cmd_dump(int fd, std::string){

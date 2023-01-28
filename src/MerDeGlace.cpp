@@ -65,9 +65,12 @@ bool SaveDB(int fd){
 
 		if(debug || fd < 0)
 			std::cerr << msg.str() << std::endl;
-		
-		if(fd > 0)
-			socsend(fd, msg.str());
+	
+		try {
+			if(fd > 0)
+				socsend(fd, msg.str());
+		} catch(...) {
+		}
 
 		return false;
 	}
@@ -326,7 +329,7 @@ int main(int ac, char **av){
 		if(verbose)
 			std::cout << "*I* Launching initial scan\n";
 		rootDir->raz();
-		rootDir->scan();
+		rootDir->scan();	// not catched as interactive action
 		if(autosave)
 			SaveDB(-1);
 	}
