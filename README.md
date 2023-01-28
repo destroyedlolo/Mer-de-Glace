@@ -253,6 +253,7 @@ This is the list of identified tasks/behaviors.
   - [ ] access to remote stats (is it really useful ? Mounting remote FS and using alternate root is already doing the job, see Use Cases)
   - [ ] local configuration file (*à la .access*)
   - [ ] versioning
+  - [ ] Daemon dashboard : GUI, replicas auto discovering, status of each replica, central place for replications management  ...
 
 - *Questionable*
 Stuffs I'm thinking about but having big impacts, imply issues or potentially not useful.
