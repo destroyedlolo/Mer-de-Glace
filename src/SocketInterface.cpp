@@ -153,10 +153,7 @@ static void cmd_alternate(int fd, std::string arg){
 }
 
 static void cmd_scan(int fd, std::string){
-	try {
-		::rootDir->scan(fd);
-	} catch(...){	// Just to avoid the deamon to crash
-	}
+	::rootDir->scan(fd);
 }
 
 static void cmd_dump(int fd, std::string){
@@ -382,25 +379,28 @@ std::cout << ">>" << buffer << "<<\n";
 				if(debug)
 					std::cout << "*d* disconnected\n";
 			} else {	// Data received
-				buffer[rc] = 0;	// Ensure it's a null terminated string
-				char *p = strchr(buffer, '\t');
-				if(p)
-					*(p++) = 0;	// buffer is the command, p the argument
-
-				if(debug){
-					std::cout << "command : '" << buffer << "'";
+				try {
+					buffer[rc] = 0;	// Ensure it's a null terminated string
+					char *p = strchr(buffer, '\t');
 					if(p)
-						std::cout << " arg: '"<< p << "'";
-					std::cout << std::endl;
-				}
+						*(p++) = 0;	// buffer is the command, p the argument
+
+					if(debug){
+						std::cout << "command : '" << buffer << "'";
+						if(p)
+							std::cout << " arg: '"<< p << "'";
+						std::cout << std::endl;
+					}
 				
-				if(auto cmd = commands.find(buffer); cmd != commands.end()){
-					if(!cmd->second.en_altroot && !altroot.empty())
-						socsend(fds[i].fd, "*E* Command not available within an alternate root");
-					else
-						cmd->second.func(fds[i].fd, p ? p : std::string() );
-				} else
-					socsend(fds[i].fd, "*E* Command not found");
+					if(auto cmd = commands.find(buffer); cmd != commands.end()){
+						if(!cmd->second.en_altroot && !altroot.empty())
+							socsend(fds[i].fd, "*E* Command not available within an alternate root");
+						else
+							cmd->second.func(fds[i].fd, p ? p : std::string() );
+					} else
+						socsend(fds[i].fd, "*E* Command not found");
+				} catch(...){
+				}
 			}
 
 			close(this->peer);

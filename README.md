@@ -243,9 +243,9 @@ This is the list of identified tasks/behaviors.
 
 - *interfaces*
   - [X] accept commands via a socket (v0.4)
-  - [ ] daemonize (avoid as much as possible exiting in case of issue)
+  - [X] daemonize (avoid as much as possible exiting in case of issue) (v0.11)
   - [X] Command line tool (v0.5)
-  - [ ] long standing commands are aborted when client connection is lost
+  - [X] long standing commands are aborted when client connection is lost (v0.11)
   - [ ] Shell file name completion
   - [X] Generate return code to make automatic scripts easier (v0.10)
 
