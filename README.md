@@ -14,16 +14,12 @@ The user can ensure the sanity of its data by comparing this archived signature 
 
 As a consequence, we are needing replicas only to overcome the failures of the master and not anymore to check data integrity.
 
-| :exclamation: | **Notez-bien :** **Mer-de-Glace** is still in *beta* stage. Documentation will be improved when a stable version will be released  |
+| :exclamation: | See **Use Cases** directory for comprehensive examples and use cases.  |
 |-------------|----------------------------|
-
-See **Use Cases** directory for comprehensive examples and use cases.
 
 ## Installation from source
 
-**Mer-de-Glace** is a command-line tool targeting to run on slow headless machines.
-
-My goal when starting this project was to recycle old/slow boxes as backup server. Unfortunately, mainstream Linux distributions are dropping such obsolete hardwares leading to compilation problem as **Mer-De-Glace is requiring C++20 compliant compiler**. 
+**Mer-de-Glace** is a command-line tool targeting to run on slow headless machines : my goal was to recycle obsolete boxes as backup server. The drawback, unfortunately, mainstream Linux distributions are dropping such obsolete hardwares leading to compilation problem as **Mer-De-Glace is requiring C++20 compliant compiler**. 
 
 But alternatives exist :
 * some distributions like [TinyCoreLinux](http://www.tinycorelinux.net/) are still supporting old hardware (32 bits, low memory, low processor power). However, before attempting to install from source, check that a binary package does not exist (*I will make one for TinyCoreLinux x86-32b*).
@@ -32,17 +28,14 @@ But alternatives exist :
 ### Dependency
 
 * **OpenSSL** (development version)
-* C++-20 compliant tool chain
+* **C++-20** compliant tool chain
 
 ### compilation
 
-* go to a scratch directory
-* clone Mer-De-Glace repository
+* From a scratch directory clone Mer-De-Glace repository
 ```
 git clone https://github.com/destroyedlolo/Mer-de-Glace.git
-```
-* from the newly created directory enter
-```
+cd Mer-de-Glace
 make
 ```
 
@@ -57,7 +50,7 @@ With :
 * `rootDirectory=` the root directory of document to track
 * `DBFile=` where the state backup is stored
 
-:bulb: Different data stored (photo, music, films) ? Run dedicated **MerDeGlaced** for each of them, using dedicated configuration file with separate rootDirectory, DBFile and rendez-vous. It will spead up all operations.
+:bulb: Different data kinds (photo, music, films) ? Run a **MerDeGlaced** for each of them, using customized configuration file with dedicated rootDirectory, DBFile and rendez-vous.
 
 ### 2- Start MerDeGlaced
 
