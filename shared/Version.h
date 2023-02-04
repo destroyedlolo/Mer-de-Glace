@@ -21,9 +21,10 @@
  *	09/01/2023 - LF - v0.9 - Add alternative root
  *	26/01/2023 - LF - v0.10 - Add return code to MdG
  *	27/01/2023 - LF - v0.11 - Clean up deamon's fatal error
+ *	04/02/2023 - LF - v1.00 - Promote to stable version
  */
 
-#define VERSION 0.1102
+#define VERSION 1.00
 #define COPYRIGHT "Mer de Glace (c) L.Faillie 2022-23"
 
 /* Default configuration file */

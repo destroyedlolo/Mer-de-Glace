@@ -3,7 +3,7 @@
 #this script is used to create a Makefile
 
 # uncomment this line to enable development code
-DEV="-DDEV"
+# DEV="-DDEV"
 
 echo
 echo "Deamon's source configuration"

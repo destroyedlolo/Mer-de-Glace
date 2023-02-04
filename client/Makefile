@@ -8,7 +8,7 @@ gotoall: all
 # Warning : 'cstdarg' can't be located for this node.
 
 #The compiler (may be customized for compiler's options).
-cc=c++ -Wall -O2 -I../shared -DDEV 
+cc=c++ -Wall -O2 -I../shared  
 opts=
 
 ../shared/Helpers.o : ../shared/Helpers.cpp ../shared/Helpers.h \
@@ -24,6 +24,7 @@ opts=
 
 # Warning : 'string' can't be located for this node.
 # Warning : 'iostream' can't be located for this node.
+# Warning : 'stdexcept' can't be located for this node.
 # Warning : 'sys/types.h' can't be located for this node.
 # Warning : 'sys/socket.h' can't be located for this node.
 # Warning : 'sys/un.h' can't be located for this node.
