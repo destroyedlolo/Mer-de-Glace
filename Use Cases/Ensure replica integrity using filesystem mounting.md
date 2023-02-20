@@ -22,7 +22,7 @@ Note : `avahi-resolve-host-name` bloc is on the play only because my machines ar
 avahi name resolution is not working on my busybox based TinyCoreLinux. On machines with full avahi support, the command would have been :
 
 ```
-scp bpi.local:Musiques /tmp/bpi/
+sshfs bpi.local:Musiques /tmp/bpi/
 ```
 
 ### Mer De Glace
