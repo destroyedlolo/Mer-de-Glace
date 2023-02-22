@@ -1,5 +1,6 @@
 <p align="center">
-<img src="https://img.shields.io/github/last-commit/destroyedlolo/Mer-de-Glace.svg?style=for-the-badge" />
+<img src="https://img.shields.io/github/last-commit/destroyedlolo/Mer-de-Glace.svg?style=for-the-badge" /><br>
+(no commit for long time doesn't mean this project is stalling but reached a stable state and I switched to others activities :relaxed:)
 <hr/>
 
 # Mer-de-Glace
@@ -225,7 +226,7 @@ In **very rare** occasions, rebuilding them is needed : it's the goal of **RECS*
 This is the list of identified tasks/behaviors. 
 - *data management*
    - [X] Recursively scan a directory with MD5 checksum (v0.1)
-   - [X] smart status reset before scanning to avoir usage of explicite `RESET` command (v0.9)
+   - [X] smart status reset before scanning to avoid usage of explicite `RESET` command (v0.9)
    - [X] Save / load state	(v0.2)
    - [X] Restrict scanning to a sub directory (v0.3)
    - [X] re-scan and issue a report (v0.4)
@@ -236,6 +237,7 @@ This is the list of identified tasks/behaviors.
 
 - *interfaces*
   - [X] accept commands via a socket (v0.4)
+  - [ ] grouped acceptation (i.e. :  accept all deletions, all creations, all modifications, ...). Restrictions apply.
   - [X] daemonize (avoid as much as possible exiting in case of issue) (v0.11)
   - [X] Command line tool (v0.5)
   - [X] long standing commands are aborted when client connection is lost (v0.11)
@@ -252,3 +254,11 @@ This is the list of identified tasks/behaviors.
 Stuffs I'm thinking about but having big impacts, imply issues or potentially not useful.
   - [ ] Asynchronous action :arrow_right: Will require deep architecture review and makes the source code more complex (semaphores, how to handle a file processing if the user already asks for its deletion, ...). And in any case, as the disk IO is definitively a bottleneck, is it really useful ?
   - [ ] file system notification :arrow_right: primary test highlights the notification is not fully reliable. As processing a file may be long, asynchronous actions would be needed and probably an action queue as well. Frankly speaking, it will also encourage the laziness of users, leading to less frequent full scan.
+
+---
+
+# Licencing and contributing
+
+**Mer-de-Glace** is covered by [Creative Commons-BY-NC](http://creativecommons.org/licenses/by-nc/3.0/) preventing *vampires* to abuse open source developers kindness : Please raise a ticket if you want to integrate it in a commercial product.
+
+**Feel free to participate** : code improvements, new features implementation, beer to developers, gifts, thanks messages :clap: ... Participations help to make projects alive.
