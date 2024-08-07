@@ -6,21 +6,21 @@
 # Mer-de-Glace
 
 When talking about ultra-long-term storage, data **integrity quickly** becomes a challenge.
-Software bugs, human errors, hardware failures are the most obvious causes of data loss... but sometimes data degrades "on their own", with no visible external cause. Phenomenon known as [data decay, data rot or bit rot](https://en.wikipedia.org/wiki/Data_degradation).
+Software bugs, human errors, hardware failures are the most obvious causes of data loss... but sometimes data degrades "on its own", with no visible external cause. Phenomenon known as [data decay, data rot or bit rot](https://en.wikipedia.org/wiki/Data_degradation).
 
 A common strategy is to multiply an odd number of backups, compare them and apply a rule where "*the majority gets the vote*". But it's leading to a costly and slow solution.
 
 **Mer-de-Glace** stores an electronic signature when a file is created. 
 The user can ensure the sanity of its data by comparing this archived signature with the current state. 
 
-As a consequence, we are needing replicas only to overcome the failures of the master and not anymore to check data integrity.
+As a consequence, we are only needing replicas to overcome the failures of the master and not anymore to check data integrity.
 
-| :exclamation: | See **Use Cases** directory for comprehensive examples and use cases.  |
-|-------------|----------------------------|
+> [!TIP]
+> **Use Cases** directory for comprehensive examples and use cases.
 
 ## Installation from source
 
-**Mer-de-Glace** is a command-line tool targeting to run on slow headless machines : my goal was to recycle obsolete boxes as backup server. The drawback, unfortunately, mainstream Linux distributions are dropping such obsolete hardwares leading to compilation problem as **Mer-De-Glace is requiring C++20 compliant compiler**. 
+**Mer-de-Glace** is a command-line tool targeting to run on slow headless machines : my goal was to recycle obsolete boxes as backup servers. The drawback, unfortunately, mainstream Linux distributions are dropping such obsolete pieces of hardware, leading to compilation problems as **Mer-De-Glace requires a C++20 compliant compiler**.
 
 But alternatives exist :
 * some distributions like [TinyCoreLinux](http://www.tinycorelinux.net/) are still supporting old hardware (32 bits, low memory, low processor power). However, before attempting to install from source, check that a binary package does not exist (*I will make one for TinyCoreLinux x86-32b*).
@@ -51,13 +51,15 @@ With :
 * `rootDirectory=` the root directory of document to track
 * `DBFile=` where the state backup is stored
 
-:bulb: Different data kinds (photo, music, films) ? Run a **MerDeGlaced** for each of them, using customized configuration file with dedicated rootDirectory, DBFile and rendez-vous.
+> [!TIP]
+> Different kinds of data (photos, music, films) ? Run a **MerDeGlaced** for each of them using a customized configuration file with dedicated rootDirectory, DBFile and rendez-vous.
 
 ### 2- Start MerDeGlaced
 
 `MerDeGlaced &`
 
-Notez-bien : loading an existing backup for large amount of data may be long. Add verbosity **-v** to know when application is ready. Alternatively, the "*rendez-vous*" socket is created only when the deamon is ready.
+> [!NOTE]
+> Notez-bien : loading an existing backup for a large amount of data may be long. Add verbosity **-v** to know when the application is ready. Alternatively, the "*rendez-vous*" socket is created only when the daemon is ready.
 
 ### 3- use MdG to communicate
 
@@ -77,15 +79,16 @@ It will take a long time, depending on your disk speed, CPU workforce, number an
 [F][Deleted]	/home/laurent/Images/Brute/_AArchiver/test/tst/truc
 ```
 
-* If it's the initial scan, it will report all files as [Created] : you're starting from an empty database and all files seems new.
+* If it's the initial scan, it will report all files as [Created] : you're starting from an empty database, and all files seems new.
 * If it's not the initial scan, each discrepancy needs to be investigated : `accept` those legitimate.
 
-| :bulb: | `Accept`ing deletion of a directory will commit as well the deletion of all it sub objects. |
-|-------------|----------------------------|
+> [!TIP]
+> `Accept`ing deletion of a directory will commit as well the deletion of all it sub objects.
 
-Notez-bien : 
-- don't forget to `save` the state after validating all the discrepancies, otherwise they will reappear when the daemon is restarted.
-- it's not possible to validate checksum issues : they are highlighting potential hardware problems leading to severe data loss.
+> [!CAUTION]
+> Notez-bien : 
+> - don't forget to `save` the state after validating all the discrepancies, otherwise they will reappear when the daemon is restarted.
+>- it's not possible to validate checksum issues : they are highlighting potential hardware problems leading to severe data loss.
 
 #### if needed, save the new state
 
@@ -93,7 +96,8 @@ Notez-bien :
 
 ### 4- additionally, Mer-De-Glace can hilight duplication
 
-Notez-bien : it's about comparing numerical signature, not the files themselves. It's up to **YOU** to decide if some cleaning is needed or not.
+> [!CAUTION]
+> Notez-bien : it's about comparing numerical signatures, not the files themselves. It's up to **YOU** to decide if some cleaning is needed or not.
 
 #### check for duplication
 
@@ -112,7 +116,7 @@ Potential duplicate found :
 ```
 #### Do needed cleaning
 
-I made a mistake by converting twice my CD to MP3, using a different naming convention : I have to delete ".../Noir Désir" directory (using shell's `rm -rf`, a graphical interface or whatever).
+I made a mistake by converting twice my CD to MP3, using a different naming convention : I have to delete the ".../Noir Désir" directory (using shell's `rm -rf`, a graphical interface or whatever).
 
 #### re-scan to detect deletion
 
@@ -129,7 +133,7 @@ $ ./MdG -f ~/Config/Musiques.mdg RESET
 ```
 -->
 
-and finaly, launch a new scan.
+and finally, launch a new scan.
 ```
 ./MdG -f ~/Config/Musiques.mdg scan
 ```
@@ -158,7 +162,7 @@ and finaly, launch a new scan.
 
 `./MdG [-opt] command [arguments ...]`
 
-with `./MdG -h` to get list of supported options. `./MdG help` to get the list of commands known by the daemon.
+with `./MdG -h` to get a list of supported options. `./MdG help` to get the list of commands known by the daemon.
 
 ### scripting
 **MdG** issues following return codes :
@@ -202,25 +206,25 @@ With
 
 Mer-De-Glace maintains in memory files' state. You can (have) to `save` it to retrieve it at restart and check if data remains safe.
 
-Notez-bien :
-- When the state is saved, using `save` command, all files/directories *creation* are de facto accepted.
-- *modification* and *deletion* are pending as they may highlight a storage issue.
+> [!NOTE]  
+> Notez-bien :
+> - When the state is saved using the `save` command, all files/directories *creations* are de facto accepted.
+> - *modification* and *deletion* are pending as they may highlight a storage issue.
 
 #### RESET / RAZ
 **RESET** command will reset the state of each file/directory as *clean* item. 
 
 As discrepancies will be lost, is command is **dangerous** and need to be used with caution !
 
-| :eyes: | After a **RESET**, in memory state is not anymore consistent until the next scan and all identified discrepancies are lost. In case of doubt, **restart *MerDeGlaced* without saving** and then launch a scan : it will reset data as per the real situation |
-|-------------|----------------------------|
+> [!WARNING]
+> After a **RESET**, in memory state is not any more consistent until the next scan, and all identified discrepancies are lost. In case of doubt, **restart *MerDeGlaced* without saving** and then launch a scan : it will reset data as per the real situation.
 
 #### RECS
 **Mer-de-Glace** keeps internal checksums to ensure in memory state as well as backup ones are not corrupted.
-In **very rare** occasions, rebuilding them is needed : it's the goal of **RECS** (for *recalculate checksum*).
+On **very rare** occasions, rebuilding them is needed : it's the goal of **RECS** (for *recalculate checksum*).
 
-| :warning: | This command is **very dangerous** as checksum discrepancy is a proof of something going very bad (disk being corrupted, memory fault, hardware failure, ...). Consequently, this command is allowed ONLY if the daemon as been started in debug mode. |
-|-------------|----------------------------|
-
+> [!CAUTION]
+> This command is **very dangerous** as a checksum discrepancy is a proof of something going very bad (a disk being corrupted, a memory fault, hardware failure, ...). Consequently, this command is allowed ONLY if the daemon has been started in debug mode.
 
 ## ToDo list
 This is the list of identified tasks/behaviors. 
